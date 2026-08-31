@@ -1,0 +1,23 @@
+[package]
+name = "vormen"
+version = "0.1.0"
+edition = "2024"
+description = "A set of tools and libraries for generative art in SVG"
+license = "MIT"
+repository = "https://github.com/berkes/vormen"
+authors = ["Bèr Kessels <ber@berk.es>"]
+
+[dependencies]
+chrono = "0.4.45"
+noise = "0.9.0"
+svg = "0.18.0"
+
+[lib]
+name = "vormen"
+path = "src/lib.rs"
+
+[[bin]]
+name = "perlin_grid"
+
+[dev-dependencies]
+approx = "0.5.1"

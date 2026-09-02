@@ -1,6 +1,6 @@
 [package]
 name = "vormen"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 description = "A set of tools and libraries for generative art in SVG"
 license = "MIT"
@@ -22,6 +22,9 @@ name = "perlin_grid"
 
 [[bin]]
 name = "split_city"
+
+[[bin]]
+name = "noodle_love"
 
 [dev-dependencies]
 approx = "0.5.1"

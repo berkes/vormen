@@ -1,5 +1,5 @@
 use noise::{NoiseFn, Simplex};
-use vormen::{Drawing, Grid};
+use vormen::{Color, Drawing, Grid};
 
 fn main() {
     let noise = Simplex::default();
@@ -15,15 +15,14 @@ fn main() {
         let noise_value = noise.get([cell.x() / 100.0, cell.y() / 100.0]);
         let noise_value = (noise_value + 1.0) / 2.0;
 
-        let color = if noise_value > 0.5 { "black" } else { "white" };
+        let color = if noise_value > 0.5 { Color::BLACK } else { Color::WHITE };
 
-        let rect = Box::new(
-            svg::node::element::Rectangle::new()
-                .set("x", cell.x())
-                .set("y", cell.y())
-                .set("width", cell.width())
-                .set("height", cell.height())
-                .set("fill", color),
+        let rect = drawing.create_rectangle(
+            cell.x(),
+            cell.y(), 
+            cell.width(),
+            cell.height(),
+            color
         );
 
         drawing.add(vec![rect]);

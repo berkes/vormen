@@ -1,4 +1,5 @@
 use rand::Rng;
+use usvg_tree::Node;
 use vormen::{Color, Drawing};
 
 #[derive(Clone)]
@@ -88,20 +89,13 @@ fn main() {
     }
 
     // Draw lines between consecutive points
-    let mut lines: Vec<Box<dyn svg::node::Node>> = Vec::new();
+    let mut lines: Vec<Node> = Vec::new();
     for i in 0..previous_points.len() - 1 {
         let p = &previous_points[i];
         let next = &previous_points[i + 1];
 
-        let line = svg::node::element::Line::new()
-            .set("x1", p.x)
-            .set("y1", p.y)
-            .set("x2", next.x)
-            .set("y2", next.y)
-            .set("stroke", Color::BLACK)
-            .set("stroke-width", 1);
-
-        lines.push(Box::new(line));
+        let line = drawing.create_line(p.x, p.y, next.x, next.y, Color::BLACK, 1.0);
+        lines.push(line);
     }
 
     drawing.add(lines);

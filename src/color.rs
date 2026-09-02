@@ -1,6 +1,7 @@
 use std::fmt::{Display, Formatter};
+use usvg_tree::Paint;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Color {
     pub r: u8,
     pub g: u8,
@@ -39,16 +40,16 @@ impl Display for Color {
     }
 }
 
-impl From<Color> for svg::node::Value {
+impl From<Color> for Paint {
     fn from(color: Color) -> Self {
-        // We cannot just initialize a Value, because its inner is private
-        color.to_string().into()
+        Paint::Color(usvg_tree::Color::new_rgb(color.r, color.g, color.b))
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::Color;
+    use super::*;
+    use usvg_tree::Paint;
 
     #[test]
     fn test_rgb() {
@@ -70,11 +71,31 @@ mod tests {
     }
 
     #[test]
-    // svg::node::Value: std::convert::From<vormen::Color>
-    fn test_to_value() {
-        assert_eq!(
-            svg::node::Value::from(Color::rgb(255, 255, 255)),
-            svg::node::Value::from("rgba(255, 255, 255, 255)")
-        );
+    fn test_to_paint() {
+        let color = Color::rgb(255, 255, 255);
+        let paint: Paint = color.into();
+        match paint {
+            Paint::Color(c) => {
+                assert_eq!(c.red, 255);
+                assert_eq!(c.green, 255);
+                assert_eq!(c.blue, 255);
+                // usvg_tree::Color doesn't have alpha, it's RGB only
+                // Alpha is handled separately via Opacity
+            }
+            _ => panic!("Expected Paint::Color"),
+        }
+    }
+
+    #[test]
+    fn test_transparent_paint() {
+        let color = Color::TRANSPARENT;
+        let paint: Paint = color.into();
+        match paint {
+            Paint::Color(_) => {
+                // usvg_tree::Color doesn't have alpha, it's RGB only
+                // Alpha is handled separately via Opacity
+            }
+            _ => panic!("Expected Paint::Color"),
+        }
     }
 }

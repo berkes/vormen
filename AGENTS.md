@@ -44,3 +44,11 @@ NEVER commit unless specifically asked to do so.
 
 - Use Conventional Commits: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`.
 - Keep PRs focused on a single concern; describe what changed and why.
+
+## Third party libraries
+
+* use `cargo add` to add new libraries, never edit depdencies in Cargo.toml directly.
+* use `cargo add --develop` to add development and testing dependencies.
+* use `cargo tree` to research existing dependencies.
+* use `cargo rustdoc --package <some-crate>` to read the documentation for a crate. Outputted to ./target/doc/<some-crate> in HTML.
+* Read documentation on crates on http://docs.rs/<some-crate> when cargo rustdoc does not suffice.

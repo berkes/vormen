@@ -11,7 +11,9 @@ authors = ["Bèr Kessels <ber@berk.es>"]
 chrono = "0.4.45"
 noise = "0.9.0"
 rand = "0.8.5"
-svg = "0.18.0"
+usvg-tree = "0.38.0"
+tiny-skia-path = "0.11.4"
+xmlwriter = "0.1"
 
 [lib]
 name = "vormen"

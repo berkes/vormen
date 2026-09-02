@@ -10,6 +10,7 @@ authors = ["Bèr Kessels <ber@berk.es>"]
 [dependencies]
 chrono = "0.4.45"
 noise = "0.9.0"
+rand = "0.8.5"
 svg = "0.18.0"
 
 [lib]
@@ -18,6 +19,9 @@ path = "src/lib.rs"
 
 [[bin]]
 name = "perlin_grid"
+
+[[bin]]
+name = "split_city"
 
 [dev-dependencies]
 approx = "0.5.1"

@@ -1,5 +1,7 @@
 use chrono::Local;
 use svg::Node;
+
+use crate::Color;
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 const USER_UNIT_FACTOR_MM: f64 = 0.264583;
 
@@ -10,6 +12,7 @@ pub struct Drawing {
     pub height: f64,
     pub width: f64,
     pub margin: Margin,
+    pub background_color: Color,
 }
 
 impl Drawing {
@@ -59,7 +62,23 @@ impl Drawing {
             );
 
         self.root = root;
-        // self.document.append(root);
+
+        self
+    }
+
+    /// Builds a new Drawing with a background color that extends to the edge of the page
+    /// Regardless of the margins.
+    pub fn with_background_color(mut self, color: Color) -> Self {
+        self.background_color = color.clone();
+        let mut background = svg::node::element::Rectangle::new()
+            .set("x", self.margin.0)
+            .set("y", self.margin.1)
+            .set("width", self.canvas_width())
+            .set("height", self.canvas_height())
+            .set("fill", color.to_string());
+        background.assign("id", "background");
+
+        self.document.append(background);
 
         self
     }
@@ -92,7 +111,6 @@ impl Drawing {
         svg::save(filename, &doc).unwrap();
     }
 
-
     pub fn canvas_width(&self) -> f64 {
         self.width - self.margin.0 - self.margin.2
     }
@@ -107,6 +125,7 @@ impl Default for Drawing {
         Self {
             document: svg::Document::new(),
             root: svg::node::element::Group::new(),
+            background_color: Color::TRANSPARENT,
             width: 0.0,
             height: 0.0,
             margin: 0.0.into(),
@@ -131,6 +150,8 @@ impl From<(f64, f64, f64, f64)> for Margin {
 
 #[cfg(test)]
 mod tests {
+    use crate::Color;
+
     use super::*;
     use approx::assert_abs_diff_eq;
 
@@ -191,5 +212,18 @@ mod tests {
     fn test_canvas_height() {
         let drawing = new_drawing().with_margin(100.0);
         assert_eq!(drawing.canvas_height(), 1080.0 - 100.0 - 100.0);
+    }
+
+    #[test]
+    fn test_with_background_color() {
+        let drawing = new_drawing().with_background_color(Color::rgb(255, 0, 0));
+        assert_eq!(drawing.document.get_children().unwrap()[0].get_attributes().unwrap().get("fill"), Some(&"rgba(255, 0, 0, 255)".into()));
+    }
+
+    #[test]
+    fn test_with_background_color_when_background_is_not_set() {
+        let drawing = new_drawing();
+        let background_rect = drawing.document.get_children().unwrap();
+        assert!(background_rect.is_empty());
     }
 }

@@ -1,5 +1,5 @@
 use rand::Rng;
-use vormen::Drawing;
+use vormen::{Color, Drawing};
 
 #[derive(Clone)]
 struct Point {
@@ -8,7 +8,7 @@ struct Point {
 }
 
 fn main() {
-    let mut drawing = Drawing::new().with_a4_size().with_margin(50.0);
+    let mut drawing = Drawing::new().with_a4_size().with_margin(50.0).with_background_color(Color::WHITE);
 
     let width = drawing.canvas_width();
     let height = drawing.canvas_height();
@@ -98,7 +98,7 @@ fn main() {
             .set("y1", p.y)
             .set("x2", next.x)
             .set("y2", next.y)
-            .set("stroke", "black")
+            .set("stroke", Color::BLACK)
             .set("stroke-width", 1);
 
         lines.push(Box::new(line));

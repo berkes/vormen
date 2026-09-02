@@ -17,14 +17,5 @@ svg = "0.18.0"
 name = "vormen"
 path = "src/lib.rs"
 
-[[bin]]
-name = "perlin_grid"
-
-[[bin]]
-name = "split_city"
-
-[[bin]]
-name = "noodle_love"
-
 [dev-dependencies]
 approx = "0.5.1"

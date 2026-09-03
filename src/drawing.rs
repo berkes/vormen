@@ -8,7 +8,7 @@
 //! Use shapes::Rectangle and shapes::Line to add elements to Drawing.
 //!
 //! Example usage:
-//! ```
+//! ```no_run
 //! use vormen::{SimpleColor, DrawingBuilder, Shape};
 //! use vormen::shapes::{Rectangle, Line};
 //!

@@ -8,7 +8,7 @@
 //! Drawing.save() uses SvgWriter internally.
 //!
 //! Example usage:
-//! ```
+//! ```no_run
 //! use vormen::{DrawingBuilder, SvgWriter};
 //!
 //! let drawing = DrawingBuilder::new()

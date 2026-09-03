@@ -1,6 +1,6 @@
 use rand::Rng;
-use usvg_tree::Node;
-use vormen::{Color, Drawing};
+use vormen::shapes::Line;
+use vormen::{Color, DrawingBuilder};
 
 #[derive(Clone)]
 struct Point {
@@ -9,7 +9,11 @@ struct Point {
 }
 
 fn main() {
-    let mut drawing = Drawing::new().with_a4_size().with_margin(50.0).with_background_color(Color::WHITE);
+    let mut drawing = DrawingBuilder::new()
+        .with_a4_size()
+        .with_margin(50.0)
+        .with_background_color(Color::WHITE)
+        .build();
 
     let width = drawing.canvas_width();
     let height = drawing.canvas_height();
@@ -89,15 +93,13 @@ fn main() {
     }
 
     // Draw lines between consecutive points
-    let mut lines: Vec<Node> = Vec::new();
     for i in 0..previous_points.len() - 1 {
         let p = &previous_points[i];
         let next = &previous_points[i + 1];
 
-        let line = drawing.create_line(p.x, p.y, next.x, next.y, Color::BLACK, 1.0);
-        lines.push(line);
+        let line = Line::new(p.x, p.y, next.x, next.y, Color::BLACK, 1.0);
+        drawing.add(line);
     }
 
-    drawing.add(lines);
     drawing.save("split_city", true);
 }

@@ -10,10 +10,10 @@
 //! Example usage:
 //! ```
 //! use vormen::shapes::{Shape, Rectangle, Line};
-//! use vormen::Color;
+//! use vormen::SimpleColor;
 //!
-//! let rect = Rectangle::new(0.0, 0.0, 100.0, 50.0, Color::BLACK);
-//! let line = Line::new(0.0, 0.0, 100.0, 100.0, Color::rgb(255, 0, 0), 2.0);
+//! let rect = Rectangle::new(0.0, 0.0, 100.0, 50.0).with_fill(SimpleColor::BLACK.into());
+//! let line = Line::new(0.0, 0.0, 100.0, 100.0).with_stroke(SimpleColor::rgb(255, 0, 0), 2.0);
 //! ```
 
 pub mod line;

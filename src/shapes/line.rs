@@ -3,11 +3,11 @@
 //! Provides the Line struct that implements the Shape trait.
 //! Use this to create line elements for SVG drawings.
 
-use usvg_tree::Color as UsvgColor;
-use usvg_tree::{Node, Opacity, Paint, Path as UsvgPath, Stroke, StrokeWidth};
+use usvg_tree::{Node, Path as UsvgPath, Stroke, StrokeWidth};
+
+use crate::SimpleColor;
 
 use super::{Shape, create_line_path};
-use crate::Color;
 
 /// A line shape that can be rendered as an SVG path.
 ///
@@ -19,8 +19,7 @@ pub struct Line {
     y1: f64,
     x2: f64,
     y2: f64,
-    stroke: Color,
-    stroke_width: f64,
+    stroke: Option<Stroke>,
 }
 
 impl Line {
@@ -33,14 +32,13 @@ impl Line {
     /// - y2: Y position of end point
     /// - stroke: Stroke color for the line
     /// - stroke_width: Width of the stroke in user units
-    pub fn new(x1: f64, y1: f64, x2: f64, y2: f64, stroke: Color, stroke_width: f64) -> Self {
+    pub fn new(x1: f64, y1: f64, x2: f64, y2: f64) -> Self {
         Self {
             x1,
             y1,
             x2,
             y2,
-            stroke,
-            stroke_width,
+            stroke: None,
         }
     }
 
@@ -65,13 +63,18 @@ impl Line {
     }
 
     /// Get the stroke color.
-    pub fn stroke(&self) -> Color {
-        self.stroke
+    pub fn stroke(&self) -> Option<Stroke> {
+        self.stroke.clone()
     }
 
-    /// Get the stroke width.
-    pub fn stroke_width(&self) -> f64 {
-        self.stroke_width
+    pub fn with_stroke(mut self, color: SimpleColor, stroke_width: f64) -> Self {
+        let stroke = Stroke {
+            paint: color.into(),
+            width: StrokeWidth::new(stroke_width as f32).unwrap(),
+            ..Default::default()
+        };
+        self.stroke = Some(stroke);
+        self
     }
 }
 
@@ -79,32 +82,10 @@ impl Shape for Line {
     fn to_node(&self) -> Node {
         let path_data = create_line_path(self.x1, self.y1, self.x2, self.y2);
 
-        // Convert alpha to opacity (0-255 to 0.0-1.0)
-        let alpha_f32 = if self.stroke.a == 0 {
-            0.0
-        } else {
-            self.stroke.a as f32 / 255.0
-        };
-        let stroke_opacity = Opacity::new(alpha_f32).unwrap_or(Opacity::ZERO);
-
-        // Create the stroke
-        let stroke_width =
-            StrokeWidth::new(self.stroke_width as f32).unwrap_or(StrokeWidth::new(1.0).unwrap());
-        let stroke_style = Stroke {
-            paint: Paint::Color(UsvgColor::new_rgb(
-                self.stroke.r,
-                self.stroke.g,
-                self.stroke.b,
-            )),
-            width: stroke_width,
-            opacity: stroke_opacity,
-            ..Stroke::default()
-        };
-
         // Create the path
         let path = UsvgPath::new(path_data);
         Node::Path(Box::new(UsvgPath {
-            stroke: Some(stroke_style),
+            stroke: self.stroke(),
             fill: None, // No fill for lines
             ..path
         }))
@@ -114,21 +95,34 @@ impl Shape for Line {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::SimpleColor;
 
     #[test]
     fn test_line_creation() {
-        let line = Line::new(0.0, 0.0, 100.0, 100.0, Color::BLACK, 2.0);
+        let line = Line::new(0.0, 0.0, 100.0, 100.0);
         assert_eq!(line.x1(), 0.0);
         assert_eq!(line.y1(), 0.0);
         assert_eq!(line.x2(), 100.0);
         assert_eq!(line.y2(), 100.0);
-        assert_eq!(line.stroke(), Color::BLACK);
-        assert_eq!(line.stroke_width(), 2.0);
+        assert!(line.stroke().is_none());
+    }
+
+    #[test]
+    fn test_line_creation_stroke() {
+        let line = Line::new(0.0, 0.0, 100.0, 100.0).with_stroke(SimpleColor::BLACK, 1.0);
+        assert_eq!(line.x1(), 0.0);
+        assert_eq!(line.y1(), 0.0);
+        assert_eq!(line.x2(), 100.0);
+        assert_eq!(line.y2(), 100.0);
+        // Check that SimpleColor is converted to Stroke and Paint
+        let stroke = line.stroke().unwrap();
+        assert_eq!(stroke.paint, SimpleColor::BLACK.into());
+        assert_eq!(stroke.width, 1.0);
     }
 
     #[test]
     fn test_line_to_node() {
-        let line = Line::new(0.0, 0.0, 100.0, 100.0, Color::BLACK, 1.0);
+        let line = Line::new(0.0, 0.0, 100.0, 100.0).with_stroke(SimpleColor::BLACK, 1.0);
         let node = line.to_node();
 
         match node {

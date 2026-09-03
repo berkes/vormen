@@ -18,7 +18,7 @@ pub mod shapes;
 pub mod writer;
 
 // Re-export main types for convenient access
-pub use color::Color;
+pub use color::SimpleColor;
 pub use drawing::{Drawing, DrawingBuilder, Margin};
 pub use grid::{Cell, Grid};
 pub use shapes::{Line, Rectangle, Shape};

@@ -1,32 +1,32 @@
 use std::fmt::{Display, Formatter};
-use usvg_tree::Paint;
+use usvg_tree::{Fill, FillRule, Opacity, Paint};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct Color {
+pub struct SimpleColor {
     pub r: u8,
     pub g: u8,
     pub b: u8,
     pub a: u8,
 }
 
-impl Color {
-    pub fn rgb(r: u8, g: u8, b: u8) -> Color {
-        Color { r, g, b, a: 255 }
+impl SimpleColor {
+    pub fn rgb(r: u8, g: u8, b: u8) -> SimpleColor {
+        SimpleColor { r, g, b, a: 255 }
     }
 
-    pub const TRANSPARENT: Color = Color {
+    pub const TRANSPARENT: SimpleColor = SimpleColor {
         r: 0,
         g: 0,
         b: 0,
         a: 0,
     };
-    pub const BLACK: Color = Color {
+    pub const BLACK: SimpleColor = SimpleColor {
         r: 0,
         g: 0,
         b: 0,
         a: 255,
     };
-    pub const WHITE: Color = Color {
+    pub const WHITE: SimpleColor = SimpleColor {
         r: 255,
         g: 255,
         b: 255,
@@ -34,15 +34,32 @@ impl Color {
     };
 }
 
-impl Display for Color {
+impl Display for SimpleColor {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "rgba({}, {}, {}, {})", self.r, self.g, self.b, self.a)
     }
 }
 
-impl From<Color> for Paint {
-    fn from(color: Color) -> Self {
+impl From<SimpleColor> for Paint {
+    fn from(color: SimpleColor) -> Self {
         Paint::Color(usvg_tree::Color::new_rgb(color.r, color.g, color.b))
+    }
+}
+
+impl From<SimpleColor> for Fill {
+    fn from(color: SimpleColor) -> Self {
+        let opacity = Opacity::new(color.a as f32 / 255.0).unwrap_or(Opacity::ONE);
+        Fill {
+            paint: color.into(),
+            opacity,
+            rule: FillRule::NonZero,
+        }
+    }
+}
+
+impl From<SimpleColor> for Opacity {
+    fn from(color: SimpleColor) -> Self {
+        Opacity::new(color.a as f32 / 255.0).unwrap_or(Opacity::ONE)
     }
 }
 
@@ -54,25 +71,25 @@ mod tests {
     #[test]
     fn test_rgb() {
         assert_eq!(
-            Color::rgb(255, 255, 255).to_string(),
+            SimpleColor::rgb(255, 255, 255).to_string(),
             "rgba(255, 255, 255, 255)"
         );
     }
 
     #[test]
     fn test_transparent() {
-        assert_eq!(Color::TRANSPARENT.to_string(), "rgba(0, 0, 0, 0)");
+        assert_eq!(SimpleColor::TRANSPARENT.to_string(), "rgba(0, 0, 0, 0)");
     }
 
     #[test]
     fn test_named_colors() {
-        assert_eq!(Color::BLACK.to_string(), "rgba(0, 0, 0, 255)");
-        assert_eq!(Color::WHITE.to_string(), "rgba(255, 255, 255, 255)");
+        assert_eq!(SimpleColor::BLACK.to_string(), "rgba(0, 0, 0, 255)");
+        assert_eq!(SimpleColor::WHITE.to_string(), "rgba(255, 255, 255, 255)");
     }
 
     #[test]
     fn test_to_paint() {
-        let color = Color::rgb(255, 255, 255);
+        let color = SimpleColor::rgb(255, 255, 255);
         let paint: Paint = color.into();
         match paint {
             Paint::Color(c) => {
@@ -88,7 +105,7 @@ mod tests {
 
     #[test]
     fn test_transparent_paint() {
-        let color = Color::TRANSPARENT;
+        let color = SimpleColor::TRANSPARENT;
         let paint: Paint = color.into();
         match paint {
             Paint::Color(_) => {

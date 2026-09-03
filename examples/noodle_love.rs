@@ -1,13 +1,13 @@
 use noise::{NoiseFn, Simplex};
 use vormen::shapes::Rectangle;
-use vormen::{Color, DrawingBuilder, Grid, Shape};
+use vormen::{DrawingBuilder, Grid, Shape, SimpleColor};
 
 fn main() {
     let noise = Simplex::default();
     let mut drawing = DrawingBuilder::new()
         .with_a4_size()
         .with_margin(50.0)
-        .with_background_color(Color::WHITE)
+        .with_background_color(SimpleColor::WHITE)
         .build();
 
     let grid = Grid::new()
@@ -24,12 +24,13 @@ fn main() {
         let nr = (noise.get([cell.x(), cell.y()]) + 1.0) / 2.0;
         // Choose color based on noise
         let color = if nr > 0.5 {
-            Color::BLACK
+            SimpleColor::BLACK
         } else {
-            Color::rgb(100, 100, 100)
+            SimpleColor::rgb(100, 100, 100)
         };
 
-        let rect = Rectangle::new(cell.x(), cell.y(), cell.width(), cell.height(), color);
+        let rect =
+            Rectangle::new(cell.x(), cell.y(), cell.width(), cell.height()).with_fill(color.into());
 
         elems.push(Box::new(rect));
     }

@@ -1,6 +1,6 @@
 use noise::{NoiseFn, Simplex};
 use vormen::shapes::Rectangle;
-use vormen::{Color, DrawingBuilder, Grid};
+use vormen::{DrawingBuilder, Grid, SimpleColor};
 
 fn main() {
     let noise = Simplex::default();
@@ -20,12 +20,13 @@ fn main() {
         let noise_value = (noise_value + 1.0) / 2.0;
 
         let color = if noise_value > 0.5 {
-            Color::BLACK
+            SimpleColor::BLACK
         } else {
-            Color::WHITE
+            SimpleColor::WHITE
         };
 
-        let rect = Rectangle::new(cell.x(), cell.y(), cell.width(), cell.height(), color);
+        let rect =
+            Rectangle::new(cell.x(), cell.y(), cell.width(), cell.height()).with_fill(color.into());
 
         drawing.add(rect);
     }

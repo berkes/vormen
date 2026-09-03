@@ -9,25 +9,25 @@
 //!
 //! Example usage:
 //! ```
-//! use vormen::{Color, DrawingBuilder, Shape};
+//! use vormen::{SimpleColor, DrawingBuilder, Shape};
 //! use vormen::shapes::{Rectangle, Line};
 //!
 //! // Using builder pattern
 //! let mut drawing = DrawingBuilder::new()
 //!     .with_size(100, 100)
 //!     .with_margin(10.0)
-//!     .with_background_color(Color::WHITE)
+//!     .with_background_color(SimpleColor::WHITE)
 //!     .build();
 //!
 //! // Add shapes one at a time
-//! let rect = Rectangle::new(0.0, 0.0, 50.0, 50.0, Color::BLACK);
+//! let rect = Rectangle::new(0.0, 0.0, 50.0, 50.0);
 //! drawing.add(rect);
-//! let line = Line::new(0.0, 0.0, 100.0, 100.0, Color::rgb(255, 0, 0), 2.0);
+//! let line = Line::new(0.0, 0.0, 100.0, 100.0);
 //! drawing.add(line);
 //!
 //! let shapes: Vec<Box<dyn Shape>> = vec![
-//!     Box::new(Rectangle::new(50.0, 50.0, 50.0, 50.0, Color::BLACK)),
-//!     Box::new(Line::new(50.0, 50.0, 100.0, 100.0, Color::rgb(255, 0, 0), 2.0)),
+//!     Box::new(Rectangle::new(50.0, 50.0, 50.0, 50.0)),
+//!     Box::new(Line::new(50.0, 50.0, 100.0, 100.0)),
 //! ];
 //! drawing.add_shapes(shapes);
 //!
@@ -36,9 +36,9 @@
 
 use usvg_tree::{AspectRatio, Group, Node, NonZeroRect, Size, Tree, ViewBox};
 
-use crate::Color;
 use crate::shapes::Shape;
 use crate::writer::SvgWriter;
+use crate::{Rectangle, SimpleColor};
 
 const USER_UNIT_FACTOR_MM: f64 = 0.264583;
 
@@ -54,7 +54,7 @@ const USER_UNIT_FACTOR_MM: f64 = 0.264583;
 pub struct Drawing {
     pub tree: Tree,
     pub margin: Margin,
-    pub background_color: Color,
+    pub background_color: SimpleColor,
     pub defs: Vec<Node>,
     pub elements: Vec<Node>,
 
@@ -129,7 +129,7 @@ impl Default for Drawing {
                 root: Group::default(),
             },
             margin: Margin::default(),
-            background_color: Color::TRANSPARENT,
+            background_color: SimpleColor::TRANSPARENT,
             defs: Vec::new(),
             elements: Vec::new(),
             width: 0.0,
@@ -145,12 +145,12 @@ impl Default for Drawing {
 ///
 /// Example:
 /// ```
-/// use vormen::{DrawingBuilder, Color};
+/// use vormen::{DrawingBuilder, SimpleColor};
 ///
 /// let drawing = DrawingBuilder::new()
 ///     .with_size(100, 100)
 ///     .with_margin(10.0)
-///     .with_background_color(Color::WHITE)
+///     .with_background_color(SimpleColor::WHITE)
 ///     .build();
 /// ```
 #[derive(Debug)]
@@ -158,7 +158,7 @@ pub struct DrawingBuilder {
     width: f64,
     height: f64,
     margin: Margin,
-    background_color: Color,
+    background_color: SimpleColor,
 }
 
 impl DrawingBuilder {
@@ -168,7 +168,7 @@ impl DrawingBuilder {
             width: 0.0,
             height: 0.0,
             margin: Margin::default(),
-            background_color: Color::TRANSPARENT,
+            background_color: SimpleColor::TRANSPARENT,
         }
     }
 
@@ -207,7 +207,7 @@ impl DrawingBuilder {
     ///
     /// Parameters:
     /// - color: Background color for the drawing
-    pub fn with_background_color(mut self, color: Color) -> Self {
+    pub fn with_background_color(mut self, color: SimpleColor) -> Self {
         self.background_color = color;
         self
     }
@@ -237,6 +237,14 @@ impl DrawingBuilder {
         // Apply margin transform to the root group
         drawing.tree.root.transform =
             usvg_tree::Transform::from_translate(self.margin.0 as f32, self.margin.1 as f32);
+
+        // Add a background rectangle
+        drawing.tree.root.children.push(
+            Rectangle::new(0.0, 0.0, self.width, self.height)
+                .with_fill(self.background_color.into())
+                .with_id("background".into())
+                .to_node(),
+        );
 
         drawing
     }
@@ -297,7 +305,7 @@ mod tests {
         assert_eq!(drawing.width, 0.0);
         assert_eq!(drawing.height, 0.0);
         assert_eq!(drawing.margin, Margin::default());
-        assert_eq!(drawing.background_color, Color::TRANSPARENT);
+        assert_eq!(drawing.background_color, SimpleColor::TRANSPARENT);
     }
 
     #[test]
@@ -355,9 +363,9 @@ mod tests {
     fn test_background_color() {
         let drawing = DrawingBuilder::new()
             .with_size(1920, 1080)
-            .with_background_color(Color::rgb(255, 0, 0))
+            .with_background_color(SimpleColor::rgb(255, 0, 0))
             .build();
-        assert_eq!(drawing.background_color, Color::rgb(255, 0, 0));
+        assert_eq!(drawing.background_color, SimpleColor::rgb(255, 0, 0));
     }
 
     #[test]
@@ -373,7 +381,7 @@ mod tests {
     #[test]
     fn test_rectangle_shape() {
         let mut drawing = new_drawing();
-        let rect = Rectangle::new(10.0, 20.0, 100.0, 200.0, Color::BLACK);
+        let rect = Rectangle::new(10.0, 20.0, 100.0, 200.0);
         drawing.add(rect);
 
         let svg = SvgWriter::new(&drawing).to_svg_string();
@@ -411,8 +419,8 @@ mod tests {
 
     #[test]
     fn test_builder_with_background_color() {
-        let builder = DrawingBuilder::new().with_background_color(Color::WHITE);
-        assert_eq!(builder.background_color, Color::WHITE);
+        let builder = DrawingBuilder::new().with_background_color(SimpleColor::WHITE);
+        assert_eq!(builder.background_color, SimpleColor::WHITE);
     }
 
     #[test]
@@ -420,13 +428,13 @@ mod tests {
         let drawing = DrawingBuilder::new()
             .with_size(100, 200)
             .with_margin(10.0)
-            .with_background_color(Color::WHITE)
+            .with_background_color(SimpleColor::WHITE)
             .build();
 
         assert_eq!(drawing.width, 100.0);
         assert_eq!(drawing.height, 200.0);
         assert_eq!(drawing.margin, Margin::from(10.0));
-        assert_eq!(drawing.background_color, Color::WHITE);
+        assert_eq!(drawing.background_color, SimpleColor::WHITE);
     }
 
     #[test]
@@ -438,9 +446,17 @@ mod tests {
     }
 
     #[test]
+    fn test_builder_build_with_background() {
+        let drawing = DrawingBuilder::new().with_a4_size().build();
+
+        assert_eq!(drawing.tree.root.children.len(), 1);
+        assert!(drawing.tree.node_by_id("background").is_some());
+    }
+
+    #[test]
     fn test_add_shape() {
         let mut drawing = DrawingBuilder::new().with_size(100, 100).build();
-        let rect = Rectangle::new(10.0, 10.0, 50.0, 50.0, Color::BLACK);
+        let rect = Rectangle::new(10.0, 10.0, 50.0, 50.0);
         drawing.add(rect);
 
         assert_eq!(drawing.elements.len(), 1);
@@ -450,8 +466,8 @@ mod tests {
     fn test_add_shapes_rectangles() {
         let mut drawing = DrawingBuilder::new().with_size(100, 100).build();
         let shapes: Vec<Box<dyn Shape>> = vec![
-            Box::new(Rectangle::new(10.0, 10.0, 50.0, 50.0, Color::BLACK)),
-            Box::new(Rectangle::new(20.0, 20.0, 30.0, 30.0, Color::WHITE)),
+            Box::new(Rectangle::new(10.0, 10.0, 50.0, 50.0)),
+            Box::new(Rectangle::new(20.0, 20.0, 30.0, 30.0)),
         ];
         drawing.add_shapes(shapes);
 
@@ -462,15 +478,8 @@ mod tests {
     fn test_add_shapes_lines() {
         let mut drawing = DrawingBuilder::new().with_size(100, 100).build();
         let shapes: Vec<Box<dyn Shape>> = vec![
-            Box::new(Line::new(0.0, 0.0, 50.0, 50.0, Color::BLACK, 1.0)),
-            Box::new(Line::new(
-                10.0,
-                10.0,
-                60.0,
-                60.0,
-                Color::rgb(255, 0, 0),
-                2.0,
-            )),
+            Box::new(Line::new(0.0, 0.0, 50.0, 50.0)),
+            Box::new(Line::new(10.0, 10.0, 60.0, 60.0)),
         ];
         drawing.add_shapes(shapes);
 

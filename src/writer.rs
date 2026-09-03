@@ -9,7 +9,7 @@
 //!
 //! Example usage:
 //! ```
-//! use vormen::{Color, DrawingBuilder, SvgWriter};
+//! use vormen::{DrawingBuilder, SvgWriter};
 //!
 //! let drawing = DrawingBuilder::new()
 //!     .with_size(100, 100)

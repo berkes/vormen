@@ -1,6 +1,6 @@
 use rand::Rng;
 use vormen::shapes::Line;
-use vormen::{Color, DrawingBuilder};
+use vormen::{DrawingBuilder, SimpleColor};
 
 #[derive(Clone)]
 struct Point {
@@ -12,7 +12,7 @@ fn main() {
     let mut drawing = DrawingBuilder::new()
         .with_a4_size()
         .with_margin(50.0)
-        .with_background_color(Color::WHITE)
+        .with_background_color(SimpleColor::WHITE)
         .build();
 
     let width = drawing.canvas_width();
@@ -97,7 +97,7 @@ fn main() {
         let p = &previous_points[i];
         let next = &previous_points[i + 1];
 
-        let line = Line::new(p.x, p.y, next.x, next.y, Color::BLACK, 1.0);
+        let line = Line::new(p.x, p.y, next.x, next.y).with_stroke(SimpleColor::BLACK, 1.0);
         drawing.add(line);
     }
 

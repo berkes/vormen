@@ -4,6 +4,41 @@
 
 Instructions for AI coding agents working in this repository.
 
+## Communication
+
+Use ASD-STE100 Simplified Technical English (STE) for communication with the user.
+Also use this STE to write documentation and comments.
+
+Documentation comments may describe *what* functions, structs, traits, impls and modules do. This Documentation must describe how a user can use this item. With examples for more complex items. 
+
+Inline comments may descrbe *why* code is written the way it is. But never *what* it does. 
+
+Inline `TODO:` comment are only allowed when explicitly told to add by the user.
+
+*Wrong*:
+```
+/// This function adds two numbers together
+fn add(a: i32, b: i32) -> i32 {
+    // This adds the two numbers together
+    a + b
+}
+```
+
+* Documentation is too verbose and not STE.
+* Inline comment is superfluous.
+
+**Right**:
+```
+/// Add two numbers together
+fn add(a: i32, b: i32) -> i32 {
+    // Ignore over- and underflow deliberately for simplicity. 
+    // When it happens, let it panic.
+    a + b
+}
+```
+* Documentation is concise and STE.
+* Inline comment is justified and STE. 
+
 ## Setup
 
 - Install dependencies: `cargo build`

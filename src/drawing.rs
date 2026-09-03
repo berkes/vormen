@@ -19,11 +19,18 @@
 //!     .with_background_color(Color::WHITE)
 //!     .build();
 //!
-//! // Add shapes
+//! // Add shapes one at a time
 //! let rect = Rectangle::new(0.0, 0.0, 50.0, 50.0, Color::BLACK);
+//! drawing.add(rect);
 //! let line = Line::new(0.0, 0.0, 100.0, 100.0, Color::rgb(255, 0, 0), 2.0);
+//! drawing.add(line);
 //!
-//! drawing.add(vec![rect.to_node(), line.to_node()]);
+//! let shapes: Vec<Box<dyn Shape>> = vec![
+//!     Box::new(Rectangle::new(50.0, 50.0, 50.0, 50.0, Color::BLACK)),
+//!     Box::new(Line::new(50.0, 50.0, 100.0, 100.0, Color::rgb(255, 0, 0), 2.0)),
+//! ];
+//! drawing.add_shapes(shapes);
+//!
 //! drawing.save("output", true);
 //! ```
 

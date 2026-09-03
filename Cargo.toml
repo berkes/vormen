@@ -21,3 +21,4 @@ path = "src/lib.rs"
 
 [dev-dependencies]
 approx = "0.5.1"
+test-context = "0.5.8"

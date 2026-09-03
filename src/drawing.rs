@@ -111,9 +111,11 @@ impl Drawing {
     /// Parameters:
     /// - basename: Base name for the output file
     /// - stamped: If true, add version and timestamp to filename
-    pub fn save(&self, basename: &str, stamped: bool) {
+    ///
+    /// Returns the path to the saved file
+    pub fn save(&self, basename: &str, stamped: bool) -> String {
         let writer = SvgWriter::new(self);
-        writer.save(basename, stamped);
+        writer.save(basename, stamped)
     }
 }
 

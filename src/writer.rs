@@ -122,7 +122,9 @@ impl<'a> SvgWriter<'a> {
     /// Parameters:
     /// - basename: Base name for the output file
     /// - stamped: If true, add version and timestamp to filename
-    pub fn save(&self, basename: &str, stamped: bool) {
+    ///
+    /// Returns the path to the saved file
+    pub fn save(&self, basename: &str, stamped: bool) -> String {
         let filename = if stamped {
             let datetime = Local::now().format("%Y%m%d-%H%M%S").to_string();
             format!("saves/{}-{}-{}.svg", basename, VERSION, datetime)
@@ -132,7 +134,8 @@ impl<'a> SvgWriter<'a> {
 
         let svg_content = self.to_svg_string();
         std::fs::create_dir_all("saves").ok();
-        std::fs::write(filename, svg_content).unwrap();
+        std::fs::write(&filename, svg_content).unwrap();
+        filename
     }
 
     /// Create a background rectangle node.
@@ -215,10 +218,13 @@ impl<'a> SvgWriter<'a> {
 
         if let Some(fill) = &path.fill {
             if let Some(stroke) = &path.stroke {
-                self.write_paint_attributes(fill, stroke, writer);
+                self.write_paint_attributes(Some(fill), Some(stroke), writer);
             } else {
-                self.write_paint_attributes(fill, &Stroke::default(), writer);
+                self.write_paint_attributes(Some(fill), None, writer);
             }
+        } else if let Some(stroke) = &path.stroke {
+            // No fill but has stroke - write only stroke attributes
+            self.write_paint_attributes(None, Some(stroke), writer);
         }
 
         writer.end_element();
@@ -263,91 +269,102 @@ impl<'a> SvgWriter<'a> {
         writer.end_element();
     }
 
-    fn write_paint_attributes(&self, fill: &Fill, stroke: &Stroke, writer: &mut XmlWriter) {
+    fn write_paint_attributes(
+        &self,
+        fill: Option<&Fill>,
+        stroke: Option<&Stroke>,
+        writer: &mut XmlWriter,
+    ) {
         use usvg_tree::Paint;
 
-        // Handle fill
-        match &fill.paint {
-            Paint::Color(color) => {
-                // usvg_tree::Color doesn't have alpha, so we write RGB and handle alpha via fill-opacity
-                let fill_str = format!("rgb({}, {}, {})", color.red, color.green, color.blue);
-                writer.write_attribute("fill", &fill_str);
+        // Handle fill if present
+        if let Some(fill) = fill {
+            // Handle fill
+            match &fill.paint {
+                Paint::Color(color) => {
+                    // usvg_tree::Color doesn't have alpha, so we write RGB and handle alpha via fill-opacity
+                    let fill_str = format!("rgb({}, {}, {})", color.red, color.green, color.blue);
+                    writer.write_attribute("fill", &fill_str);
+                }
+                Paint::LinearGradient(_) => {
+                    // Skip gradient handling for now
+                }
+                Paint::RadialGradient(_) => {
+                    // Skip gradient handling for now
+                }
+                Paint::Pattern(_) => {
+                    // Skip pattern handling for now
+                }
             }
-            Paint::LinearGradient(_) => {
-                // Skip gradient handling for now
+
+            // Handle fill opacity (including alpha from our Color struct)
+            if fill.opacity.get() != 1.0 {
+                writer.write_attribute("fill-opacity", &fill.opacity.get().to_string());
             }
-            Paint::RadialGradient(_) => {
-                // Skip gradient handling for now
-            }
-            Paint::Pattern(_) => {
-                // Skip pattern handling for now
+
+            // Handle fill rule
+            match fill.rule {
+                usvg_tree::FillRule::NonZero => {
+                    writer.write_attribute("fill-rule", "nonzero");
+                }
+                usvg_tree::FillRule::EvenOdd => {
+                    writer.write_attribute("fill-rule", "evenodd");
+                }
             }
         }
 
-        // Handle fill opacity (including alpha from our Color struct)
-        if fill.opacity.get() != 1.0 {
-            writer.write_attribute("fill-opacity", &fill.opacity.get().to_string());
-        }
+        // Handle stroke if present
+        if let Some(stroke) = stroke {
+            // Handle stroke color
+            match &stroke.paint {
+                Paint::Color(color) => {
+                    let stroke_str = format!("rgb({}, {}, {})", color.red, color.green, color.blue);
+                    writer.write_attribute("stroke", &stroke_str);
+                }
+                Paint::LinearGradient(_) => {
+                    // Skip gradient handling for now
+                }
+                Paint::RadialGradient(_) => {
+                    // Skip gradient handling for now
+                }
+                Paint::Pattern(_) => {
+                    // Skip pattern handling for now
+                }
+            }
 
-        // Handle fill rule
-        match fill.rule {
-            usvg_tree::FillRule::NonZero => {
-                writer.write_attribute("fill-rule", "nonzero");
+            // Stroke width
+            if stroke.width.get() != 1.0 {
+                writer.write_attribute("stroke-width", &stroke.width.get().to_string());
             }
-            usvg_tree::FillRule::EvenOdd => {
-                writer.write_attribute("fill-rule", "evenodd");
-            }
-        }
 
-        // Handle stroke
-        match &stroke.paint {
-            Paint::Color(color) => {
-                let stroke_str = format!("rgb({}, {}, {})", color.red, color.green, color.blue);
-                writer.write_attribute("stroke", &stroke_str);
+            // Stroke opacity
+            if stroke.opacity.get() != 1.0 {
+                writer.write_attribute("stroke-opacity", &stroke.opacity.get().to_string());
             }
-            Paint::LinearGradient(_) => {
-                // Skip gradient handling for now
-            }
-            Paint::RadialGradient(_) => {
-                // Skip gradient handling for now
-            }
-            Paint::Pattern(_) => {
-                // Skip pattern handling for now
-            }
-        }
 
-        // Stroke width
-        if stroke.width.get() != 1.0 {
-            writer.write_attribute("stroke-width", &stroke.width.get().to_string());
-        }
+            // Stroke linecap
+            match stroke.linecap {
+                usvg_tree::LineCap::Butt => {}
+                usvg_tree::LineCap::Round => {
+                    writer.write_attribute("stroke-linecap", "round");
+                }
+                usvg_tree::LineCap::Square => {
+                    writer.write_attribute("stroke-linecap", "square");
+                }
+            }
 
-        // Stroke opacity
-        if stroke.opacity.get() != 1.0 {
-            writer.write_attribute("stroke-opacity", &stroke.opacity.get().to_string());
-        }
-
-        // Stroke linecap
-        match stroke.linecap {
-            usvg_tree::LineCap::Butt => {}
-            usvg_tree::LineCap::Round => {
-                writer.write_attribute("stroke-linecap", "round");
-            }
-            usvg_tree::LineCap::Square => {
-                writer.write_attribute("stroke-linecap", "square");
-            }
-        }
-
-        // Stroke linejoin
-        match stroke.linejoin {
-            LineJoin::Miter => {}
-            LineJoin::MiterClip => {
-                writer.write_attribute("stroke-linejoin", "miter-clip");
-            }
-            LineJoin::Round => {
-                writer.write_attribute("stroke-linejoin", "round");
-            }
-            LineJoin::Bevel => {
-                writer.write_attribute("stroke-linejoin", "bevel");
+            // Stroke linejoin
+            match stroke.linejoin {
+                LineJoin::Miter => {}
+                LineJoin::MiterClip => {
+                    writer.write_attribute("stroke-linejoin", "miter-clip");
+                }
+                LineJoin::Round => {
+                    writer.write_attribute("stroke-linejoin", "round");
+                }
+                LineJoin::Bevel => {
+                    writer.write_attribute("stroke-linejoin", "bevel");
+                }
             }
         }
     }
@@ -443,4 +460,395 @@ fn path_to_string(path: &TinyPath) -> String {
     }
 
     result
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::Path;
+
+    use super::*;
+    use crate::SimpleColor;
+    use crate::drawing::DrawingBuilder;
+    use crate::shapes::Line;
+    use test_context::{TestContext, test_context};
+
+    /// WriterContext using test_context to clean out saved files after running
+    /// tests, even when tests fail.
+    struct WriterContext {
+        saved_files: Vec<String>,
+    }
+
+    impl TestContext for WriterContext {
+        fn setup() -> WriterContext {
+            WriterContext {
+                saved_files: Vec::new(),
+            }
+        }
+
+        fn teardown(self) {
+            for file_path in self.saved_files {
+                let path = Path::new(&file_path);
+                println!("Removing file: {}", file_path);
+                if path.exists() {
+                    std::fs::remove_file(path).unwrap();
+                }
+            }
+        }
+    }
+
+    fn create_test_drawing() -> Drawing {
+        DrawingBuilder::new()
+            .with_size(100.0, 100.0)
+            .with_margin(10.0)
+            .with_background_color(SimpleColor::WHITE)
+            .build()
+    }
+
+    #[test]
+    fn test_svg_struct_present() {
+        let drawing = create_test_drawing();
+        let writer = SvgWriter::new(&drawing);
+        let svg = writer.to_svg_string();
+
+        assert!(svg.contains("<svg"), "SVG opening tag should be present");
+        assert!(svg.contains("</svg>"), "SVG closing tag should be present");
+    }
+
+    #[test]
+    fn test_svg_width_height_viewbox() {
+        let drawing = DrawingBuilder::new().with_size(200.0, 300.0).build();
+        let writer = SvgWriter::new(&drawing);
+        let svg = writer.to_svg_string();
+
+        // Check width and height are in mm (converted from user units)
+        // 200 * 0.264583 ≈ 52.9166 → 53mm
+        // 300 * 0.264583 ≈ 79.3749 → 79mm
+        assert!(svg.contains("width=\"53mm\""), "Width should be 53mm");
+        assert!(svg.contains("height=\"79mm\""), "Height should be 79mm");
+
+        // Check viewBox (should match drawing dimensions in user units)
+        assert!(
+            svg.contains("viewBox=\"0 0 200 300\""),
+            "ViewBox should be '0 0 200 300'"
+        );
+    }
+
+    #[test]
+    fn test_svg_namespace_attributes() {
+        let drawing = create_test_drawing();
+        let writer = SvgWriter::new(&drawing);
+        let svg = writer.to_svg_string();
+
+        assert!(
+            svg.contains("xmlns=\"http://www.w3.org/2000/svg\""),
+            "SVG namespace should be present"
+        );
+        assert!(
+            svg.contains("xmlns:xlink=\"http://www.w3.org/1999/xlink\""),
+            "XLink namespace should be present"
+        );
+    }
+
+    #[test]
+    fn test_defs_section() {
+        let mut drawing = DrawingBuilder::new().with_size(100.0, 100.0).build();
+
+        // Add a def (gradient or pattern would normally go here)
+        // For now, let's add a simple group as a def to test the defs section
+        use usvg_tree::{Group, Node};
+        let test_def = Node::Group(Box::new(Group {
+            id: "test_def".to_string(),
+            ..Default::default()
+        }));
+        drawing.defs.push(test_def);
+
+        let writer = SvgWriter::new(&drawing);
+        let svg = writer.to_svg_string();
+
+        assert!(svg.contains("<defs>"), "Defs section should be present");
+        assert!(
+            svg.contains("</defs>"),
+            "Defs closing tag should be present"
+        );
+        assert!(
+            svg.contains("test_def"),
+            "Def content should be in the output"
+        );
+    }
+
+    #[test]
+    fn test_defs_section_empty() {
+        let drawing = DrawingBuilder::new().with_size(100.0, 100.0).build();
+
+        let writer = SvgWriter::new(&drawing);
+        let svg = writer.to_svg_string();
+
+        // If no defs, defs section should not be present
+        assert!(
+            !svg.contains("<defs>"),
+            "Defs section should not be present when empty"
+        );
+    }
+
+    #[test]
+    fn test_background_rect_present() {
+        let drawing = DrawingBuilder::new()
+            .with_size(100.0, 100.0)
+            .with_background_color(SimpleColor::rgb(255, 0, 0)) // Red background
+            .build();
+
+        let writer = SvgWriter::new(&drawing);
+        let svg = writer.to_svg_string();
+
+        // Background should be present when color has alpha > 0
+        assert!(svg.contains("<path"), "Background path should be present");
+        assert!(
+            svg.contains("fill=\"rgb(255, 0, 0)\""),
+            "Background should have red fill"
+        );
+    }
+
+    #[test]
+    fn test_background_rect_transparent() {
+        let drawing = DrawingBuilder::new()
+            .with_size(100.0, 100.0)
+            .with_background_color(SimpleColor::TRANSPARENT)
+            .build();
+
+        let writer = SvgWriter::new(&drawing);
+        let svg = writer.to_svg_string();
+
+        // Background should not be rendered when transparent (alpha = 0)
+        // The SvgWriter only renders background via create_background_rectangle if background_color.a > 0
+        // So the TRANSPARENT one (alpha = 0) should not have that background path
+        assert!(
+            !svg.contains("fill=\"rgb(0, 0, 0)\"") || svg.contains("fill-opacity=\"0\""),
+            "Transparent background should either not have fill or have opacity 0"
+        );
+    }
+
+    #[test]
+    fn test_margin_group_present() {
+        let drawing = DrawingBuilder::new()
+            .with_size(100.0, 100.0)
+            .with_margin(25.0)
+            .build();
+
+        let writer = SvgWriter::new(&drawing);
+        let svg = writer.to_svg_string();
+
+        assert!(svg.contains("<g"), "Group should be present");
+        assert!(
+            svg.contains("id=\"margin_group\""),
+            "Margin group should have id='margin_group'"
+        );
+        assert!(
+            svg.contains("translate(25, 25)"),
+            "Margin group should have translate transform"
+        );
+    }
+
+    #[test]
+    fn test_margin_group_no_margin() {
+        let drawing = DrawingBuilder::new()
+            .with_size(100.0, 100.0)
+            .with_margin(0.0)
+            .build();
+
+        let writer = SvgWriter::new(&drawing);
+        let svg = writer.to_svg_string();
+
+        assert!(
+            svg.contains("id=\"margin_group\""),
+            "Margin group should still be present"
+        );
+        assert!(
+            svg.contains("translate(0, 0)"),
+            "Margin group should have translate(0, 0) when margin is 0"
+        );
+    }
+
+    #[test]
+    fn test_line_in_rendered_xml() {
+        let mut drawing = DrawingBuilder::new().with_size(100.0, 100.0).build();
+
+        // Add a line with stroke
+        let line = Line::new(10.0, 20.0, 80.0, 90.0).with_stroke(SimpleColor::BLACK, 2.0);
+        drawing.add(line);
+
+        let writer = SvgWriter::new(&drawing);
+        let svg = writer.to_svg_string();
+
+        // Check that the line is present in the SVG
+        assert!(svg.contains("<path"), "Path element should be present");
+        // The line path should contain the move and line commands
+        assert!(svg.contains("M 10 20"), "Line should start with M 10 20");
+        assert!(svg.contains("L 80 90"), "Line should contain L 80 90");
+        // Check stroke attributes
+        assert!(
+            svg.contains("stroke=\"rgb(0, 0, 0)\""),
+            "Line should have black stroke"
+        );
+        assert!(
+            svg.contains("stroke-width=\"2\""),
+            "Line should have stroke-width of 2"
+        );
+    }
+
+    #[test]
+    fn test_multiple_lines_in_rendered_xml() {
+        let mut drawing = DrawingBuilder::new().with_size(100.0, 100.0).build();
+
+        // Add multiple lines
+        let line1 = Line::new(10.0, 10.0, 90.0, 90.0).with_stroke(SimpleColor::BLACK, 1.0);
+        let line2 = Line::new(10.0, 90.0, 90.0, 10.0).with_stroke(SimpleColor::rgb(255, 0, 0), 2.0);
+
+        drawing.add(line1);
+        drawing.add(line2);
+
+        let writer = SvgWriter::new(&drawing);
+        let svg = writer.to_svg_string();
+
+        // Check that both lines are present
+        assert!(
+            svg.contains("M 10 10"),
+            "First line start should be present"
+        );
+        assert!(svg.contains("L 90 90"), "First line end should be present");
+        assert!(
+            svg.contains("M 10 90"),
+            "Second line start should be present"
+        );
+        assert!(svg.contains("L 90 10"), "Second line end should be present");
+    }
+
+    #[test_context(WriterContext)]
+    #[test]
+    fn test_save_returns_filename(ctx: &mut WriterContext) {
+        let drawing = create_test_drawing();
+        let writer = SvgWriter::new(&drawing);
+
+        let filename = writer.save("test_output", false);
+        ctx.saved_files.push(filename.clone());
+
+        // Check that the filename contains the expected parts
+        assert!(
+            filename.starts_with("saves/test_output-"),
+            "Filename should start with saves/test_output-"
+        );
+        assert!(filename.ends_with(".svg"), "Filename should end with .svg");
+
+        // Check that the file exists
+        assert!(
+            std::path::Path::new(&filename).exists(),
+            "Saved file should exist"
+        );
+    }
+
+    #[test_context(WriterContext)]
+    #[test]
+    fn test_save_with_stamped_filename(ctx: &mut WriterContext) {
+        let drawing = create_test_drawing();
+        let writer = SvgWriter::new(&drawing);
+
+        let filename = writer.save("test_stamped", true);
+        ctx.saved_files.push(filename.clone());
+
+        // Check that the filename contains version and timestamp
+        assert!(
+            filename.starts_with("saves/test_stamped-"),
+            "Filename should start with saves/test_stamped-"
+        );
+        assert!(
+            filename.contains("-"),
+            "Filename should contain version separator"
+        );
+        assert!(filename.ends_with(".svg"), "Filename should end with .svg");
+
+        // Check that the file exists
+        assert!(
+            std::path::Path::new(&filename).exists(),
+            "Saved file should exist"
+        );
+
+        // Clean up: remove the saved file
+        std::fs::remove_file(&filename).ok();
+    }
+
+    #[test_context(WriterContext)]
+    #[test]
+    fn test_save_content_matches_svg_string(ctx: &mut WriterContext) {
+        let drawing = DrawingBuilder::new()
+            .with_size(50.0, 50.0)
+            .with_background_color(SimpleColor::rgb(0, 0, 255))
+            .build();
+
+        let writer = SvgWriter::new(&drawing);
+        let svg_string = writer.to_svg_string();
+
+        let filename = writer.save("content_test", false);
+        ctx.saved_files.push(filename.clone());
+
+        let saved_content = std::fs::read_to_string(&filename).unwrap();
+        assert_eq!(
+            svg_string, saved_content,
+            "Saved file content should match to_svg_string()"
+        );
+    }
+
+    #[test]
+    fn test_complete_svg_structure() {
+        let mut drawing = DrawingBuilder::new()
+            .with_size(200.0, 150.0)
+            .with_margin(15.0)
+            .with_background_color(SimpleColor::rgb(240, 240, 240))
+            .build();
+
+        let line =
+            Line::new(20.0, 30.0, 180.0, 120.0).with_stroke(SimpleColor::rgb(100, 150, 200), 3.0);
+        drawing.add(line);
+
+        use usvg_tree::{Group, Node};
+        let def_node = Node::Group(Box::new(Group {
+            id: "my_def".to_string(),
+            ..Default::default()
+        }));
+        drawing.defs.push(def_node);
+
+        let writer = SvgWriter::new(&drawing);
+        let svg = writer.to_svg_string();
+
+        assert!(svg.contains("<svg"), "SVG tag should be present");
+        // Width and height are in mm: 200 * 0.264583 ≈ 53, 150 * 0.264583 ≈ 40
+        assert!(svg.contains("width=\"53mm\""), "Width should be 53mm");
+        assert!(svg.contains("height=\"40mm\""), "Height should be 40mm");
+        assert!(
+            svg.contains("viewBox=\"0 0 200 150\""),
+            "ViewBox should be correct"
+        );
+        assert!(svg.contains("<defs>"), "Defs section should be present");
+        assert!(svg.contains("my_def"), "Def content should be present");
+        assert!(
+            svg.contains("fill=\"rgb(240, 240, 240)\""),
+            "Background fill should be correct"
+        );
+        assert!(
+            svg.contains("id=\"margin_group\""),
+            "Margin group should be present"
+        );
+        assert!(
+            svg.contains("translate(15, 15)"),
+            "Margin group transform should be correct"
+        );
+        assert!(svg.contains("M 20 30"), "Line start should be present");
+        assert!(svg.contains("L 180 120"), "Line end should be present");
+        assert!(
+            svg.contains("stroke=\"rgb(100, 150, 200)\""),
+            "Line stroke color should be correct"
+        );
+        assert!(
+            svg.contains("stroke-width=\"3\""),
+            "Line stroke width should be correct"
+        );
+    }
 }

@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "dev": "deno run --watch --allow-net --allow-read --allow-run src/server.ts",
+    "client": "deno run --watch main.ts"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1",
+    "svg.js": "npm:svg.js@^2.7.1"
+  }
+}

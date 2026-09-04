@@ -18,7 +18,7 @@ Inline `TODO:` comment are only allowed when explicitly told to add by the user.
 *Wrong*:
 ```
 /// This function adds two numbers together
-fn add(a: i32, b: i32) -> i32 {
+function add(a: i32, b: i32) -> i32 {
     // This adds the two numbers together
     a + b
 }
@@ -30,7 +30,7 @@ fn add(a: i32, b: i32) -> i32 {
 **Right**:
 ```
 /// Add two numbers together
-fn add(a: i32, b: i32) -> i32 {
+function add(a: i32, b: i32) -> i32 {
     // Ignore over- and underflow deliberately for simplicity. 
     // When it happens, let it panic.
     a + b
@@ -41,31 +41,25 @@ fn add(a: i32, b: i32) -> i32 {
 
 ## Setup
 
-- Install dependencies: `cargo build`
-- Build: `cargo build`
-- Run tests: `cargo test`
-- Lint / format: `cargo clippy -- -D warnings`
+- Install dependencies: `deno add build`
+- Run tests: `deno test`
+- Lint / format: `deno lint`, `deno fmt`
+- More tasks via `deno task`
 
 ## Code style
 
 - Enforce strict typing across the codebase.
-- Run `cargo fmt`; `cargo clippy` must pass with no warnings.
-- Prefer `Result` over panics in library code.
-- No `unwrap()` in non-test code without a justifying comment.
+- Run `deno fmt`; `deno lint` must pass with no warnings.
 
 ## Project structure
 
-- `src/` modules, with tests included in the module.
-- integration tests in `tests/`.
-- `examples/` for runnable examples.
 - `saves/` for example output.
 
 ## Guardrails
 
 Things agents get wrong here. Follow these strictly:
 
-- Don't edit `Cargo.lock` by hand.
-- Don't introduce `unsafe` without a comment proving its soundness.
+- Don't edit `deno.json` by hand.
 - Run the full test suite and fix any failures before marking a task complete.
 - Don't add new dependencies without checking the lockfile and existing conventions first.
 - Never commit secrets, API keys, or `.env` files.
@@ -79,11 +73,3 @@ NEVER commit unless specifically asked to do so.
 
 - Use Conventional Commits: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`.
 - Keep PRs focused on a single concern; describe what changed and why.
-
-## Third party libraries
-
-* use `cargo add` to add new libraries, never edit depdencies in Cargo.toml directly.
-* use `cargo add --develop` to add development and testing dependencies.
-* use `cargo tree` to research existing dependencies.
-* use `cargo rustdoc --package <some-crate>` to read the documentation for a crate. Outputted to ./target/doc/<some-crate> in HTML.
-* Read documentation on crates on http://docs.rs/<some-crate> when cargo rustdoc does not suffice.

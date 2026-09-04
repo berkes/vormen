@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Drawing</title>
+    <script src="https://cdn.jsdelivr.net/npm/@svgdotjs/svg.js@3.1/dist/svg.min.js"></script>
+</head>
+<body>
+    <div id="drawing"></div>
+    <script type="module" src="/main.ts"></script>
+    <script>
+      // Live reload via WebSocket
+      (function() {
+        const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        const ws = new WebSocket(wsProtocol + "//" + window.location.host + "/ws");
+
+        ws.onopen = () => console.debug("Live reload connected");
+        ws.onclose = () => console.debug("Live reload disconnected");
+        ws.onerror = () => console.debug("Live reload error");
+
+        ws.onmessage = (e) => {
+          if (e.data === "reload") {
+            console.debug("Reloading page...");
+            window.location.reload();
+          }
+        };
+      })();
+    </script>
+</body>
+</html>

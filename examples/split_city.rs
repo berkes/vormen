@@ -88,22 +88,32 @@ fn main() {
     }
 
     // Draw lines between consecutive points
-    let mut lines: Vec<Box<dyn svg::node::Node>> = Vec::new();
-    for i in 0..previous_points.len() - 1 {
-        let p = &previous_points[i];
-        let next = &previous_points[i + 1];
+    let polyline = svg::node::element::Polyline::new()
+        .set("points", previous_points.iter().map(|p| format!("{},{}", p.x, p.y)).collect::<Vec<_>>().join(" "))
+        .set("fill", Color::WHITE)
+        .set("stroke", Color::BLACK)
+        .set("stroke-width", 1)
+        .set("stroke-linejoin", "round")
+        .set("stroke-linecap", "round");
 
-        let line = svg::node::element::Line::new()
-            .set("x1", p.x)
-            .set("y1", p.y)
-            .set("x2", next.x)
-            .set("y2", next.y)
-            .set("stroke", Color::BLACK)
-            .set("stroke-width", 1);
+    drawing.add(vec![Box::new(polyline)]);
 
-        lines.push(Box::new(line));
-    }
+    // // Draw lines between consecutive points
+    // let mut lines: Vec<Box<dyn svg::node::Node>> = Vec::new();
+    // for i in 0..previous_points.len() - 1 {
+    //     let p = &previous_points[i];
+    //     let next = &previous_points[i + 1];
 
-    drawing.add(lines);
+    //     let line = svg::node::element::Line::new()
+    //         .set("x1", p.x)
+    //         .set("y1", p.y)
+    //         .set("x2", next.x)
+    //         .set("y2", next.y)
+    //         .set("stroke", Color::BLACK)
+    //         .set("stroke-width", 1);
+
+    //     lines.push(Box::new(line));
+    // }
+
     drawing.save("split_city", true);
 }

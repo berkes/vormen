@@ -54,6 +54,10 @@ function add(a: i32, b: i32) -> i32 {
 ## Project structure
 
 - `saves/` for example output.
+- `public/index.html` the scaffold for the SPA that draws the SVG and has the tools
+- `public/app.css` Styles for this scaffold.
+- `main.ts` The script that renders the SVG in the index.html
+- `src/server.ts` A static file server with live-reloading over websockets
 
 ## Guardrails
 

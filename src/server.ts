@@ -6,11 +6,39 @@ console.log(`Server running on http://localhost:${port}`);
 // Set to store all active WebSocket connections
 const wsClients = new Set<WebSocket>();
 
-// Watch main.ts for changes and broadcast reload
+// Compile TypeScript files to JavaScript
+async function compileTsToJs(tsPath: string, jsPath: string) {
+  try {
+    const tsCode = await Deno.readTextFile(tsPath);
+    // Simple transpilation - remove TypeScript-specific syntax
+    const jsCode = tsCode
+      .replace(/ as [\w<>]+/g, '')  // Remove type assertions
+      .replace(/\.ts('|")/g, '.js$1') // Fix import extensions
+      .replace(/\.ts/g, '.js'); // Fix other .ts references
+    
+    await Deno.writeTextFile(jsPath, jsCode);
+    console.log(`Compiled ${tsPath} -> ${jsPath}`);
+  } catch (error) {
+    console.error(`Failed to compile ${tsPath}:`, error);
+  }
+}
+
+// Compile all TypeScript files on startup
+try {
+  await compileTsToJs("./main.ts", "./public/main.js");
+  await compileTsToJs("./public/app.ts", "./public/app.js");
+} catch (error) {
+  console.error("Initial compilation failed:", error);
+}
+
+// Watch source files for changes and recompile + broadcast reload
 (async () => {
-  const watcher = Deno.watchFs("./main.ts");
+  const watcher = Deno.watchFs(["./main.ts", "./public/app.ts"]);
   for await (const event of watcher) {
     if (event.kind === "modify") {
+      const tsPath = event.paths[0];
+      const jsPath = tsPath.replace('.ts', '.js').replace('./', './public/');
+      await compileTsToJs(tsPath, jsPath);
       broadcastReload();
     }
   }
@@ -25,7 +53,7 @@ function broadcastReload() {
       wsClients.delete(ws);
     }
   }
-  console.log("Change detected in main.ts - broadcasting reload");
+  console.log("Change detected - broadcasting reload");
 }
 
 Deno.serve({
@@ -40,8 +68,11 @@ Deno.serve({
   if (path === "/app.css") {
     return serveFile("./public/app.css", "text/css");
   }
-  if (path === "/main.ts") {
-    return serveFile("./main.ts", "application/javascript");
+  if (path === "/main.js") {
+    return serveFile("./public/main.js", "application/javascript");
+  }
+  if (path === "/app.js") {
+    return serveFile("./public/app.js", "application/javascript");
   }
 
   // WebSocket upgrade for /ws endpoint

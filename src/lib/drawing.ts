@@ -163,6 +163,20 @@ export class DrawingBuilder {
   }
 
   /**
+   * Get the width of the drawing area inside the margins
+   */
+  getInnerWidth(): number {
+    return this._width - this._margin.left - this._margin.right;
+  }
+
+  /**
+   * Get the height of the drawing area inside the margins
+   */
+  getInnerHeight(): number {
+    return this._height - this._margin.top - this._margin.bottom;
+  }
+
+  /**
    * Build and return an svg.js Group positioned at the margin offset.
    *
    * This creates an SVG element added to '#drawing', sets up viewBox,
@@ -171,22 +185,26 @@ export class DrawingBuilder {
    * @returns The margin group (svg.js Container) ready for drawing
    */
   build(): G {
-    // Create the SVG and add to #drawing
+    // Create the SVG and add to '#drawing'
     const draw = SVG().addTo('#drawing').size(this._width, this._height);
 
     // Set viewBox to the drawing dimensions
     draw.viewbox(0, 0, this._width, this._height);
 
-    // Add background rectangle if not transparent
-    if (this._backgroundColor !== 'transparent') {
-      const bgRect = draw.rect(this._width, this._height);
-      bgRect.fill(this._backgroundColor);
-      bgRect.move(0, 0);
-      bgRect.back(); // Send to back
-    }
+    const bgRect = draw.rect(this._width, this._height);
+    bgRect.fill(this._backgroundColor);
+    bgRect.id('background');
+    bgRect.move(0, 0);
+    bgRect.back(); // Send to back
 
     // Create and return the margin group
     const margin = this._margin;
-    return draw.group().id('margin_group').move(margin.left, margin.top);
+    const margin_group = draw.group().id('margin_group').transform({
+      translateX: margin.left,
+      translateY: margin.top,
+    });
+
+
+    return margin_group;
   }
 }

@@ -1,10 +1,37 @@
-import { DrawingBuilder } from '../lib/drawing.ts';
-import type { G } from '@svgdotjs/svg.js';
+import { DrawingBuilder } from "../lib/drawing.ts";
 
-const draw: G = DrawingBuilder.new()
+const drawing = DrawingBuilder.new()
   .withA4Size()
   .withMargin(20)
-  .withBackgroundColor('#f0f0f0')
-  .build();
+  .withBackgroundColor("#f0f0f0");
 
-draw.rect(100, 100).attr({ fill: '#f06' });
+const draw = drawing.build();
+
+draw
+  .line(0, 0, drawing.getInnerWidth(), drawing.getInnerHeight())
+  .stroke({ width: 1, color: "#000000" });
+
+draw.line(drawing.getInnerWidth(), 0, 0, drawing.getInnerHeight()).stroke({
+  width: 1,
+  color: "#000000",
+});
+
+draw.line(0,0,0, drawing.getInnerHeight()).stroke({
+  width: 1,
+  color: "#000000",
+});
+
+draw.line(0,0, drawing.getInnerWidth(), 0).stroke({
+  width: 1,
+  color: "#000000",
+});
+
+draw.line(0, drawing.getInnerHeight(), drawing.getInnerWidth(), drawing.getInnerHeight()).stroke({
+  width: 1,
+  color: "#000000",
+});
+
+draw.line(drawing.getInnerWidth(), 0, drawing.getInnerWidth(), drawing.getInnerHeight()).stroke({
+  width: 1,
+  color: "#000000",
+});

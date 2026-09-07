@@ -41,10 +41,11 @@ function add(a: i32, b: i32) -> i32 {
 
 ## Setup
 
-- Install dependencies: `yarn install`
+- Install dependencies: `yarn add` and `yarn install`
 - Start dev server: `yarn dev`
 - Build for production: `yarn build`
 - Preview build: `yarn preview`
+- Run code: `yarn run`
 
 ## Code style
 

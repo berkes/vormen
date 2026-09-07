@@ -1,7 +1,5 @@
-// Client-side code using svg.js to draw a square
-// This runs in the browser
+import { SVG } from '@svgdotjs/svg.js';
 
-// Wait for the DOM to be loaded
 document.addEventListener("DOMContentLoaded", () => {
   const drawingDiv = document.getElementById("drawing");
 

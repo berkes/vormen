@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main, typescript]
+  pull_request:
+    branches: [main, typescript]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: TypeScript check
+        run: yarn tsc --noEmit
+
+      - name: Build
+        run: yarn build

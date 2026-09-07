@@ -41,29 +41,30 @@ function add(a: i32, b: i32) -> i32 {
 
 ## Setup
 
-- Install dependencies: `deno add build`
-- Run tests: `deno test`
-- Lint / format: `deno lint`, `deno fmt`
-- More tasks via `deno task`
+- Install dependencies: `yarn install`
+- Start dev server: `yarn dev`
+- Build for production: `yarn build`
+- Preview build: `yarn preview`
 
 ## Code style
 
 - Enforce strict typing across the codebase.
-- Run `deno fmt`; `deno lint` must pass with no warnings.
+- Use TypeScript's strict mode for type checking.
 
 ## Project structure
 
 - `saves/` for example output.
-- `public/index.html` the scaffold for the SPA that draws the SVG and has the tools
-- `public/app.css` Styles for this scaffold.
-- `main.ts` The script that renders the SVG in the index.html
-- `src/server.ts` A static file server with live-reloading over websockets
+- `index.html` the scaffold for the SPA that draws the SVG and has the tools
+- `public/` Static assets
+- `src/main.ts` The script that renders the SVG in the index.html
+- `src/drawing.ts` Drawing logic for the SVG
+- `src/style.css` Styles for the SPA
 
 ## Guardrails
 
 Things agents get wrong here. Follow these strictly:
 
-- Don't edit `deno.json` by hand.
+- Don't edit `package.json` or `vite.config.*` by hand unless explicitly required.
 - Run the full test suite and fix any failures before marking a task complete.
 - Don't add new dependencies without checking the lockfile and existing conventions first.
 - Never commit secrets, API keys, or `.env` files.

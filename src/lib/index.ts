@@ -9,10 +9,10 @@
  */
 
 // Core types
- export { Margin } from './margin.js';
+ export { Margin } from './margin';
 
 // Grid system - unique feature not in svg.js
-export { Grid, Cell } from './grid.js';
+export { Grid, Cell } from './grid';
 
 // Drawing system - provides paper sizes, background, and margin support
 export {
@@ -26,4 +26,4 @@ export {
   A5_HEIGHT_USER_UNITS,
   PAPER_SIZES,
   type PaperSize
-} from './drawing.js';
+} from './drawing';

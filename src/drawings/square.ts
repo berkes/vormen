@@ -1,4 +1,4 @@
-import { DrawingBuilder } from "../lib/drawing.js";
+import { DrawingBuilder } from "../lib/drawing.ts";
 
 const drawing = DrawingBuilder.new()
   .withA4Size()

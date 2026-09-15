@@ -65,8 +65,11 @@ function add(a: i32, b: i32) -> i32 {
 
 Things agents get wrong here. Follow these strictly:
 
-- Don't edit `package.json` or `vite.config.*` by hand unless explicitly required.
+- Don't edit `package.json` or `yarn.lock` by hand unless explicitly required. Use `yarn` commands. 
+- Don't use `node` or `npx` commands. Use `yarn` commands.
 - Run the full test suite and fix any failures before marking a task complete.
+- Check all diagnostics and fix any linting, formatting and typing errors and warnings before marking a TODO complete.
+- Don't go to the next TODO, untill the previous is completed and clean as per above.
 - Don't add new dependencies without checking the lockfile and existing conventions first.
 - Never commit secrets, API keys, or `.env` files.
 - Match existing patterns. Don't introduce a new library for something the codebase already solves.

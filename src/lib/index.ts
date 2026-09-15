@@ -1,6 +1,6 @@
 /**
  * Main exports for the vormen library
- * 
+ *
  * This module provides a single import point for library users.
  * We only export features that svg.js does not support natively:
  * - Grid system for layout
@@ -13,6 +13,9 @@
 
 // Grid system - unique feature not in svg.js
 export { Grid, Cell } from './grid';
+
+// Noise helper
+export { Noise } from './noise'
 
 // Drawing system - provides paper sizes, background, and margin support
 export {

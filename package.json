@@ -3,16 +3,22 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "bin": {
+    "vormen": "./dist/cli.js"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "typescript": "~6.0.2",
-    "vite": "^8.2.2"
+    "build": "tsc && chmod +x dist/cli.js"
   },
   "dependencies": {
-    "@svgdotjs/svg.js": "^3.2.8"
+    "@svgdotjs/svg.js": "^3.2.8",
+    "commander": "^15.0.0",
+    "svgdom": "^0.1.29"
+  },
+  "devDependencies": {
+    "@types/node": "^26.5.1",
+    "@types/svgdom": "^0.1.2",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.2"
   }
 }

@@ -11,9 +11,9 @@
  * - Background color support
  */
 
-import { Margin } from './margin';
+import { Margin } from './margin.js';
 import { SVG } from '@svgdotjs/svg.js';
-import type { G } from '@svgdotjs/svg.js';
+import type { G, Dom } from '@svgdotjs/svg.js';
 
 // Constants from REQUIREMENTS.md §7
 /**
@@ -179,14 +179,16 @@ export class DrawingBuilder {
   /**
    * Build and return an svg.js Group positioned at the margin offset.
    *
-   * This creates an SVG element added to '#drawing', sets up viewBox,
+   * This creates an SVG element, sets up viewBox,
    * adds background if configured, creates a margin group, and returns it.
    *
+   * @param container - Optional container to add the SVG to (defaults to '#drawing')
    * @returns The margin group (svg.js Container) ready for drawing
    */
-  build(): G {
-    // Create the SVG and add to '#drawing'
-    const draw = SVG().addTo('#drawing').size(this._width, this._height);
+  build(container?: string | Dom): G {
+    // Create the SVG and add to container (defaults to document.documentElement in Node.js, '#drawing' in browser)
+    const target = container || (typeof document !== 'undefined' ? document.documentElement : '#drawing') as string | Dom
+    const draw = SVG().addTo(target).size(this._width, this._height);
 
     // Set viewBox to the drawing dimensions
     draw.viewbox(0, 0, this._width, this._height);

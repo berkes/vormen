@@ -4,15 +4,12 @@
     "module": "esnext",
     "lib": ["ES2023", "DOM"],
     "types": ["vite/client"],
-    "allowArbitraryExtensions": true,
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": "src",
     "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "allowArbitraryExtensions": true,
     "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
 
     /* Linting */
     "noUnusedLocals": true,

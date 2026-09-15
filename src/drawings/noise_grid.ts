@@ -12,14 +12,19 @@ const grid = Grid.new()
   .withSize(drawing.getInnerWidth(), drawing.getInnerHeight())
   .withCols(9)
   .withRows(11)
-  .withGutterFactor(0.10)
+  .withPadding(7)
   .withSquareCells();
 
-draw.add(grid.toSvg(true));
+draw.add(grid.toSvg({ innerSpace: true, numbering: true }));
 const noise = new Noise("foobar");
 
-grid.cells().forEach(cell => {
-  const square = new Rect().size(cell.width(), cell.height()).move(cell.x(), cell.y()).fill("none").stroke("#000000").opacity(0.5);
+grid.cells().forEach((cell) => {
+  const square = new Rect()
+    .size(cell.width(), cell.height())
+    .move(cell.x(), cell.y())
+    .fill("none")
+    .stroke("#000000")
+    .opacity(0.5);
   const r = noise.get(cell.x(), cell.y()) * cell.row() * 2;
   square.rotate(r);
   draw.add(square);

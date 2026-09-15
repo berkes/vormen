@@ -1,4 +1,4 @@
-import { G, Line, Rect } from "@svgdotjs/svg.js";
+import { G, Line, Rect, Text } from "@svgdotjs/svg.js";
 /**
  * Grid - A grid system for organizing cells in a drawing
  *
@@ -90,7 +90,10 @@ export class Cell {
 export class Grid {
   private _width: number;
   private _height: number;
-  private _gutterSize: number;
+  private _paddingTop: number;
+  private _paddingRight: number;
+  private _paddingBottom: number;
+  private _paddingLeft: number;
   private _nCols: number;
   private _nRows: number;
   private _cellsCache: Cell[] | undefined;
@@ -101,7 +104,10 @@ export class Grid {
   constructor() {
     this._width = 0;
     this._height = 0;
-    this._gutterSize = 0;
+    this._paddingTop = 0;
+    this._paddingRight = 0;
+    this._paddingBottom = 0;
+    this._paddingLeft = 0;
     this._nCols = 0;
     this._nRows = 0;
   }
@@ -143,25 +149,50 @@ export class Grid {
   }
 
   /**
-   * Set the fixed spacing between cells
-   * @param size Gutter size in user units
+   * Set padding on all sides
+   * @param padding Padding size in user units
    */
-  withGutterSize(size: number): Grid {
-    this._gutterSize = size;
+  withPadding(padding: number): Grid {
+    this._paddingTop = padding;
+    this._paddingRight = padding;
+    this._paddingBottom = padding;
+    this._paddingLeft = padding;
     return this;
   }
 
   /**
-   * Set the gutter as a factor of the grid width, distributed between columns
-   * @param factor Gutter factor (0-1 typically)
+   * Set top padding
+   * @param top Top padding in user units
    */
-  withGutterFactor(factor: number): Grid {
-    const totalGutter = this._width * factor;
-    if (this._nCols > 1) {
-      this._gutterSize = totalGutter / (this._nCols - 1);
-    } else {
-      this._gutterSize = 0;
-    }
+  withPaddingTop(top: number): Grid {
+    this._paddingTop = top;
+    return this;
+  }
+
+  /**
+   * Set right padding
+   * @param right Right padding in user units
+   */
+  withPaddingRight(right: number): Grid {
+    this._paddingRight = right;
+    return this;
+  }
+
+  /**
+   * Set bottom padding
+   * @param bottom Bottom padding in user units
+   */
+  withPaddingBottom(bottom: number): Grid {
+    this._paddingBottom = bottom;
+    return this;
+  }
+
+  /**
+   * Set left padding
+   * @param left Left padding in user units
+   */
+  withPaddingLeft(left: number): Grid {
+    this._paddingLeft = left;
     return this;
   }
 
@@ -170,25 +201,44 @@ export class Grid {
    */
   withSquareCells(): Grid {
     if (this._nCols > 0 && this._nRows > 0) {
-      this._height = this._width * (this._nRows / this._nCols);
+      const hPadding = this._paddingLeft;
+      const cellWidth = (this._width - (this._nCols + 1) * hPadding) / this._nCols;
+      const vPadding = this._paddingTop;
+      this._height = this._nRows * cellWidth + (this._nRows + 1) * vPadding;
     }
     return this;
   }
 
   /**
-   * Get the calculated width of each cell
+   * Get the outer width of each grid cell (without padding)
    */
-  cellWidth(): number {
+  outerCellWidth(): number {
     if (this._nCols === 0) return 0;
-    return (this._width + this._gutterSize) / this._nCols - this._gutterSize;
+    return this._width / this._nCols;
   }
 
   /**
-   * Get the calculated height of each cell
+   * Get the outer height of each grid cell (without padding)
+   */
+  outerCellHeight(): number {
+    if (this._nRows === 0) return 0;
+    return this._height / this._nRows;
+  }
+
+  /**
+   * Get the calculated inner width of each cell (with padding applied)
+   */
+  cellWidth(): number {
+    if (this._nCols === 0) return 0;
+    return this.outerCellWidth() - this._paddingLeft - this._paddingRight;
+  }
+
+  /**
+   * Get the calculated inner height of each cell (with padding applied)
    */
   cellHeight(): number {
     if (this._nRows === 0) return 0;
-    return (this._height + this._gutterSize) / this._nRows - this._gutterSize;
+    return this.outerCellHeight() - this._paddingTop - this._paddingBottom;
   }
 
   /**
@@ -203,13 +253,6 @@ export class Grid {
    */
   height(): number {
     return this._height;
-  }
-
-  /**
-   * Get the current gutter size
-   */
-  gutterSize(): number {
-    return this._gutterSize;
   }
 
   /**
@@ -238,14 +281,16 @@ export class Grid {
 
   _generateCells(): Cell[] {
     const cells: Cell[] = [];
-    const cellWidth = this.cellWidth();
-    const cellHeight = this.cellHeight();
+    const outerCellWidth = this.outerCellWidth();
+    const outerCellHeight = this.outerCellHeight();
 
     for (let row = 0; row < this._nRows; row++) {
       for (let col = 0; col < this._nCols; col++) {
-        const x = col * (cellWidth + this._gutterSize);
-        const y = row * (cellHeight + this._gutterSize);
-        cells.push(new Cell(row, col, x, y, cellWidth, cellHeight));
+        const x = col * outerCellWidth + this._paddingLeft;
+        const y = row * outerCellHeight + this._paddingTop;
+        const width = this.cellWidth();
+        const height = this.cellHeight();
+        cells.push(new Cell(row, col, x, y, width, height));
       }
     }
     return cells;
@@ -255,37 +300,38 @@ export class Grid {
    * Convert grid to string representation
    */
   toString(): string {
-    return `Grid(${this._width}x${this._height}, ${this._nCols}cols x ${this._nRows}rows, gutter=${this._gutterSize})`;
+    return `Grid(${this._width}x${this._height}, ${this._nCols}cols x ${this._nRows}rows, padding=[${this._paddingTop},${this._paddingRight},${this._paddingBottom},${this._paddingLeft}])`;
   }
 
   /**
    * Convert grid to Svg JS group element so it can be displayed on the drawing for debug purposes
    */
-  toSvg(cells: boolean = false): G {
+  toSvg(options: toSvgOptions): G {
     const stroke = {
       color: "hsl(211, 70%, 70%)",
       width: 0.5,
       dasharray: "5 1",
     };
-    const offset = 10;
 
     const group = new G();
     const cellWidth = this.cellWidth();
     const cellHeight = this.cellHeight();
 
+    // Draw grid lines at equal divisions of the total width/height, ignoring padding
     for (let i = 0; i < this._nCols; i++) {
-      const x = i * (cellWidth + this._gutterSize);
-      group.add(new Line().plot(x, -offset, x, this._height + offset).stroke(stroke));
+      const x = (this._width / this._nCols) * i;
+      group.add(new Line().plot(x, 0, x, this._height).stroke(stroke));
     }
-    group.add(new Line().plot(this._width, -offset, this._width, this._height + offset).stroke(stroke));
+    group.add(new Line().plot(this._width, 0, this._width, this._height).stroke(stroke));
 
     for (let i = 0; i < this._nRows; i++) {
-      const y = i * (cellHeight + this._gutterSize);
-      group.add(new Line().plot(-offset, y, this._width + offset, y).stroke(stroke));
+      const y = (this._height / this._nRows) * i;
+      group.add(new Line().plot(0, y, this._width, y).stroke(stroke));
     }
-    group.add(new Line().plot(-offset, this._height, this._width + offset, this._height).stroke(stroke));
+    group.add(new Line().plot(0, this._height, this._width, this._height).stroke(stroke));
 
-    if (cells) {
+    if (options.innerSpace) {
+      // Draw cells at their actual positions with padding applied
       this.cells().forEach((cell) => {
         const rect = new Rect()
           .size(cellWidth, cellHeight)
@@ -295,6 +341,25 @@ export class Grid {
       });
     }
 
+    if (options.numbering) {
+      const fontSize = Math.min(cellWidth, cellHeight) / 4;
+      const offset = fontSize;
+      const color = "hsl(211, 70%, 100%)";
+      for (let i = 0; i < this._nRows; i++) {
+        const y = (this._height / this._nRows) * i + offset;
+        for (let j = 0; j < this._nCols; j++) {
+          const x = (this._width / this._nCols) * j + offset;
+          const text = `${i},${j}`
+          group.add(new Text().text(text).move(x, y)).stroke("none").fill(color).font({size: fontSize});
+        }
+      }
+    }
+
     return group;
   }
+}
+
+interface toSvgOptions {
+  innerSpace?: boolean;
+  numbering?: boolean;
 }

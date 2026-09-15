@@ -1,22 +1,22 @@
+import { G, Line, Rect } from "@svgdotjs/svg.js";
 /**
  * Grid - A grid system for organizing cells in a drawing
- * 
+ *
  * Grid uses the builder pattern for configuration and is iterable,
  * yielding Cell objects in row-major order.
  */
-
 /**
  * Cell - Represents a single cell in a grid
- * 
+ *
  * Each cell provides position and dimension information.
  */
 export class Cell {
-  readonly row: number;
-  readonly col: number;
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
+  private _row: number;
+  private _col: number;
+  private _x: number;
+  private _y: number;
+  private _width: number;
+  private _height: number;
 
   /**
    * Create a new Cell
@@ -27,68 +27,64 @@ export class Cell {
    * @param width Width of the cell
    * @param height Height of the cell
    */
-  constructor(row: number, col: number, x: number, y: number, width: number, height: number) {
-    this.row = row;
-    this.col = col;
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
+  constructor(
+    row: number,
+    col: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ) {
+    this._row = row;
+    this._col = col;
+    this._x = x;
+    this._y = y;
+    this._width = width;
+    this._height = height;
+  }
+
+  /** Getters */
+  x(): number {
+    return this._x;
+  }
+
+  y(): number {
+    return this._y;
+  }
+
+  width(): number {
+    return this._width;
+  }
+
+  height(): number {
+    return this._height;
   }
 
   /**
    * Get row index (0-based)
    */
-  rowIndex(): number {
-    return this.row;
+  row(): number {
+    return this._row;
   }
 
   /**
    * Get column index (0-based)
    */
-  colIndex(): number {
-    return this.col;
-  }
-
-  /**
-   * Get X coordinate of top-left corner
-   */
-  xCoordinate(): number {
-    return this.x;
-  }
-
-  /**
-   * Get Y coordinate of top-left corner
-   */
-  yCoordinate(): number {
-    return this.y;
-  }
-
-  /**
-   * Get width of the cell
-   */
-  cellWidth(): number {
-    return this.width;
-  }
-
-  /**
-   * Get height of the cell
-   */
-  cellHeight(): number {
-    return this.height;
+  col(): number {
+    return this._col;
   }
 
   /**
    * Convert cell to string representation
    */
   toString(): string {
-    return `Cell(${this.row}, ${this.col}, x=${this.x}, y=${this.y}, w=${this.width}, h=${this.height})`;
+    return `Cell(${this._row}, ${this._col}, x=${this._x}, y=${this._y}, w=${this._width}, h=${this._height})`;
   }
 }
 
 /**
  * Grid - A grid system for organizing content
- * 
+ *
  * Grid uses the builder pattern and is iterable over its cells.
  */
 export class Grid {
@@ -97,6 +93,7 @@ export class Grid {
   private _gutterSize: number;
   private _nCols: number;
   private _nRows: number;
+  private _cellsCache: Cell[] | undefined;
 
   /**
    * Create a new Grid with default settings
@@ -183,7 +180,7 @@ export class Grid {
    */
   cellWidth(): number {
     if (this._nCols === 0) return 0;
-    return ((this._width + this._gutterSize) / this._nCols) - this._gutterSize;
+    return (this._width + this._gutterSize) / this._nCols - this._gutterSize;
   }
 
   /**
@@ -191,7 +188,7 @@ export class Grid {
    */
   cellHeight(): number {
     if (this._nRows === 0) return 0;
-    return ((this._height + this._gutterSize) / this._nRows) - this._gutterSize;
+    return (this._height + this._gutterSize) / this._nRows - this._gutterSize;
   }
 
   /**
@@ -233,6 +230,13 @@ export class Grid {
    * Get all cells as an array
    */
   cells(): Cell[] {
+    if (!this._cellsCache) {
+      this._cellsCache = this._generateCells();
+    }
+    return this._cellsCache;
+  }
+
+  _generateCells(): Cell[] {
     const cells: Cell[] = [];
     const cellWidth = this.cellWidth();
     const cellHeight = this.cellHeight();
@@ -248,36 +252,49 @@ export class Grid {
   }
 
   /**
-   * Make Grid iterable, yielding Cell objects in row-major order
-   */
-  [Symbol.iterator](): Iterator<Cell> {
-    const cellWidth = this.cellWidth();
-    const cellHeight = this.cellHeight();
-    const totalCells = this._nCols * this._nRows;
-    let index = 0;
-
-    return {
-      next: (): IteratorResult<Cell> => {
-        if (this._nCols < 1 || this._nRows < 1 || index >= totalCells) {
-          return { done: true, value: undefined };
-        }
-
-        const row = Math.floor(index / this._nCols);
-        const col = index % this._nCols;
-
-        const x = col * (cellWidth + this._gutterSize);
-        const y = row * (cellHeight + this._gutterSize);
-
-        index++;
-        return { done: false, value: new Cell(row, col, x, y, cellWidth, cellHeight) };
-      }
-    };
-  }
-
-  /**
    * Convert grid to string representation
    */
   toString(): string {
     return `Grid(${this._width}x${this._height}, ${this._nCols}cols x ${this._nRows}rows, gutter=${this._gutterSize})`;
+  }
+
+  /**
+   * Convert grid to Svg JS group element so it can be displayed on the drawing for debug purposes
+   */
+  toSvg(cells: boolean = false): G {
+    const stroke = {
+      color: "hsl(211, 70%, 70%)",
+      width: 0.5,
+      dasharray: "5 1",
+    };
+    const offset = 10;
+
+    const group = new G();
+    const cellWidth = this.cellWidth();
+    const cellHeight = this.cellHeight();
+
+    for (let i = 0; i < this._nCols; i++) {
+      const x = i * (cellWidth + this._gutterSize);
+      group.add(new Line().plot(x, -offset, x, this._height + offset).stroke(stroke));
+    }
+    group.add(new Line().plot(this._width, -offset, this._width, this._height + offset).stroke(stroke));
+
+    for (let i = 0; i < this._nRows; i++) {
+      const y = i * (cellHeight + this._gutterSize);
+      group.add(new Line().plot(-offset, y, this._width + offset, y).stroke(stroke));
+    }
+    group.add(new Line().plot(-offset, this._height, this._width + offset, this._height).stroke(stroke));
+
+    if (cells) {
+      this.cells().forEach((cell) => {
+        const rect = new Rect()
+          .size(cellWidth, cellHeight)
+          .move(cell.x(), cell.y());
+        rect.fill("hsl(211, 70%, 90%)");
+        group.add(rect);
+      });
+    }
+
+    return group;
   }
 }

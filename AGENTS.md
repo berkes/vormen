@@ -1,84 +1,27 @@
-# vormen
+# Vormen
 
-> A set of tools and libraries for generative art in SVG
+_Vormen_ is the sourcecode for a package that offers a bag of tools, modules and
+scripts for creating generative with SVG.
 
-Instructions for AI coding agents working in this repository.
+It is written in typescript, and managed and ran with `deno`.
 
-## Communication
+## Project contents
 
-Use ASD-STE100 Simplified Technical English (STE) for communication with the user.
-Also use this STE to write documentation and comments.
+- src/ All typescript sourcecode
+- dist/ Built javascript and application
+- **tests**/integration Integration tests
+- src/some/module_test.ts the unit tests for src/some/module.ts
 
-Documentation comments may describe *what* functions, structs, traits, impls and modules do. This Documentation must describe how a user can use this item. With examples for more complex items. 
+## Deno
 
-Inline comments may descrbe *why* code is written the way it is. But never *what* it does. 
+Use the `deno` skill. Never update package.json, deno.json or deno.lock manually
+unless explicitly allowed. Use `deno` to manage dependencies. Use `deno` to run
+code. Never revert to npx, tsc, npm, yarn or other tools, as those will break
+the project severely.
 
-Inline `TODO:` comment are only allowed when explicitly told to add by the user.
+## Project guidelines
 
-*Wrong*:
-```
-/// This function adds two numbers together
-function add(a: i32, b: i32) -> i32 {
-    // This adds the two numbers together
-    a + b
-}
-```
-
-* Documentation is too verbose and not STE.
-* Inline comment is superfluous.
-
-**Right**:
-```
-/// Add two numbers together
-function add(a: i32, b: i32) -> i32 {
-    // Ignore over- and underflow deliberately for simplicity. 
-    // When it happens, let it panic.
-    a + b
-}
-```
-* Documentation is concise and STE.
-* Inline comment is justified and STE. 
-
-## Setup
-
-- Install dependencies: `yarn add` and `yarn install`
-- Start dev server: `yarn dev`
-- Build for production: `yarn build`
-- Preview build: `yarn preview`
-- Run code: `yarn run`
-
-## Code style
-
-- Enforce strict typing across the codebase.
-- Use TypeScript's strict mode for type checking.
-
-## Project structure
-
-- `saves/` for example output.
-- `index.html` the scaffold for the SPA that draws the SVG and has the tools
-- `public/` Static assets
-- `src/main.ts` The script that renders the SVG in the index.html
-- `src/drawing.ts` Drawing logic for the SVG
-- `src/style.css` Styles for the SPA
-
-## Guardrails
-
-Things agents get wrong here. Follow these strictly:
-
-- Don't edit `package.json` or `yarn.lock` by hand unless explicitly required. Use `yarn` commands. 
-- Don't use `node` or `npx` commands. Use `yarn` commands.
-- Run the full test suite and fix any failures before marking a task complete.
-- Check all diagnostics and fix any linting, formatting and typing errors and warnings before marking a TODO complete.
-- Don't go to the next TODO, untill the previous is completed and clean as per above.
-- Don't add new dependencies without checking the lockfile and existing conventions first.
-- Never commit secrets, API keys, or `.env` files.
-- Match existing patterns. Don't introduce a new library for something the codebase already solves.
-- Keep changes scoped to the task. Don't reformat or refactor unrelated files.
-- Ask before large refactors or renaming public APIs.
-
-## Commits & pull requests
-
-NEVER commit unless specifically asked to do so.
-
-- Use Conventional Commits: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`.
-- Keep PRs focused on a single concern; describe what changed and why.
+- We always write tests first. Each feature has at least an integration test.
+  Each module has its own unit tests.
+- We always run `deno lint` and `deno fmt` on the whole project.
+- We never call it finished when there are typing errors or warnings.

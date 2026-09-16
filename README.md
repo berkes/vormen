@@ -1,7 +1,8 @@
 # Vormen
 
 _Vormen_ is a bag of tools, modules and scripts for creating generative art in
-SVG using Javascript.
+SVG using Javascript
+
 
 ## Features
 

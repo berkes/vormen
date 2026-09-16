@@ -9,7 +9,7 @@ It is written in typescript, and managed and ran with `deno`.
 
 - src/ All typescript sourcecode
 - dist/ Built javascript and application
-- **tests**/integration Integration tests
+- \_\_tests\_\_/integration Integration tests
 - src/some/module_test.ts the unit tests for src/some/module.ts
 
 ## Deno
@@ -25,3 +25,8 @@ the project severely.
   Each module has its own unit tests.
 - We always run `deno lint` and `deno fmt` on the whole project.
 - We never call it finished when there are typing errors or warnings.
+
+## Testing
+
+Run tests with `deno test --allow-run`. All tests should pass.
+We never skip tests or remove tests just to make the test green.

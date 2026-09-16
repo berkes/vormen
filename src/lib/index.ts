@@ -9,13 +9,22 @@
  */
 
 // Core types
- export { Margin } from './margin';
+export { Margin } from "./margin";
 
 // Grid system - unique feature not in svg.js
-export { Grid, Cell } from './grid';
+export { Grid, Cell } from "./grid";
 
 // Noise helper
-export { Noise } from './noise'
+export { Noise } from "./noise";
+
+// Random helper
+export { randomBetween, randomBetweenFloat, randomChance } from "./random";
+
+// Math helpers
+export { constrain } from "./math";
+
+// Vector helpers
+export { Vector } from "./vect";
 
 // Drawing system - provides paper sizes, background, and margin support
 export {
@@ -28,5 +37,5 @@ export {
   A5_WIDTH_USER_UNITS,
   A5_HEIGHT_USER_UNITS,
   PAPER_SIZES,
-  type PaperSize
-} from './drawing';
+  type PaperSize,
+} from "./drawing";

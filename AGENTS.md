@@ -28,5 +28,5 @@ the project severely.
 
 ## Testing
 
-Run tests with `deno test --allow-run`. All tests should pass.
-We never skip tests or remove tests just to make the test green.
+Run tests with `deno test --allow-run`. All tests should pass. We never skip
+tests or remove tests just to make the test green.

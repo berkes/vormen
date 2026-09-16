@@ -6,7 +6,7 @@ Deno.test("render gives hello name", async () => {
       "run",
       "src/cli/render.ts",
       "--name",
-      "Tester"
+      "Tester",
     ],
   });
   const { code, stdout, stderr } = await command.output();

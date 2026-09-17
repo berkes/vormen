@@ -1,9 +1,9 @@
 import { parseArgs } from "@std/cli/parse-args";
 import type { Log, Subcommand } from "./subcommand.ts";
 
-export const summary = "Serve a drawing in the browser with live preview";
+const summary = "Serve a drawing in the browser with live preview";
 
-export const help = `Usage: vormen server [options] <filename>
+const help = `Usage: vormen server [options] <filename>
 
 Serves the drawing in <filename> on a local HTTP server.
 

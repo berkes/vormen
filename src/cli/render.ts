@@ -1,23 +1,26 @@
 import { parseArgs } from "@std/cli/parse-args";
 import type { Log, Subcommand } from "./subcommand.ts";
+import type { Drawing } from "../vormen/drawing.ts";
 
-export const summary = "Render a drawing to an SVG file";
+export interface Parameters {
+  [key: string]: string | number | boolean;
+}
 
-export const help = `Usage: vormen render [options] <filename>
+export interface Drawer {
+  draw(parameters: Parameters): Drawing;
+}
+
+const summary = "Render a drawing to an SVG file";
+const help = `Usage: vormen render [options] <filename>
 
 Renders the drawing in <filename> to SVG.
-
 Options:
-  --name <name>   Name to greet
   -h, --help      Show this help`;
 
-export function main(args: string[], log: Log = console.log): number {
-  const flags = parseArgs(args, {
-    string: ["name"],
-    default: { name: "world" },
-  });
+function main(args: string[], log: Log = console.log): number {
+  const _flags = parseArgs(args, {});
 
-  log(`Hello, ${flags.name}!`);
+  log("render");
 
   return 0;
 }

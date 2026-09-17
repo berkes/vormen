@@ -9,21 +9,15 @@
  */
 
 import { Drawing, Grid, randomBetween } from "@berkes/vormen";
-import { registerWindow } from "@svgdotjs/svg.js";
-import { createSVGWindow } from "svgdom";
 
 const ROTATION_STRENGTH = 2;
-
-// svg.js needs a DOM to draw into. Outside the browser, svgdom provides one.
-const window = createSVGWindow();
-registerWindow(window, window.document);
 
 const drawing = new Drawing()
   .withA4Size()
   .withMargin(20)
   .withBackgroundColor("#eee");
 
-const canvas = drawing.build(window.document.documentElement);
+const canvas = drawing.build();
 
 const grid = new Grid()
   .withSize(drawing.getInnerWidth(), drawing.getInnerHeight())

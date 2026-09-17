@@ -49,6 +49,29 @@ Vormen(drawing);
 - Interactive preview in your browser `yarn run vormen server drawing.js` and
   open http://localhost:1234 with live refresh.
 
+## Commandline client
+
+Everything is available through a single `vormen` binary:
+
+```
+vormen <subcommand> [options] <filename>
+```
+
+Subcommands:
+
+- `render` — Render a drawing to an SVG file
+- `server` — Serve a drawing in the browser with live preview
+
+Use `vormen --help` to list the subcommands, and `vormen <subcommand> --help`
+for the options of a single subcommand.
+
+### Development
+
+- Run the CLI from source: `deno task vormen render drawing.js`
+- Run it with reload on change: `deno task dev server drawing.js`
+- Build the binary: `deno task compile`, which produces a single executable at
+  `target/vormen`. The `target/` directory is gitignored.
+
 ## Future
 
 - [ ] A "create-vormen" package so we can `yarn create vormen` and have a

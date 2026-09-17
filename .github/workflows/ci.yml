@@ -34,8 +34,8 @@ jobs:
         with:
           deno-version: lts
       - run: deno ci
-      - run: deno compile src/cli/render.ts
+      - run: deno task compile
       - uses: actions/upload-artifact@v4
         with:
-          name: render
-          path: ./render
+          name: vormen
+          path: ./target/vormen

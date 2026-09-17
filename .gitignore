@@ -1,0 +1,11 @@
+# Compiled binaries from `deno task compile`
+/target/
+
+# Built javascript and application
+/dist/
+
+# Dependencies installed locally instead of the global deno cache
+node_modules/
+
+# Coverage output from `deno test --coverage`
+coverage/

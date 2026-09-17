@@ -8,7 +8,10 @@ It is written in typescript, and managed and ran with `deno`.
 ## Project contents
 
 - src/ All typescript sourcecode
+- src/cli/vormen.ts The single CLI entrypoint, dispatching to the subcommands in
+  src/cli/
 - dist/ Built javascript and application
+- target/ Compiled binaries from `deno task compile` (gitignored)
 - \_\_tests\_\_/integration Integration tests
 - src/some/module_test.ts the unit tests for src/some/module.ts
 
@@ -23,8 +26,20 @@ the project severely.
 
 - We always write tests first. Each feature has at least an integration test.
   Each module has its own unit tests.
-- We always run `deno lint` and `deno fmt` on the whole project.
-- We never call it finished when there are typing errors or warnings.
+- We always run `deno run check:all` to check all linting, formatting and tests.
+
+## Definition of done
+
+- New features require new integration tests.
+- Changed features require changed integration tests.
+- New modules or changed modules require new test or changed unit tests.
+- There are no linting, typing or other errors.
+- `deno run check:all` reports no errors or warnings.
+- temporary files are cleaned up.
+- New features are documented in README.
+- Changed features are changed in the README documentation.
+- Removed features are removed from the documentation in the README.
+- We have checked that the new feature works as requested.
 
 ## Testing
 

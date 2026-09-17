@@ -9,3 +9,8 @@ node_modules/
 
 # Coverage output from `deno test --coverage`
 coverage/
+
+
+# Tmp
+/tmp/*
+!tmp/.gitkeep

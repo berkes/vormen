@@ -14,6 +14,7 @@ It is written in typescript, and managed and ran with `deno`.
 - target/ Compiled binaries from `deno task compile` (gitignored)
 - \_\_tests\_\_/integration Integration tests
 - src/some/module_test.ts the unit tests for src/some/module.ts
+- tmp/ for any temporary files (gitignored)
 
 ## Deno
 

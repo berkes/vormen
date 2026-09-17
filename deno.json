@@ -6,7 +6,8 @@
   "tasks": {
     "dev": "deno run --watch --allow-net src/cli/server.ts",
     "render": "deno run --allow-read --allow-write src/cli/render.ts",
-    "test": "deno test --allow-net --allow-read --allow-run"
+    "test": "deno test --allow-net --allow-read --allow-run",
+    "check:all": "deno ci && deno check && deno lint && deno fmt --check && deno test --allow-run"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@^1.0.19",

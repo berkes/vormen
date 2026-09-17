@@ -44,33 +44,33 @@ export class Cell {
   }
 
   /** Getters */
-  x(): number {
+  get x(): number {
     return this._x;
   }
 
-  y(): number {
+  get y(): number {
     return this._y;
   }
 
-  width(): number {
+  get width(): number {
     return this._width;
   }
 
-  height(): number {
+  get height(): number {
     return this._height;
   }
 
   /**
    * Get row index (0-based)
    */
-  row(): number {
+  get row(): number {
     return this._row;
   }
 
   /**
    * Get column index (0-based)
    */
-  col(): number {
+  get col(): number {
     return this._col;
   }
 
@@ -335,7 +335,7 @@ export class Grid {
       this.cells().forEach((cell) => {
         const rect = new Rect()
           .size(cellWidth, cellHeight)
-          .move(cell.x(), cell.y());
+          .move(cell.x, cell.y);
         rect.fill("hsl(211, 70%, 90%)");
         group.add(rect);
       });

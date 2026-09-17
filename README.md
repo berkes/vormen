@@ -17,8 +17,8 @@ SVG using Javascript
 - Edit a file, e.g. drawing.js:
 
 ```Javascript
-import { Config, Drawing, Grid, Noise, Vormen } from "vormen";
-import { Black, None } from "vormen/colors";
+import { Config, Drawing, Grid, Noise, Vormen } from "@berkes/vormen";
+import { Black, None } from "@berkes/vormen/colors";
 import { Rect } from "svg";
 
 const drawing = new Drawing().paperSize("a4").margin(20);
@@ -48,6 +48,26 @@ Vormen(drawing);
   `yarn run vormen render drawing.js --rotationStrength=10`.
 - Interactive preview in your browser `yarn run vormen server drawing.js` and
   open http://localhost:1234 with live refresh.
+
+## Examples
+
+The `examples/` directory holds runnable drawings. It is a workspace member that
+depends on `@berkes/vormen` itself, so the examples import the package the same
+way your own project would:
+
+```Typescript
+import { Drawing, Grid, Noise } from "@berkes/vormen";
+```
+
+Each example writes its SVG to stdout, so redirect it to a file to view it:
+
+```
+deno run examples/cubic-disarray.ts > cubic-disarray.svg
+```
+
+svg.js needs a DOM to draw into. In the browser that is the page itself; the
+examples use [svgdom](https://github.com/svgdotjs/svgdom) to provide one outside
+of it, and pass the resulting SVG element to `drawing.build()`.
 
 ## Commandline client
 

@@ -3,6 +3,7 @@
   "version": "1.0.4",
   "description": "Vormen is a bag of tools, modules and scripts for creating generative art in SVG using Javascript",
   "exports": "./src/vormen/index.ts",
+  "workspace": ["./examples"],
   "tasks": {
     "vormen": "deno run --allow-net --allow-read --allow-write src/cli/vormen.ts",
     "dev": "deno run --watch --allow-net --allow-read --allow-write src/cli/vormen.ts",
@@ -15,7 +16,8 @@
     "@std/cli": "jsr:@std/cli@^1.0.32",
     "@svgdotjs/svg.js": "npm:@svgdotjs/svg.js@^3.2.8",
     "alea": "npm:alea@^1.0.1",
-    "simplex-noise": "npm:simplex-noise@^4.0.3"
+    "simplex-noise": "npm:simplex-noise@^4.0.3",
+    "svgdom": "npm:svgdom@^0.1.29"
   },
   "compile": {
     "include": ["src/cli/vormen.ts"]

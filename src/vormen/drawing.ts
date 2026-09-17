@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 /**
  * Drawing for SVG artwork creation.
  *
@@ -80,7 +81,7 @@ export class Drawing {
   /**
    * Create a new Drawing with default settings.
    */
-  private constructor() {
+  constructor() {
     this._width = 0;
     this._height = 0;
     this._margin = Margin.ZERO;
@@ -172,14 +173,17 @@ export class Drawing {
   /**
    * Build and return an svg.js Group positioned at the margin offset.
    *
-   * This creates an SVG element added to '#drawing', sets up viewBox,
-   * adds background if configured, creates a margin group, and returns it.
+   * This adopts the given SVG element, sets up viewBox, adds the background,
+   * creates a margin group, and returns it.
    *
+   * The element is required: svg.js needs a DOM to work against, and it is up
+   * to the caller to supply one (a browser document, or a shim such as svgdom).
+   *
+   * @param element The SVG element to draw into
    * @returns The margin group (svg.js Container) ready for drawing
    */
-  build(): G {
-    // Create the SVG and add to '#drawing'
-    const draw = SVG().addTo("#drawing").size(this._width, this._height);
+  build(element: SVGSVGElement): G {
+    const draw = SVG(element).size(this._width, this._height);
 
     // Set viewBox to the drawing dimensions
     draw.viewbox(0, 0, this._width, this._height);

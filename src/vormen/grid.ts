@@ -74,6 +74,14 @@ export class Cell {
     return this._col;
   }
 
+  get centerX(): number {
+    return this._x + this._width / 2;
+  }
+
+  get centerY(): number {
+    return this._y + this._height / 2;
+  }
+
   /**
    * Convert cell to string representation
    */

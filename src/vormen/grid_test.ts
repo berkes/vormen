@@ -67,3 +67,10 @@ Deno.test("cells()", () => {
     assertEquals(cell.y, expectedY);
   });
 });
+
+Deno.test("Cell centerX and centerY", () => {
+  const grid = new Grid().withSize(10, 10).withCols(1).withRows(1);
+  const cell = grid.cells()[0];
+  assertEquals(cell.centerX, 5);
+  assertEquals(cell.centerY, 5);
+});

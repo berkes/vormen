@@ -12,7 +12,7 @@
  * - Background color support
  */
 
-import type { G } from "@svgdotjs/svg.js";
+import type { G, Svg } from "@svgdotjs/svg.js";
 import { registerWindow, SVG } from "@svgdotjs/svg.js";
 import { createSVGWindow } from "svgdom";
 
@@ -79,6 +79,7 @@ export class Drawing {
   private _margin: Margin;
   private _backgroundColor: string;
   private _bindElement: SVGSVGElement;
+  private _svg: Svg | undefined;
 
   /**
    * Create a new Drawing with default settings.
@@ -194,8 +195,9 @@ export class Drawing {
    * @returns The margin group (svg.js Container) ready for drawing
    */
   build(): G {
-    const draw = SVG(this._bindElement).size(this._width, this._height);
+    this._svg = SVG(this._bindElement).size(this._width, this._height);
 
+    const draw = this._svg;
     // Set viewBox to the drawing dimensions
     draw.viewbox(0, 0, this._width, this._height);
 
@@ -213,6 +215,13 @@ export class Drawing {
     });
 
     return margin_group;
+  }
+
+  svg(): string {
+    if (!this._svg) {
+      throw new Error("SVG not built yet");
+    }
+    return this._svg.svg();
   }
 }
 /**

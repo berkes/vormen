@@ -105,6 +105,14 @@ Deno.test("build draws into the given element", () => {
   assertEquals(group.root().node, element);
 });
 
+Deno.test("svg() renders the full SVG", () => {
+  const drawing = new Drawing(svgElement()).withSize(300, 400);
+  const _group = drawing.build();
+
+  assertStringIncludes(drawing.svg(), "<svg ");
+  assertStringIncludes(drawing.svg(), "</svg>");
+});
+
 Deno.test("element is created if not passed in", () => {
   const group = new Drawing().withSize(300, 400).build();
 

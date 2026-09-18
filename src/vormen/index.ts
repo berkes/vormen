@@ -2,7 +2,8 @@
 
 export { Drawing } from "./drawing.ts";
 export { Grid } from "./grid.ts";
-export { Noise } from "./noise.ts";
-export { Vector } from "./vector.ts";
 export { constrain } from "./math.ts";
-export { randomBetween, randomBetweenFloat } from "./random.ts";
+export { Noise } from "./noise.ts";
+export { Random } from "./random.ts";
+export { readSvg } from "./read.ts";
+export { Vector } from "./vector.ts";

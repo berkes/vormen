@@ -8,7 +8,7 @@
  *   deno run examples/cubic-disarray.ts > cubic-disarray.svg
  */
 
-import { Drawing, Grid, randomBetween } from "@berkes/vormen";
+import { Drawing, Grid, Random } from "@berkes/vormen";
 
 const ROTATION_STRENGTH = 2;
 
@@ -26,6 +26,8 @@ const grid = new Grid()
   .withPadding(4)
   .withSquareCells();
 
+const rand = new Random("seeed");
+
 grid.cells().forEach((cell) => {
   const square = canvas.rect(cell.width, cell.height)
     .fill("none")
@@ -33,7 +35,7 @@ grid.cells().forEach((cell) => {
     .move(cell.x, cell.y);
 
   if (cell.row > 1) {
-    square.rotate(randomBetween(-cell.row, cell.row) * ROTATION_STRENGTH);
+    square.rotate(rand.between(-cell.row, cell.row) * ROTATION_STRENGTH);
   }
 });
 

@@ -1,9 +1,6 @@
-import { createNoise2D, type NoiseFunction2D } from 'simplex-noise';
-import alea from 'alea';
-
-interface Stringifiable {
-  toString(): string;
-}
+import { createNoise2D, type NoiseFunction2D } from "simplex-noise";
+import alea from "alea";
+import type { Stringifiable } from "./types.ts";
 
 class Noise {
   private _noise: NoiseFunction2D;
@@ -14,7 +11,7 @@ class Noise {
     this._noise = createNoise2D(prng);
   }
 
-  get(x: number, y: number) {
+  get(x: number, y: number): number {
     return this._noise(x, y);
   }
 }

@@ -44,34 +44,42 @@ export class Cell {
   }
 
   /** Getters */
-  x(): number {
+  get x(): number {
     return this._x;
   }
 
-  y(): number {
+  get y(): number {
     return this._y;
   }
 
-  width(): number {
+  get width(): number {
     return this._width;
   }
 
-  height(): number {
+  get height(): number {
     return this._height;
   }
 
   /**
    * Get row index (0-based)
    */
-  row(): number {
+  get row(): number {
     return this._row;
   }
 
   /**
    * Get column index (0-based)
    */
-  col(): number {
+  get col(): number {
     return this._col;
+  }
+
+  get centerX(): number {
+    return this._x + this._width / 2;
+  }
+
+  get centerY(): number {
+    return this._y + this._height / 2;
   }
 
   /**
@@ -110,13 +118,6 @@ export class Grid {
     this._paddingLeft = 0;
     this._nCols = 0;
     this._nRows = 0;
-  }
-
-  /**
-   * Create a new Grid (alias for constructor)
-   */
-  static new(): Grid {
-    return new Grid();
   }
 
   /**
@@ -202,7 +203,8 @@ export class Grid {
   withSquareCells(): Grid {
     if (this._nCols > 0 && this._nRows > 0) {
       const hPadding = this._paddingLeft;
-      const cellWidth = (this._width - (this._nCols + 1) * hPadding) / this._nCols;
+      const cellWidth = (this._width - (this._nCols + 1) * hPadding) /
+        this._nCols;
       const vPadding = this._paddingTop;
       this._height = this._nRows * cellWidth + (this._nRows + 1) * vPadding;
     }
@@ -212,7 +214,7 @@ export class Grid {
   /**
    * Get the outer width of each grid cell (without padding)
    */
-  outerCellWidth(): number {
+  get outerCellWidth(): number {
     if (this._nCols === 0) return 0;
     return this._width / this._nCols;
   }
@@ -220,7 +222,7 @@ export class Grid {
   /**
    * Get the outer height of each grid cell (without padding)
    */
-  outerCellHeight(): number {
+  get outerCellHeight(): number {
     if (this._nRows === 0) return 0;
     return this._height / this._nRows;
   }
@@ -228,44 +230,44 @@ export class Grid {
   /**
    * Get the calculated inner width of each cell (with padding applied)
    */
-  cellWidth(): number {
+  get cellWidth(): number {
     if (this._nCols === 0) return 0;
-    return this.outerCellWidth() - this._paddingLeft - this._paddingRight;
+    return this.outerCellWidth - this._paddingLeft - this._paddingRight;
   }
 
   /**
    * Get the calculated inner height of each cell (with padding applied)
    */
-  cellHeight(): number {
+  get cellHeight(): number {
     if (this._nRows === 0) return 0;
-    return this.outerCellHeight() - this._paddingTop - this._paddingBottom;
+    return this.outerCellHeight - this._paddingTop - this._paddingBottom;
   }
 
   /**
    * Get the current width of the grid
    */
-  width(): number {
+  get width(): number {
     return this._width;
   }
 
   /**
    * Get the current height of the grid
    */
-  height(): number {
+  get height(): number {
     return this._height;
   }
 
   /**
    * Get the number of columns
    */
-  numCols(): number {
+  get numCols(): number {
     return this._nCols;
   }
 
   /**
    * Get the number of rows
    */
-  numRows(): number {
+  get numRows(): number {
     return this._nRows;
   }
 
@@ -281,15 +283,15 @@ export class Grid {
 
   _generateCells(): Cell[] {
     const cells: Cell[] = [];
-    const outerCellWidth = this.outerCellWidth();
-    const outerCellHeight = this.outerCellHeight();
+    const outerCellWidth = this.outerCellWidth;
+    const outerCellHeight = this.outerCellHeight;
 
     for (let row = 0; row < this._nRows; row++) {
       for (let col = 0; col < this._nCols; col++) {
         const x = col * outerCellWidth + this._paddingLeft;
         const y = row * outerCellHeight + this._paddingTop;
-        const width = this.cellWidth();
-        const height = this.cellHeight();
+        const width = this.cellWidth;
+        const height = this.cellHeight;
         cells.push(new Cell(row, col, x, y, width, height));
       }
     }
@@ -314,28 +316,34 @@ export class Grid {
     };
 
     const group = new G();
-    const cellWidth = this.cellWidth();
-    const cellHeight = this.cellHeight();
+    const cellWidth = this.cellWidth;
+    const cellHeight = this.cellHeight;
 
     // Draw grid lines at equal divisions of the total width/height, ignoring padding
     for (let i = 0; i < this._nCols; i++) {
       const x = (this._width / this._nCols) * i;
       group.add(new Line().plot(x, 0, x, this._height).stroke(stroke));
     }
-    group.add(new Line().plot(this._width, 0, this._width, this._height).stroke(stroke));
+    group.add(
+      new Line().plot(this._width, 0, this._width, this._height).stroke(stroke),
+    );
 
     for (let i = 0; i < this._nRows; i++) {
       const y = (this._height / this._nRows) * i;
       group.add(new Line().plot(0, y, this._width, y).stroke(stroke));
     }
-    group.add(new Line().plot(0, this._height, this._width, this._height).stroke(stroke));
+    group.add(
+      new Line().plot(0, this._height, this._width, this._height).stroke(
+        stroke,
+      ),
+    );
 
     if (options.innerSpace) {
       // Draw cells at their actual positions with padding applied
       this.cells().forEach((cell) => {
         const rect = new Rect()
           .size(cellWidth, cellHeight)
-          .move(cell.x(), cell.y());
+          .move(cell.x, cell.y);
         rect.fill("hsl(211, 70%, 90%)");
         group.add(rect);
       });
@@ -349,8 +357,9 @@ export class Grid {
         const y = (this._height / this._nRows) * i + offset;
         for (let j = 0; j < this._nCols; j++) {
           const x = (this._width / this._nCols) * j + offset;
-          const text = `${i},${j}`
-          group.add(new Text().text(text).move(x, y)).stroke("none").fill(color).font({size: fontSize});
+          const text = `${i},${j}`;
+          group.add(new Text().text(text).move(x, y)).stroke("none").fill(color)
+            .font({ size: fontSize });
         }
       }
     }

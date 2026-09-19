@@ -7,47 +7,60 @@ SVG using Javascript
 
 - Classes, functions and modules used in your code to easily create artwork in
   SVG.
-- Commanline client that runs your code and creates the SVG
+- An optional runner module that turns your drawing into a program: render it to
+  an SVG file, or serve it in a browser with a settings UI.
 - Tools to run your code in a browser and interact with the SVG there
 
 ## Quickstart
 
 - Create a new project and add the dependency:
   `yarn init fancy-squares && cd fancy-squares && yarn add vormen`.
-- Edit a file, e.g. drawing.js:
+- Edit a file, e.g. drawing.js. Your drawing is a program: it defines a `draw`
+  function that takes the settings and returns a `Drawing`, then hands that
+  function to the runner as its last line:
 
 ```Javascript
-import { Config, Drawing, Grid, Noise, Vormen } from "@berkes/vormen";
-import { Black, None } from "@berkes/vormen/colors";
+import { Config, Drawing, Grid, Noise } from "@berkes/vormen";
+import { Vormen } from "@berkes/vormen/runner";
 import { Rect } from "svg";
 
-const drawing = new Drawing().paperSize("a4").margin(20);
-const grid = new Grid().rows(9).columns(8).padding(4).squareCells();
-
-const config = new Config({
+const defaultSettings = new Config({
   "rotationStrength": 35,
 });
 
-const noise = new Noise("seeeed");
+const draw = (settings) => {
+  const drawing = new Drawing().paperSize("a4").margin(20);
+  const canvas = drawing.build();
+  const grid = new Grid().rows(9).columns(8).padding(4).squareCells();
 
-grid.cells().foreEach((cell) => {
-  let square = new Rect().size(cell.innerWidth, cell.innerHeight).fill("none")
-    .stroke({ width: 1, color: "black" });
-  square.move(cell.x, cell.y);
-  square.rotate(
-    noise.get(cell.x, cell.y) * (cell.row * config.rotationStrength),
-  );
-});
+  const noise = new Noise("seeeed");
 
-Vormen(drawing);
+  grid.cells().forEach((cell) => {
+    let square = new Rect().size(cell.innerWidth, cell.innerHeight).fill("none")
+      .stroke({ width: 1, color: "black" });
+    square.move(cell.x, cell.y);
+    square.rotate(
+      noise.get(cell.x, cell.y) * (cell.row * settings.rotationStrength),
+    );
+  });
+
+  return drawing;
+};
+
+Vormen(draw, defaultSettings);
 ```
 
-- Generate an svg: `yarn run vormen render drawing.js` and view it in your image
-  viewer or browser.
-- Adjust default config on the fly:
-  `yarn run vormen render drawing.js --rotationStrength=10`.
-- Interactive preview in your browser `yarn run vormen server drawing.js` and
-  open http://localhost:1234 with live refresh.
+- Generate an svg: `node drawing.js` and view the SVG file it wrote in your
+  image viewer or browser.
+- Write to stdout instead of a file: `node drawing.js --outfile -`.
+- Adjust default settings on the fly: `node drawing.js --rotationStrength=10`.
+- Interactive preview in your browser `node drawing.js --serve` and open
+  http://localhost:1234: a web app with the rendered SVG and a form for the
+  settings; changing a value re-renders the SVG in the page.
+
+The runner is optional. Without it, Vormen stays a plain library: call
+`drawing.svg()` yourself and `console.log()` it or write it to disk. See
+[ARCHITECTURE.md](ARCHITECTURE.md) for the full design.
 
 ## Examples
 
@@ -70,6 +83,12 @@ examples use [svgdom](https://github.com/svgdotjs/svgdom) to provide one outside
 of it, and pass the resulting SVG element to `drawing.build()`.
 
 ## Commandline client
+
+> **Superseded:** the commandline client is the earlier, rejected direction in
+> which the Vormen binary is the program and the drawing a module it loads. The
+> decided architecture is "the drawing is the program" with an optional runner
+> module; see [ARCHITECTURE.md](ARCHITECTURE.md). The binary and the `src/cli/`
+> stubs are slated for removal.
 
 Everything is available through a single `vormen` binary:
 

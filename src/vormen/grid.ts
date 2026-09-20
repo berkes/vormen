@@ -281,6 +281,13 @@ export class Grid {
     return this._cellsCache;
   }
 
+  /**
+   * Pick a cell by row and column
+   */
+  pickCell(row: number, col: number): Cell {
+    return this.cells()[row * this._nCols + col];
+  }
+
   _generateCells(): Cell[] {
     const cells: Cell[] = [];
     const outerCellWidth = this.outerCellWidth;

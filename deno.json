@@ -22,5 +22,5 @@
   "compile": {
     "include": []
   },
-  "exclude": ["target/", "dist/"]
+  "exclude": ["target/", "dist/", "saves/"]
 }

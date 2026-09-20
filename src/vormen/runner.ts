@@ -9,7 +9,7 @@
  */
 
 import type { Drawing } from "./drawing.ts";
-import type { Settings } from "./settings.ts";
+import { Settings } from "./settings.ts";
 
 /**
  * Draw function type - a factory that takes settings and returns a Drawing.
@@ -30,13 +30,18 @@ export interface VormenOptions {
 }
 
 /**
+ * Internal type for settings data before converting to Settings class.
+ */
+type SettingsData = Record<string, string | number | boolean>;
+
+/**
  * Parse command-line arguments and return options and settings overrides.
  */
 function parseArgs(
   args: string[],
-): { options: VormenOptions; overrides: Settings } {
+): { options: VormenOptions; overrides: SettingsData } {
   const options: VormenOptions = {};
-  const overrides: Settings = {};
+  const overrides: SettingsData = {};
 
   for (const arg of args) {
     if (arg === "--serve") {
@@ -74,12 +79,11 @@ function parseArgs(
  * Deep merge settings - for nested objects.
  * For now, we only support flat settings objects.
  */
-function deepMergeSettings(defaults: Settings, overrides: Settings): Settings {
-  const result: Settings = { ...defaults };
-  for (const [key, value] of Object.entries(overrides)) {
-    result[key] = value;
-  }
-  return result;
+function deepMergeSettings(
+  defaults: SettingsData,
+  overrides: SettingsData,
+): Settings {
+  return Settings.merge(defaults, overrides);
 }
 
 /**
@@ -100,10 +104,9 @@ async function writeSvg(svg: string, outfile?: string): Promise<void> {
  */
 async function render(
   draw: Draw,
-  defaultSettings: Settings,
+  settings: Settings,
   options: VormenOptions,
 ): Promise<void> {
-  const settings = deepMergeSettings(defaultSettings, {});
   const drawing = draw(settings);
   const svg = drawing.svg();
   await writeSvg(svg, options.outfile);
@@ -191,7 +194,7 @@ async function serve(
       <h2>Settings</h2>
       <form id="settings-form">
         ${
-    Object.entries(settings).map(([key, value]) => `
+    Object.entries(settings.toObject()).map(([key, value]) => `
           <div class="setting">
             <label for="${key}">${key}</label>
             <input type="text" id="${key}" name="${key}" value="${value}">
@@ -232,13 +235,13 @@ async function serve(
 
     if (url.pathname === "/render") {
       // Parse query params as settings overrides
-      const overrides: Settings = {};
+      const overrides: SettingsData = {};
       for (const [key, value] of url.searchParams.entries()) {
         const num = Number(value);
         overrides[key] = isNaN(num) ? value : num;
       }
 
-      const settings = deepMergeSettings(defaultSettings, overrides);
+      const settings = deepMergeSettings(defaultSettings.toObject(), overrides);
       const drawing = draw(settings);
       const svg = drawing.svg();
 
@@ -274,15 +277,22 @@ async function serve(
  * - Either renders to a file/stdout or starts a web server
  *
  * @param draw - The drawing factory function
- * @param defaultSettings - Default settings for the drawing
+ * @param defaultSettings - Default settings for the drawing (can be a Settings instance or a plain object)
  */
-export function Vormen(draw: Draw, defaultSettings: Settings = {}): void {
+export function Vormen(
+  draw: Draw,
+  defaultSettings: Settings | SettingsData = {},
+): void {
   // Parse command-line arguments
   // In Deno, use Deno.args; in Node, use process.argv.slice(2)
   const args = typeof Deno !== "undefined" ? Deno.args : process.argv.slice(2);
 
   const { options, overrides } = parseArgs(args);
-  const settings = deepMergeSettings(defaultSettings, overrides);
+  // Convert defaultSettings to SettingsData if it's a Settings instance
+  const defaults = defaultSettings instanceof Settings
+    ? defaultSettings.toObject()
+    : defaultSettings;
+  const settings = deepMergeSettings(defaults, overrides);
 
   if (options.serve) {
     // Serve mode

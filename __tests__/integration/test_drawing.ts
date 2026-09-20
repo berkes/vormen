@@ -1,21 +1,21 @@
 import { Drawing } from "../../src/vormen/drawing.ts";
+import { Settings } from "../../src/vormen/settings.ts";
 import { Vormen } from "../../src/vormen/runner.ts";
-import type { Settings } from "../../src/vormen/settings.ts";
 
-const defaultSettings: Settings = {
+const defaultSettings = new Settings({
   size: 100,
   color: "blue",
-};
+});
 
 const draw = (settings: Settings) => {
   const drawing = new Drawing().withSize(
-    settings.size as number,
-    settings.size as number,
+    settings.getInt("size"),
+    settings.getInt("size"),
   );
   const canvas = drawing.build();
-  canvas.rect(settings.size as number / 2, settings.size as number / 2)
-    .move(settings.size as number / 4, settings.size as number / 4)
-    .fill(settings.color as string);
+  canvas.rect(settings.getInt("size") / 2, settings.getInt("size") / 2)
+    .move(settings.getInt("size") / 4, settings.getInt("size") / 4)
+    .fill(settings.getString("color"));
   return drawing;
 };
 

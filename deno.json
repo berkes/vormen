@@ -9,7 +9,9 @@
   "workspace": ["./examples"],
   "tasks": {
     "test": "deno test --allow-net --allow-read --allow-run --allow-write",
-    "check:all": "deno ci && deno check && deno lint && deno fmt --check && deno test --allow-net --allow-read --allow-run --allow-write"
+    "check:all": "deno ci && deno check && deno lint && deno fmt --check && deno test --allow-net --allow-read --allow-run --allow-write",
+    "version:minor": "deno bump-version minor && git add . && git commit -m'bump version' && git tag \"v$(< deno.json | jq .version -r)\"",
+    "version:patch": "deno bump-version patch && git add . && git commit -m'bump version' && git tag \"v$(< deno.json | jq .version -r)\""
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@^1.0.19",

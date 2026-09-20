@@ -7,7 +7,7 @@ export class Random {
 
   constructor(seed: Stringifiable | undefined = undefined) {
     if (!seed) {
-      seed = Math.random().toString();
+      seed = Math.floor(Math.random() * 1_000_000_000).toString();
     }
 
     const prng = alea(seed.toString());

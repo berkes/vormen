@@ -8,11 +8,11 @@ It is written in typescript, and managed and ran with `deno`.
 ## Project contents
 
 - src/ All typescript sourcecode
-- dist/ Built javascript and application
-- target/ Compiled binaries from `deno task compile` (gitignored)
 - \_\_tests\_\_/integration Integration tests
 - src/some/module_test.ts the unit tests for src/some/module.ts
 - tmp/ for any temporary files (gitignored)
+- saves/ for our saved svgs (gitignored)
+- doc for documentation, doc/adr for Architectual Decision Records
 
 ## Deno
 
@@ -39,6 +39,14 @@ the project severely.
 - Changed features are changed in the README documentation.
 - Removed features are removed from the documentation in the README.
 - We have checked that the new feature works as requested.
+
+## Ubiquitous Language
+
+See the [doc/glossary.md](glossary) for a full list of known terms and their aliases.
+
+We are careful about naming things. Consult the glossary first to see if there's
+a term that we should re-use. Be consistent, and use the canonical term, not its
+synonyms. When we introduce a new concept, add it to the glossary.
 
 ## Testing
 

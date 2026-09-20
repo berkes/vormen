@@ -1,6 +1,6 @@
 {
   "name": "@berkes/vormen",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Vormen is a bag of tools, modules and scripts for creating generative art in SVG using Javascript",
   "exports": {
     ".": "./src/vormen.ts",

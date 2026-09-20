@@ -14,3 +14,5 @@ coverage/
 # Tmp
 /tmp/*
 !tmp/.gitkeep
+
+saves/*

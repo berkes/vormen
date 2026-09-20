@@ -8,8 +8,7 @@
  *   deno run examples/cubic-disarray.ts > cubic-disarray.svg
  */
 
-import { Drawing, Grid, Random, Settings } from "@berkes/vormen";
-import { Vormen } from "@berkes/vormen/runner";
+import { Drawing, Grid, Random, Settings, Vormen } from "@berkes/vormen";
 
 const settings = new Settings({
   rotationStrength: 2,

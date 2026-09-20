@@ -1,7 +1,7 @@
 import { assertEquals, assertStringIncludes } from "@std/assert";
-import { Drawing, Margin } from "./drawing.ts";
-import { Settings } from "./settings.ts";
-import type { Draw } from "./runner.ts";
+import { Drawing, Margin } from "../drawing/drawing.ts";
+import { Settings } from "../settings/settings.ts";
+import type { Draw } from "./types.ts";
 
 // Test helper to create a simple drawing factory
 function createTestDraw(assertion?: (settings: Settings) => void): Draw {

@@ -3,8 +3,8 @@
   "version": "1.0.4",
   "description": "Vormen is a bag of tools, modules and scripts for creating generative art in SVG using Javascript",
   "exports": {
-    ".": "./src/vormen/index.ts",
-    "./runner": "./src/vormen/runner.ts"
+    ".": "./src/vormen.ts",
+    "./runner": "./src/vormen/vormen.ts"
   },
   "workspace": ["./examples"],
   "tasks": {
@@ -21,6 +21,11 @@
   },
   "compile": {
     "include": []
+  },
+  "fmt": {
+    "exclude": [
+      "doc/glossary.md"
+    ]
   },
   "exclude": ["target/", "dist/", "saves/"]
 }

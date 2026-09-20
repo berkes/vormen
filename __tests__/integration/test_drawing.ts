@@ -1,6 +1,6 @@
-import { Drawing } from "../../src/vormen/drawing.ts";
-import { Settings } from "../../src/vormen/settings.ts";
-import { Vormen } from "../../src/vormen/runner.ts";
+import { Drawing } from "../../src/drawing/drawing.ts";
+import { Settings } from "../../src/settings/settings.ts";
+import { Vormen } from "../../src/vormen/vormen.ts";
 
 const defaultSettings = new Settings({
   size: 100,

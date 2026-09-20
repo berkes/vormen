@@ -42,7 +42,8 @@ the project severely.
 
 ## Ubiquitous Language
 
-See the [doc/glossary.md](glossary) for a full list of known terms and their aliases.
+See the [doc/glossary.md](glossary) for a full list of known terms and their
+aliases.
 
 We are careful about naming things. Consult the glossary first to see if there's
 a term that we should re-use. Be consistent, and use the canonical term, not its

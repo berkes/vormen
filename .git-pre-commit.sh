@@ -37,9 +37,9 @@ if [ $? -ne 0 ]; then
     FAILED=1
 fi
 
-OUTPUT=$(deno test --allow-run 2>&1 >/dev/null)
+OUTPUT=$(deno test --allow-net --allow-read --allow-run --allow-write 2>&1 >/dev/null)
 if [ $? -ne 0 ]; then
-    echo "deno test --allow-run failed:"
+    echo "deno test --allow-net --allow-read --allow-run --allow-write failed:"
     echo "$OUTPUT"
     echo ""
     FAILED=1

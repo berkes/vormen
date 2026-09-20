@@ -16,28 +16,27 @@ SVG using Javascript
 - Create a new project and add the dependency:
   `yarn init fancy-squares && cd fancy-squares && yarn add vormen`.
 - Edit a file, e.g. drawing.js. Your drawing is a program: it defines a `draw`
-  function that takes the settings and returns a `Drawing`, then hands that
-  function to the runner as its last line:
+  function that takes settings and returns a `Drawing`, then hands that function
+  to the runner as its last line:
 
 ```Javascript
-import { Config, Drawing, Grid, Noise } from "@berkes/vormen";
+import { Drawing, Grid, Noise } from "@berkes/vormen";
 import { Vormen } from "@berkes/vormen/runner";
-import { Rect } from "svg";
 
-const defaultSettings = new Config({
-  "rotationStrength": 35,
-});
+const defaultSettings = {
+  rotationStrength: 35,
+};
 
 const draw = (settings) => {
-  const drawing = new Drawing().paperSize("a4").margin(20);
+  const drawing = new Drawing().withA4Size().withMargin(20);
   const canvas = drawing.build();
   const grid = new Grid().rows(9).columns(8).padding(4).squareCells();
 
   const noise = new Noise("seeeed");
 
   grid.cells().forEach((cell) => {
-    let square = new Rect().size(cell.innerWidth, cell.innerHeight).fill("none")
-      .stroke({ width: 1, color: "black" });
+    let square = canvas.rect(cell.innerWidth, cell.innerHeight)
+      .fill("none").stroke({ width: 1, color: "black" });
     square.move(cell.x, cell.y);
     square.rotate(
       noise.get(cell.x, cell.y) * (cell.row * settings.rotationStrength),
@@ -54,13 +53,14 @@ Vormen(draw, defaultSettings);
   image viewer or browser.
 - Write to stdout instead of a file: `node drawing.js --outfile -`.
 - Adjust default settings on the fly: `node drawing.js --rotationStrength=10`.
-- Interactive preview in your browser `node drawing.js --serve` and open
+- Interactive preview in your browser: `node drawing.js --serve` and open
   http://localhost:1234: a web app with the rendered SVG and a form for the
   settings; changing a value re-renders the SVG in the page.
 
 The runner is optional. Without it, Vormen stays a plain library: call
 `drawing.svg()` yourself and `console.log()` it or write it to disk. See
-[ARCHITECTURE.md](ARCHITECTURE.md) for the full design.
+[ADR-0001-Running-Drawings](doc/adr/ADR-0001-Running-Drawings.md) for the full
+design.
 
 ## Examples
 
@@ -82,34 +82,17 @@ svg.js needs a DOM to draw into. In the browser that is the page itself; the
 examples use [svgdom](https://github.com/svgdotjs/svgdom) to provide one outside
 of it, and pass the resulting SVG element to `drawing.build()`.
 
-## Commandline client
+## Runner
 
-> **Superseded:** the commandline client is the earlier, rejected direction in
-> which the Vormen binary is the program and the drawing a module it loads. The
-> decided architecture is "the drawing is the program" with an optional runner
-> module; see [ARCHITECTURE.md](ARCHITECTURE.md). The binary and the `src/cli/`
-> stubs are slated for removal.
+The runner module provides the `Vormen` function that turns your drawing into a
+program. It supports two modes:
 
-Everything is available through a single `vormen` binary:
-
-```
-vormen <subcommand> [options] <filename>
-```
-
-Subcommands:
-
-- `render` — Render a drawing to an SVG file
-- `server` — Serve a drawing in the browser with live preview
-
-Use `vormen --help` to list the subcommands, and `vormen <subcommand> --help`
-for the options of a single subcommand.
+- **Render mode** (default): renders the drawing to an SVG file on disk
+- **Serve mode**: serves a web app with the SVG and a settings UI
 
 ### Development
 
-- Run the CLI from source: `deno task vormen render drawing.js`
-- Run it with reload on change: `deno task dev server drawing.js`
-- Build the binary: `deno task compile`, which produces a single executable at
-  `target/vormen`. The `target/` directory is gitignored.
+The project uses Deno for development. Run tests with `deno test --allow-run`.
 
 ## Releases
 

@@ -2,14 +2,14 @@
   "name": "@berkes/vormen",
   "version": "1.0.4",
   "description": "Vormen is a bag of tools, modules and scripts for creating generative art in SVG using Javascript",
-  "exports": "./src/vormen/index.ts",
+  "exports": {
+    ".": "./src/vormen/index.ts",
+    "./runner": "./src/vormen/runner.ts"
+  },
   "workspace": ["./examples"],
   "tasks": {
-    "vormen": "deno run --allow-net --allow-read --allow-write src/cli/vormen.ts",
-    "dev": "deno run --watch --allow-net --allow-read --allow-write src/cli/vormen.ts",
-    "compile": "deno compile --output target/vormen src/cli/vormen.ts",
-    "test": "deno test --allow-net --allow-read --allow-run",
-    "check:all": "deno ci && deno check && deno lint && deno fmt --check && deno test --allow-run"
+    "test": "deno test --allow-net --allow-read --allow-run --allow-write",
+    "check:all": "deno ci && deno check && deno lint && deno fmt --check && deno test --allow-net --allow-read --allow-run --allow-write"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@^1.0.19",
@@ -20,7 +20,7 @@
     "svgdom": "npm:svgdom@^0.1.29"
   },
   "compile": {
-    "include": ["src/cli/vormen.ts"]
+    "include": []
   },
   "exclude": ["target/", "dist/"]
 }

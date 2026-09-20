@@ -8,8 +8,6 @@ It is written in typescript, and managed and ran with `deno`.
 ## Project contents
 
 - src/ All typescript sourcecode
-- src/cli/vormen.ts The single CLI entrypoint, dispatching to the subcommands in
-  src/cli/
 - dist/ Built javascript and application
 - target/ Compiled binaries from `deno task compile` (gitignored)
 - \_\_tests\_\_/integration Integration tests

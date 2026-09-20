@@ -20,7 +20,7 @@ jobs:
       - run: deno check
       - run: deno lint
       - run: deno fmt --check
-      - run: deno test --allow-run
+      - run: deno test --allow-run --allow-write --allow-read
 
   release:
     name: Release

@@ -111,6 +111,12 @@ for the options of a single subcommand.
 - Build the binary: `deno task compile`, which produces a single executable at
   `target/vormen`. The `target/` directory is gitignored.
 
+## Releases
+
+Releases are built by CI. To publish one, push a tag that starts with `v` (for
+example `v1.2.3`). CI compiles the `vormen` binary for Linux x86_64 and attaches
+it to a GitHub release for that tag.
+
 ## Future
 
 - [ ] A "create-vormen" package so we can `yarn create vormen` and have a

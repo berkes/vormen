@@ -1,5 +1,8 @@
 {
   "name": "@berkes/vormen-examples",
   "version": "0.0.0",
-  "exports": "./cubic-disarray.ts"
+  "exports": {
+    "cubic-disarray": "./cubic-disarray.ts",
+    "noodle_love": "noodle_love.ts"
+  }
 }

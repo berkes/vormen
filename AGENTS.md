@@ -30,6 +30,13 @@ the project severely.
   use outside the module.
 - Non-exported (private) items do not need unit tests.
 
+## Strong DONT's
+
+- NEVER delete ./saves or remove files from there. These might be artworks that
+  were previously made and saved. This directory is not under git, so we cannot
+  restore if you delete items there.
+- NEVER add manual overrides or exclusions to pass linting or typing issues.
+
 ## Definition of done
 
 - New features require new integration tests.

@@ -11,6 +11,7 @@ import { Drawing, Grid, Random, Settings, Vormen } from "@berkes/vormen";
 
 const settings = new Settings({
   rotationStrength: 2,
+  seed: "seeed",
 });
 
 function draw(settings: Settings): Drawing {
@@ -28,7 +29,7 @@ function draw(settings: Settings): Drawing {
     .withPadding(4)
     .withSquareCells();
 
-  const rand = new Random("seeed");
+  const rand = new Random(settings.getString("seed"));
 
   grid.cells().forEach((cell) => {
     const square = canvas.rect(cell.width, cell.height)
@@ -42,6 +43,11 @@ function draw(settings: Settings): Drawing {
       );
     }
   });
+
+  // Add seeed
+  canvas.text(`seed ${settings.getString("seed")}`).x(0).cy(
+    drawing.getInnerHeight(),
+  );
 
   return drawing;
 }

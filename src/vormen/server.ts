@@ -6,7 +6,6 @@
 
 import type { Drawing } from "../drawing/drawing.ts";
 import { Settings } from "../settings/settings.ts";
-import type { VormenOptions } from "./types.ts";
 import type { SettingsData } from "./types.ts";
 
 /**
@@ -138,10 +137,8 @@ function html(svg: string, settings: Settings): string {
 export async function serve(
   draw: (settings: Settings) => Drawing,
   defaultSettings: Settings,
-  options: VormenOptions,
+  port: number,
 ): Promise<never> {
-  const port = options.port ?? 8000;
-
   const handler = (req: Request): Response => {
     const url = new URL(req.url);
 

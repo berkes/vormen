@@ -18,21 +18,33 @@
     "@std/cli": "jsr:@std/cli@^1.0.32",
     "@svgdotjs/svg.js": "npm:@svgdotjs/svg.js@^3.2.8",
     "alea": "npm:alea@^1.0.1",
+    "commander": "npm:commander@^15.0.0",
     "jsdom": "npm:jsdom@^30.1.0",
     "simplex-noise": "npm:simplex-noise@^4.0.3",
     "svgdom": "npm:svgdom@^0.1.29"
   },
   "test": {
-    "permissions": {
+    "exclude": ["__tests__/integration/drawings"]
+  },
+  "permissions": {
+    "default": {
       "read": true,
-      "write": true,
+      "write": ["./saves", "/tmp"],
+      "env": {
+        "ignore": [
+          "CLICOLOR_FORCE",
+          "NODE_DISABLE_COLORS",
+          "TF_BUILD",
+          "CI",
+          "TEAMCITY_VERSION"
+        ],
+        "allow": ["TERM", "TMUX", "TERM_PROGRAM", "COLORTERM"]
+      },
       "run": true
     }
   },
   "fmt": {
-    "exclude": [
-      "doc/glossary.md"
-    ]
+    "exclude": ["doc/glossary.md"]
   },
   "exclude": ["target/", "dist/", "saves/"]
 }

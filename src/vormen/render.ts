@@ -6,19 +6,14 @@
 
 import type { Drawing } from "../drawing/drawing.ts";
 import type { Settings } from "../settings/settings.ts";
-import type { VormenOptions } from "./types.ts";
 
 /**
  * Write SVG to output.
  * If outfile is '-' or undefined, write to stdout.
  * Otherwise, write to the specified file.
  */
-export async function writeSvg(svg: string, outfile?: string): Promise<void> {
-  if (outfile === "-" || outfile === undefined) {
-    console.log(svg);
-  } else {
-    await Deno.writeTextFile(outfile, svg);
-  }
+export async function writeSvg(svg: string, outfile: string): Promise<void> {
+  await Deno.writeTextFile(outfile, svg);
 }
 
 /**
@@ -27,9 +22,14 @@ export async function writeSvg(svg: string, outfile?: string): Promise<void> {
 export async function render(
   draw: (settings: Settings) => Drawing,
   settings: Settings,
-  options: VormenOptions,
+  outfile: string,
 ): Promise<void> {
   const drawing = draw(settings);
   const svg = drawing.svg();
-  await writeSvg(svg, options.outfile);
+
+  if (outfile === "-") {
+    console.log(svg);
+  } else {
+    await writeSvg(svg, outfile);
+  }
 }

@@ -40,9 +40,5 @@ export { Vector } from "./primitives/vector.ts";
 export { Cell, Grid } from "./grid/grid.ts";
 
 // Vormen domain (main entry point)
-export {
-  type Draw,
-  type SettingsData,
-  Vormen,
-  type VormenOptions,
-} from "./vormen/vormen.ts";
+export { Vormen } from "./vormen/vormen.ts";
+export type { DrawFunction } from "./vormen/types.ts";

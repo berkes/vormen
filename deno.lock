@@ -8,6 +8,7 @@
     "jsr:@std/internal@^1.0.14": "1.0.14",
     "npm:@svgdotjs/svg.js@^3.2.8": "3.2.8",
     "npm:alea@^1.0.1": "1.0.1",
+    "npm:commander@15": "15.0.0",
     "npm:jsdom@^30.1.0": "30.1.0",
     "npm:simplex-noise@^4.0.3": "4.0.3",
     "npm:svgdom@~0.1.29": "0.1.29"
@@ -129,6 +130,9 @@
     },
     "clone@2.1.2": {
       "integrity": "sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w=="
+    },
+    "commander@15.0.0": {
+      "integrity": "sha512-z67u4ZhzCL/Tydu1lJARtEZYWbWaN7oYLHbsuzocr6y4N6WZAagG3RQ4FW61V1/0+jImpj293XfrcYnd1qxtPg=="
     },
     "css-tree@3.2.1": {
       "integrity": "sha512-X7sjQzceUhu1u7Y/ylrRZFU2FS6LRiFVp6rKLPg23y3x3c3DOKAwuXGDp+PAGjh6CSnCjYeAul8pcT8bAl+lSA==",
@@ -341,6 +345,7 @@
       "jsr:@std/cli@^1.0.32",
       "npm:@svgdotjs/svg.js@^3.2.8",
       "npm:alea@^1.0.1",
+      "npm:commander@15",
       "npm:jsdom@^30.1.0",
       "npm:simplex-noise@^4.0.3",
       "npm:svgdom@~0.1.29"

@@ -9,6 +9,11 @@
  */
 export type SettingValue = string | number | boolean;
 
+type SettingsOption = {
+  "name": string;
+  "default": string;
+};
+
 /**
  * Settings class for managing drawing parameters.
  * Provides type-safe accessors for string, number, and boolean values.
@@ -95,6 +100,17 @@ export class Settings {
    */
   toObject(): Record<string, SettingValue> {
     return { ...this._data };
+  }
+
+  /**
+   * Convert the settings to a list of { settingsName: default } pairs
+   * for use in commandline options
+   */
+  toOptions(): SettingsOption[] {
+    return this.keys().map((key) => ({
+      name: key,
+      default: this.getString(key),
+    }));
   }
 
   /**

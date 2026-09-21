@@ -8,8 +8,8 @@
   },
   "workspace": ["./examples"],
   "tasks": {
-    "test": "deno test --allow-net --allow-read --allow-run --allow-write",
-    "check:all": "deno ci && deno check && deno lint && deno fmt --check && deno test --allow-net --allow-read --allow-run --allow-write",
+    "test": "deno test --permission-set",
+    "check:all": "deno ci && deno check && deno lint && deno fmt --check && deno test --permission-set",
     "version:minor": "deno bump-version minor && git add . && git commit -m'bump version' && git tag \"v$(< deno.json | jq .version -r)\"",
     "version:patch": "deno bump-version patch && git add . && git commit -m'bump version' && git tag \"v$(< deno.json | jq .version -r)\""
   },
@@ -18,11 +18,16 @@
     "@std/cli": "jsr:@std/cli@^1.0.32",
     "@svgdotjs/svg.js": "npm:@svgdotjs/svg.js@^3.2.8",
     "alea": "npm:alea@^1.0.1",
+    "jsdom": "npm:jsdom@^30.1.0",
     "simplex-noise": "npm:simplex-noise@^4.0.3",
     "svgdom": "npm:svgdom@^0.1.29"
   },
-  "compile": {
-    "include": []
+  "test": {
+    "permissions": {
+      "read": true,
+      "write": true,
+      "run": true
+    }
   },
   "fmt": {
     "exclude": [

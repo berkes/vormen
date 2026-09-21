@@ -1,4 +1,3 @@
-/// <reference lib="dom" />
 /**
  * Drawing for SVG artwork creation.
  *
@@ -15,6 +14,7 @@
 import type { G, Svg } from "@svgdotjs/svg.js";
 import { registerWindow, SVG } from "@svgdotjs/svg.js";
 import { createSVGWindow } from "svgdom";
+import type { HTMLElement } from "jsdom";
 
 // Constants from REQUIREMENTS.md §7
 /**
@@ -78,26 +78,25 @@ export class Drawing {
   private _height: number;
   private _margin: Margin;
   private _backgroundColor: string;
-  private _bindElement: SVGSVGElement;
-  private _svg: Svg | undefined;
+  private _svg: Svg;
 
   /**
    * Create a new Drawing with default settings.
    */
-  constructor(element: SVGSVGElement | undefined = undefined) {
+  constructor(element: HTMLElement | undefined = undefined) {
     this._width = 0;
     this._height = 0;
     this._margin = Margin.ZERO;
     this._backgroundColor = "transparent";
 
-    if (element) {
-      this._bindElement = element;
-    } else {
-      // svg.js needs a DOM to draw into. Outside the browser, svgdom provides one.
+    if (element === undefined) {
       const window = createSVGWindow();
-      registerWindow(window, window.document);
-      this._bindElement = window.document.documentElement;
+      const document = window.document;
+      registerWindow(window, document);
+      element = document.documentElement;
     }
+
+    this._svg = SVG(element);
   }
 
   /**
@@ -195,12 +194,12 @@ export class Drawing {
    * @returns The margin group (svg.js Container) ready for drawing
    */
   build(): G {
-    this._svg = SVG(this._bindElement).size(this._width, this._height);
-
-    const draw = this._svg;
+    // Size to drawing dimensions
+    const draw = this._svg.size(this._width, this._height);
     // Set viewBox to the drawing dimensions
     draw.viewbox(0, 0, this._width, this._height);
 
+    // Draw a background
     const bgRect = draw.rect(this._width, this._height);
     bgRect.fill(this._backgroundColor);
     bgRect.id("background");

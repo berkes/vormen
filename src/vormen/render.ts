@@ -1,4 +1,3 @@
-/// <reference lib="deno.ns" />
 /**
  * Render module for Vormen drawings.
  *
@@ -8,11 +7,6 @@
 import type { Drawing } from "../drawing/drawing.ts";
 import type { Settings } from "../settings/settings.ts";
 import type { VormenOptions } from "./types.ts";
-
-/**
- * Internal type for settings data before converting to Settings class.
- */
-type SettingsData = Record<string, string | number | boolean>;
 
 /**
  * Write SVG to output.

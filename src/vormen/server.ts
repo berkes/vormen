@@ -1,4 +1,3 @@
-/// <reference lib="deno.ns" />
 /**
  * Server module for Vormen drawings.
  *

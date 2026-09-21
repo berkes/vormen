@@ -1,4 +1,3 @@
-/// <reference lib="deno.ns" />
 /**
  * Vormen - Main entry point for running drawings.
  *

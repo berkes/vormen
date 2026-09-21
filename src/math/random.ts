@@ -1,6 +1,12 @@
 import alea from "alea";
 import type { Stringifiable } from "./types.ts";
 
+/**
+ * Random - Seeded pseudo-random number generator.
+ *
+ * Part of the Math module, this class provides reproducible randomness
+ * with methods like between() and betweenFloat().
+ */
 export class Random {
   private _prng: () => number;
   private _seed: string;

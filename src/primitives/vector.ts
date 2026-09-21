@@ -1,5 +1,11 @@
 import type { Point } from "@svgdotjs/svg.js";
 
+/**
+ * Vector - Geometric primitive for vector mathematics.
+ *
+ * Part of the Primitives module, this class represents a 2D vector with x and y
+ * components. Provides operations like distance calculation and lerping.
+ */
 export class Vector {
   readonly x: number;
   readonly y: number;

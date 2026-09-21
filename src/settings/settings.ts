@@ -1,7 +1,9 @@
 /**
- * Settings module for Vormen drawings.
+ * Settings - Configuration management for drawings.
  *
- * This module provides the Settings class used throughout the library.
+ * This module provides the Settings class for managing drawing parameters.
+ * Contains type-safe accessors for string, number, and boolean values,
+ * and supports merging settings from multiple sources.
  */
 
 /**

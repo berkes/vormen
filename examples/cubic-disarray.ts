@@ -11,7 +11,7 @@ import { Drawing, Grid, Random, Settings, Vormen } from "@berkes/vormen";
 
 const settings = new Settings({
   rotationStrength: 2,
-  seed: "seeed",
+  seed: "fancy-red-chicken",
 });
 
 function draw(settings: Settings): Drawing {
@@ -33,7 +33,7 @@ function draw(settings: Settings): Drawing {
 
   grid.cells().forEach((cell) => {
     const square = canvas.rect(cell.width, cell.height)
-      .fill("none")
+      .fill("white")
       .stroke({ color: "black", width: 1 })
       .move(cell.x, cell.y);
 

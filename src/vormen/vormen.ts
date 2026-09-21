@@ -1,8 +1,9 @@
 /**
- * Vormen - Main entry point for running drawings.
+ * Vormen - Main execution module for running drawings.
  *
- * This module provides the Vormen function that turns a drawing factory into a
- * runnable program. It supports two modes:
+ * This module provides the Vormen function, render, and serve.
+ * The Vormen function turns a drawing factory into a runnable program.
+ * It supports two modes:
  * - Render mode (default): renders the drawing to an SVG file on disk
  * - Serve mode: serves a web app with the SVG and a settings UI
  */

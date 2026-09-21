@@ -26,7 +26,7 @@
   "permissions": {
     "default": {
       "read": true,
-      "write": ["./saves", "/tmp"],
+      "write": ["./saves", "./__tests__/integration/saves", "/tmp"],
       "env": {
         "ignore": [
           "CLICOLOR_FORCE",

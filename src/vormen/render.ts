@@ -8,11 +8,38 @@ import type { Drawing } from "../drawing/drawing.ts";
 import type { Settings } from "../settings/settings.ts";
 
 /**
+ * Generate default output filename in format: saves/[drawingfilename]-[iso-date-time-with-seconds].svg
+ */
+function defaultOutfile(): string {
+  try {
+    const mainModule = Deno.mainModule;
+    const pathname = new URL(mainModule).pathname;
+    const basename = pathname.split("/").pop() || "drawing";
+    const filename = basename.replace(/\.[^.]+$/, "");
+
+    const now = new Date();
+    const timestamp =
+      now.toISOString().replace(/T/, "-").replace(/:/g, "-").split(".")[0];
+
+    return `saves/${filename}-${timestamp}.svg`;
+  } catch {
+    const now = new Date();
+    const timestamp =
+      now.toISOString().replace(/T/, "-").replace(/:/g, "-").split(".")[0];
+    return `saves/drawing-${timestamp}.svg`;
+  }
+}
+
+/**
  * Write SVG to output.
  * If outfile is '-' or undefined, write to stdout.
  * Otherwise, write to the specified file.
  */
-export async function writeSvg(svg: string, outfile: string): Promise<void> {
+async function writeSvg(svg: string, outfile: string): Promise<void> {
+  const dir = outfile.split("/").slice(0, -1).join("/");
+  if (dir) {
+    await Deno.mkdir(dir, { recursive: true });
+  }
   await Deno.writeTextFile(outfile, svg);
 }
 
@@ -22,7 +49,7 @@ export async function writeSvg(svg: string, outfile: string): Promise<void> {
 export async function render(
   draw: (settings: Settings) => Drawing,
   settings: Settings,
-  outfile: string,
+  outfile?: string,
 ): Promise<void> {
   const drawing = draw(settings);
   const svg = drawing.svg();
@@ -30,6 +57,7 @@ export async function render(
   if (outfile === "-") {
     console.log(svg);
   } else {
-    await writeSvg(svg, outfile);
+    const finalOutfile = outfile || defaultOutfile();
+    await writeSvg(svg, finalOutfile);
   }
 }

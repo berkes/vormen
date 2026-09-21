@@ -47,13 +47,13 @@ export function Vormen(
   const renderCommand = program
     .command("render")
     .description("Render your drawing to a file or stdout")
-    .requiredOption(
+    .option(
       "-o,--outfile <outfile>",
-      "Output file path. Use - for stdout",
+      "Output file path. Use - for stdout. If omitted, saves to saves/[drawingfilename]-[timestamp].svg",
     )
-    .action((opts) => {
+    .action(async (opts) => {
       const override = defaultSettings.merge(extractSettings(opts));
-      render(draw, override, opts.outfile);
+      await render(draw, override, opts.outfile);
     });
 
   const extractSettings = (opts: object): Settings => {

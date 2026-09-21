@@ -26,6 +26,9 @@ the project severely.
 - We always write tests first. Each feature has at least an integration test.
   Each module has its own unit tests.
 - We always run `deno run check:all` to check all linting, formatting and tests.
+- Keep the public API as small as possible. Do not export functions that have no
+  use outside the module.
+- Non-exported (private) items do not need unit tests.
 
 ## Definition of done
 

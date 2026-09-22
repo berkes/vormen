@@ -1,0 +1,14 @@
+{
+  "name": "@berkes/create-vormen",
+  "version": "0.1.0",
+  "description": "Scaffold a new Vormen drawing project",
+  "type": "module",
+  "exports": "./create.ts",
+  "bin": {
+    "create-vormen": "create.ts"
+  },
+  "files": ["create.ts", "templates"],
+  "imports": {
+    "commander": "npm:commander@^15.0.0"
+  }
+}

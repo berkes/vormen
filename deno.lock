@@ -349,6 +349,13 @@
       "npm:jsdom@^30.1.0",
       "npm:simplex-noise@^4.0.3",
       "npm:svgdom@~0.1.29"
-    ]
+    ],
+    "members": {
+      "packages/create-vormen": {
+        "dependencies": [
+          "npm:commander@15"
+        ]
+      }
+    }
   }
 }

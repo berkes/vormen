@@ -1,5 +1,3 @@
-import type { Point } from "@svgdotjs/svg.js";
-
 /**
  * Vector - Geometric primitive for vector mathematics.
  *
@@ -13,10 +11,6 @@ export class Vector {
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
-  }
-
-  static fromPoint(point: Point): Vector {
-    return new Vector(point.x, point.y);
   }
 
   static lerp(a: Vector, b: Vector, t: number): Vector {

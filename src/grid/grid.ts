@@ -1,10 +1,13 @@
 import { G, Line, Rect, Text } from "@svgdotjs/svg.js";
+import { Direction } from "../primitives/direction.ts";
+
 /**
  * Grid - A grid system for organizing cells in a drawing
  *
  * Grid uses the builder pattern for configuration and is iterable,
  * yielding Cell objects in row-major order.
  */
+
 /**
  * Cell - Represents a single cell in a grid
  *
@@ -17,6 +20,7 @@ export class Cell {
   private _y: number;
   private _width: number;
   private _height: number;
+  private _grid: Grid;
 
   /**
    * Create a new Cell
@@ -26,6 +30,7 @@ export class Cell {
    * @param y Y coordinate of top-left corner
    * @param width Width of the cell
    * @param height Height of the cell
+   * @param grid Grid that owns this cell
    */
   constructor(
     row: number,
@@ -34,6 +39,7 @@ export class Cell {
     y: number,
     width: number,
     height: number,
+    grid: Grid,
   ) {
     this._row = row;
     this._col = col;
@@ -41,6 +47,7 @@ export class Cell {
     this._y = y;
     this._width = width;
     this._height = height;
+    this._grid = grid;
   }
 
   /** Getters */
@@ -80,6 +87,21 @@ export class Cell {
 
   get centerY(): number {
     return this._y + this._height / 2;
+  }
+
+  getNeighbor(direction: Direction): Cell | undefined {
+    switch (direction) {
+      case Direction.Up:
+        return this._grid.pickCell(this.row - 1, this.col);
+      case Direction.Down:
+        return this._grid.pickCell(this.row + 1, this.col);
+      case Direction.Left:
+        return this._grid.pickCell(this.row, this.col - 1);
+      case Direction.Right:
+        return this._grid.pickCell(this.row, this.col + 1);
+      default:
+        throw new Error(`Invalid direction: ${direction}`);
+    }
   }
 
   /**
@@ -284,8 +306,16 @@ export class Grid {
   /**
    * Pick a cell by row and column
    */
-  pickCell(row: number, col: number): Cell {
-    return this.cells()[row * this._nCols + col];
+  pickCell(row: number, col: number): Cell | undefined {
+    if (
+      row >= 0 &&
+      row < this._nRows &&
+      col >= 0 &&
+      col < this._nCols
+    ) {
+      return this.cells()[row * this._nCols + col];
+    }
+    return undefined;
   }
 
   _generateCells(): Cell[] {
@@ -299,7 +329,7 @@ export class Grid {
         const y = row * outerCellHeight + this._paddingTop;
         const width = this.cellWidth;
         const height = this.cellHeight;
-        cells.push(new Cell(row, col, x, y, width, height));
+        cells.push(new Cell(row, col, x, y, width, height, this));
       }
     }
     return cells;

@@ -43,7 +43,7 @@ grid.cells().forEach((cell) => {
 const centerCell = grid.pickCell(
   Math.floor(COLUMNS / 2) - 2,
   Math.floor(ROWS / 2) - 1,
-);
+)!;
 const centerTileX = centerCell.x;
 const centerTileY = centerCell.y;
 const centerTileWidth = centerCell.width * 3;

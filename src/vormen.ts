@@ -34,6 +34,7 @@ export { Random } from "./math/random.ts";
 export { Noise } from "./math/noise.ts";
 
 // Primitives domain
+export { Direction } from "./primitives/direction.ts";
 export { Vector } from "./primitives/vector.ts";
 
 // Grid domain

@@ -40,6 +40,11 @@ export class Random {
     return this.next() < chance;
   }
 
+  pick<T>(items: T[]): T {
+    const idx = this.between(0, items.length - 1);
+    return items[idx];
+  }
+
   get seed(): string {
     return this._seed;
   }

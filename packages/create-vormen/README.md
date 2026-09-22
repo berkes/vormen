@@ -7,11 +7,7 @@ Create a new Vormen drawing project with a single command.
 ### With deno create (recommended)
 
 ```bash
-# Create a project in a new directory
-deno create npm:@berkes/vormen my-drawing
-
-# Create in current directory
-deno create npm:@berkes/vormen .
+deno create jsr:@berkes/vormen
 ```
 
 This will create a `drawing.ts` file with a simple template that draws a square

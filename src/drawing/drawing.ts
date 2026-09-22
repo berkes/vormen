@@ -16,7 +16,6 @@ import { registerWindow, SVG } from "@svgdotjs/svg.js";
 import { createSVGWindow } from "svgdom";
 import type { HTMLElement } from "jsdom";
 
-// Constants from REQUIREMENTS.md §7
 /**
  * Factor to convert user units to millimeters: 1 user unit = 0.264583 mm
  */
@@ -179,6 +178,10 @@ export class Drawing {
    */
   getInnerHeight(): number {
     return this._height - this._margin.top - this._margin.bottom;
+  }
+
+  get margin(): Margin {
+    return this._margin;
   }
 
   /**

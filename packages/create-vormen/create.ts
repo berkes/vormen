@@ -1,5 +1,21 @@
 #!/usr/bin/env node
 
+/**
+ * create-vormen - CLI entry point
+ *
+ * This module provides a command-line interface for scaffolding new Vormen
+ * drawing projects. It copies a default template file (ts-simple.ts) to the
+ * target directory.
+ *
+ * The template creates a basic A4-sized SVG drawing with a single square,
+ * demonstrating the core Drawing and Vormen APIs.
+ *
+ * Usage:
+ *   create-vormen [name]
+ *   npx create-vormen my-project
+ *   deno create npm:@berkes/vormen my-project
+ */
+
 import { program } from "commander";
 import fs from "node:fs";
 import path from "node:path";

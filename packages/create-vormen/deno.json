@@ -1,7 +1,7 @@
 {
   "name": "@berkes/create-vormen",
   "version": "0.1.0",
-  "description": "Scaffold a new Vormen drawing project",
+  "description": "Create a new Vormen drawing project with a simple template. Generates a drawing.ts file with an A4 canvas and a sample square, ready to use with the Vormen runner.",
   "type": "module",
   "exports": "./create.ts",
   "bin": {

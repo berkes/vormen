@@ -51,6 +51,10 @@ export class Cell {
   }
 
   /** Getters */
+  get id(): string {
+    return `${this._row}-${this._col}`;
+  }
+
   get x(): number {
     return this._x;
   }

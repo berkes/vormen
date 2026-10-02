@@ -63,3 +63,6 @@ synonyms. When we introduce a new concept, add it to the glossary.
 
 Run tests with `deno test --allow-run`. All tests should pass. We never skip
 tests or remove tests just to make the test green.
+
+- Omit trivial tests that are covered by linting and type checking (e.g.,
+  constructors, getters, setters without business logic).

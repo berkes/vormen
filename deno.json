@@ -6,6 +6,7 @@
   "workspace": ["./examples", "./packages/create-vormen"],
   "tasks": {
     "test": "deno test --permission-set",
+    "generate:examples": "./examples/update-example-svgs.sh",
     "check:all": "deno ci && deno check && deno lint && deno fmt --check && deno test --permission-set",
     "version:minor": "deno bump-version minor && git add . && git commit -m'bump version' && git tag \"v$(< deno.json | jq .version -r)\"",
     "version:patch": "deno bump-version patch && git add . && git commit -m'bump version' && git tag \"v$(< deno.json | jq .version -r)\""

@@ -79,8 +79,8 @@ We can run it to generate an SVG:
 deno run drawing.ts render --outfile drawing.svg
 ```
 
-![cubic-disarray](doc/cubic-disarray.svg) (This is generated with
-[examples/cubic-disarray.ts](examples/cubic-disarray.ts])
+![readme-example](doc/readme-example.svg) (This is generated with
+[examples/cubic-disarray.ts](examples/cubic-disarray.ts))
 
 Or output to stdout.
 
@@ -92,6 +92,19 @@ Or override settings
 
 ```bash
 deno run drawing.ts render --outfile drawing.svg --setting.rotationStrength=10
+```
+
+## Examples
+
+The [examples directory](examples/) contains runnable example drawings. Each
+example has a page in [doc/examples/](doc/examples/) with a short explanation
+and the SVGs it generates.
+
+All example SVGs are generated and committed, and can be regenerated with a
+single command:
+
+```bash
+deno task generate:examples
 ```
 
 ## Pick and Choose

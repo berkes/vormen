@@ -42,7 +42,7 @@
     }
   },
   "fmt": {
-    "exclude": ["doc/glossary.md"]
+    "exclude": ["doc/glossary.md", "doc/examples/**/*.svg"]
   },
   "exclude": ["target/", "dist/", "saves/"]
 }

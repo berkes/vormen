@@ -20,6 +20,12 @@ Deno.test("Point.add() offsets point by vector", () => {
   assertEquals(result.y, 6);
 });
 
+Deno.test("Point.dist() calculates distance", () => {
+  const a = new Point(1, 2);
+  const b = new Point(4, 6);
+  assertEquals(a.dist(b), 5);
+});
+
 Deno.test("Point.equals() checks equality", () => {
   const a = new Point(1, 2);
   const b = new Point(1, 2);

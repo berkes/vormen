@@ -90,6 +90,13 @@ export class Point {
   }
 
   /**
+   * Calculates the Euclidean distance between this point and another point.
+   */
+  dist(other: Point): number {
+    return Math.sqrt((other.x - this.x) ** 2 + (other.y - this.y) ** 2);
+  }
+
+  /**
    * Checks if this point is equal to another point.
    * Uses strict equality (===) for both x and y coordinates.
    */

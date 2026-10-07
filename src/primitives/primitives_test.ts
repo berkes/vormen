@@ -2,7 +2,12 @@
  * Unit tests for Point and Vector primitives.
  */
 import { Point, Vector } from "./point.ts";
-import { assert, assertEquals, assertThrows } from "@std/assert";
+import {
+  assert,
+  assertAlmostEquals,
+  assertEquals,
+  assertThrows,
+} from "@std/assert";
 
 Deno.test("Point.to() creates vector from this point to other", () => {
   const a = new Point(1, 2);
@@ -183,4 +188,52 @@ Deno.test("Chained operations: pointAtDistanceFromEnd example", () => {
   const result2 = b.pointAtDistanceTowards(a, l);
   assertEquals(result.x, result2.x);
   assertEquals(result.y, result2.y);
+});
+
+Deno.test("Vector.rotate() - rotates vector by 90 degrees (π/2 radians)", () => {
+  const v = new Vector(1, 0);
+  const rotated = v.rotate(Math.PI / 2);
+  assertAlmostEquals(rotated.x, 0, 1e-6);
+  assertAlmostEquals(rotated.y, 1, 1e-6);
+});
+
+Deno.test("Vector.rotate() - rotates vector by 180 degrees (π radians)", () => {
+  const v = new Vector(1, 0);
+  const rotated = v.rotate(Math.PI);
+  assertAlmostEquals(rotated.x, -1, 1e-6);
+  assertAlmostEquals(rotated.y, 0, 1e-6);
+});
+
+Deno.test("Vector.rotate() - rotates vector by 270 degrees (3π/2 radians)", () => {
+  const v = new Vector(1, 0);
+  const rotated = v.rotate(3 * Math.PI / 2);
+  assertAlmostEquals(rotated.x, 0, 1e-6);
+  assertAlmostEquals(rotated.y, -1, 1e-6);
+});
+
+Deno.test("Vector.rotate() - rotates vector by 0 radians (identity)", () => {
+  const v = new Vector(3, 4);
+  const rotated = v.rotate(0);
+  assertEquals(rotated.x, 3);
+  assertEquals(rotated.y, 4);
+});
+
+Deno.test("Vector.rotate() - rotates vector by 360 degrees (2π radians)", () => {
+  const v = new Vector(3, 4);
+  const rotated = v.rotate(2 * Math.PI);
+  assertAlmostEquals(rotated.x, 3, 1e-6);
+  assertAlmostEquals(rotated.y, 4, 1e-6);
+});
+
+Deno.test("Vector.rotate() - preserves length", () => {
+  const v = new Vector(3, 4);
+  const rotated = v.rotate(Math.PI / 4);
+  assertAlmostEquals(rotated.length, v.length, 1e-6);
+});
+
+Deno.test("Vector.rotate() - zero vector rotation", () => {
+  const v = new Vector(0, 0);
+  const rotated = v.rotate(Math.PI / 2);
+  assertEquals(rotated.x, 0);
+  assertEquals(rotated.y, 0);
 });

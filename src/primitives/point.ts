@@ -182,6 +182,25 @@ export class Vector {
     return new Vector(-this.x, -this.y);
   }
 
+  /**
+   * Returns a new vector rotated by the given angle in radians.
+   * The rotation is counterclockwise (standard mathematical convention).
+   * The length of the vector is preserved by rotation.
+   *
+   * @param angle - The rotation angle in radians
+   * @returns A new Vector rotated by the specified angle
+   *
+   * @example
+   * const v = new Vector(1, 0);
+   * const rotated90 = v.rotate(Math.PI / 2); // Vector(0, 1)
+   * const rotated180 = v.rotate(Math.PI); // Vector(-1, 0)
+   */
+  rotate(angle: number): Vector {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    return new Vector(this.x * cos - this.y * sin, this.x * sin + this.y * cos);
+  }
+
   static lerp(a: Vector, b: Vector, t: number): Vector {
     return new Vector(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
   }

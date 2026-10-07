@@ -38,6 +38,9 @@ export { Direction } from "./primitives/direction.ts";
 export { Vector } from "./primitives/vector.ts";
 export { Point } from "./primitives/point.ts";
 
+// Path Domain
+export { PathBuilder } from "./path/path_builder.ts";
+
 // Grid domain
 export { Cell, Grid } from "./grid/grid.ts";
 

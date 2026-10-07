@@ -100,6 +100,9 @@ The [examples directory](examples/) contains runnable example drawings. Each
 example has a page in [doc/examples/](doc/examples/) with a short explanation
 and the SVGs it generates.
 
+- [Cubic Disarray Example](doc/examples/cubic-disarray/README.md)
+- [Noodle Love Example](doc/examples/noodle-love/README.md)
+
 All example SVGs are generated and committed, and can be regenerated with a
 single command:
 

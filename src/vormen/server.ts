@@ -4,8 +4,8 @@
  * This module provides the web server functionality for the Vormen library.
  */
 
-import type { Drawing } from "../drawing/drawing.ts";
 import { Settings } from "../settings/settings.ts";
+import type { DrawFunction } from "@berkes/vormen";
 import type { SettingsData } from "./types.ts";
 
 /**
@@ -156,11 +156,11 @@ function html(svg: string, settings: Settings): string {
  * This is a simple SPA that re-renders the SVG when settings change.
  */
 export async function serve(
-  draw: (settings: Settings) => Drawing,
+  draw: DrawFunction,
   defaultSettings: Settings,
   port: number,
 ): Promise<never> {
-  const handler = (req: Request): Response => {
+  const handler = async (req: Request): Promise<Response> => {
     const url = new URL(req.url);
 
     if (url.pathname === "/render") {
@@ -172,7 +172,7 @@ export async function serve(
       }
 
       const settings = deepMergeSettings(defaultSettings.toObject(), overrides);
-      const drawing = draw(settings);
+      const drawing = await draw(settings);
       const svg = drawing.svg();
 
       return new Response(html(svg, settings), {
@@ -182,7 +182,7 @@ export async function serve(
 
     // Serve the initial page
     const settings = defaultSettings;
-    const drawing = draw(settings);
+    const drawing = await draw(settings);
     const svg = drawing.svg();
 
     return new Response(html(svg, settings), {

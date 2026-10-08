@@ -11,7 +11,7 @@ import type { Drawing } from "../drawing/drawing.ts";
  * Draw function type - a factory that takes settings and returns a Drawing.
  * This is the recommended shape as it allows re-rendering with different settings.
  */
-export type DrawFunction = (settings: Settings) => Drawing;
+export type DrawFunction = (settings: Settings) => Drawing | Promise<Drawing>;
 
 /**
  * Internal type for settings data before converting to Settings class.

@@ -45,7 +45,19 @@ function html(svg: string, settings: Settings): string {
     }
     .svg-container {
       flex: 1;
+    }
+    .svg-paper {
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+      background: white;
       border: 1px solid #ccc;
+      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
+    }
+    .svg-paper svg {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
     }
     .settings {
       width: 300px;
@@ -87,7 +99,9 @@ function html(svg: string, settings: Settings): string {
   <h1>Vormen Drawing</h1>
   <div class="container">
     <div class="svg-container">
-      ${svg}
+      <div class="svg-paper">
+        ${svg}
+      </div>
     </div>
     <div class="settings">
       <h2>Settings</h2>
@@ -95,23 +109,30 @@ function html(svg: string, settings: Settings): string {
         ${
     Object.entries(settings.toObject()).map(([key, value]) => `
           <div class="setting">
-            <label for="${key}">${key}</label>
-            <input type="text" id="${key}" name="${key}" value="${value}">
+          <label for="${key}">${key}</label>
+          <input type="text" class="setting-input" id="${key}" name="${key}" value="${value}">
           </div>
-        `).join("")
+          `).join("")
   }
-        <button type="submit">Update</button>
       </form>
     </div>
   </div>
   <script>
     const form = document.getElementById('settings-form');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    for (const input of form.querySelectorAll('.setting-input')) {
+      // On change, submit the form
+      input.addEventListener('change', (e) => {
+        update().then(() => {
+          console.log('updated');
+        });
+      });
+    }
+
+    async function update() {
       const formData = new FormData(form);
       const params = new URLSearchParams();
       for (const [key, value] of formData.entries()) {
-        params.append(key, value as string);
+        params.append(key, value);
       }
       const response = await fetch('/render?' + params.toString());
       const html = await response.text();
@@ -119,11 +140,11 @@ function html(svg: string, settings: Settings): string {
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
       const newSvg = doc.querySelector('svg');
-      const oldSvg = document.querySelector('.svg-container');
+      const oldSvg = document.querySelector('.svg-paper');
       if (newSvg && oldSvg) {
         oldSvg.innerHTML = newSvg.outerHTML;
       }
-    });
+    };
   </script>
 </body>
 </html>

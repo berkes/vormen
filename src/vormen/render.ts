@@ -4,8 +4,8 @@
  * This module provides the rendering functionality for the Vormen library.
  */
 
-import type { Drawing } from "../drawing/drawing.ts";
 import type { Settings } from "../settings/settings.ts";
+import type { DrawFunction } from "./types.ts";
 
 /**
  * Generate default output filename in format: saves/[drawingfilename]-[iso-date-time-with-seconds].svg
@@ -47,11 +47,11 @@ async function writeSvg(svg: string, outfile: string): Promise<void> {
  * Main render function - invoke the factory and write the SVG.
  */
 export async function render(
-  draw: (settings: Settings) => Drawing,
+  draw: DrawFunction,
   settings: Settings,
   outfile?: string,
 ): Promise<void> {
-  const drawing = draw(settings);
+  const drawing = await draw(settings);
   const svg = drawing.svg();
 
   if (outfile === "-") {

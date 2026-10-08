@@ -1,0 +1,9 @@
+export const snapshot = {};
+
+snapshot[`build() with no rounding produces simple path 1`] = `"M0 0L0 0L10 0L10 10"`;
+
+snapshot[`build() with single point and no rounding 1`] = `"M5 5L5 5"`;
+
+snapshot[`build() with two points and no rounding 1`] = `"M0 0L0 0L10 10"`;
+
+snapshot[`build() with closed path and no rounding 1`] = `"M0 0L0 0L10 0L10 10Z"`;

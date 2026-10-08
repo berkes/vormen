@@ -21,6 +21,11 @@ Math
 : Calculation utilities, randomness, and noise generation. Contains
 constrain, Random, Noise, and Stringifiable.
 
+Path
+: Building SVG path data strings from points. Contains the PathBuilder
+(angular paths with straight lines) and RoundedPathBuilder (paths with
+rounded corners) classes.
+
 Primitives
 : Geometric primitives for vector mathematics. Contains Vector.
 

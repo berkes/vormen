@@ -1,13 +1,5 @@
 export const snapshot = {};
 
-snapshot[`build() with no rounding produces simple path 1`] = `"M0 0L0 0L10 0L10 10"`;
-
-snapshot[`build() with single point and no rounding 1`] = `"M5 5L5 5"`;
-
-snapshot[`build() with two points and no rounding 1`] = `"M0 0L0 0L10 10"`;
-
-snapshot[`build() with closed path and no rounding 1`] = `"M0 0L0 0L10 0L10 10Z"`;
-
 snapshot[`build() with rounding on square path 1`] = `"M0 2L0 2Q0 0,2 0L8 0Q10 0,10 2L10 8Q10 10,8 10L2 10Q0 10,0 8"`;
 
 snapshot[`build() with rounding on triangle path 1`] = `"M0.4472135954999579 0.8944271909999159L0.4472135954999579 0.8944271909999159Q0 0,1 0L9 0Q10 0,9.552786404500042 0.8944271909999159L5.447213595499958 9.105572809000083Q5 10,4.552786404500042 9.105572809000083"`;
@@ -17,3 +9,5 @@ snapshot[`build() with rounding and closed path 1`] = `"M0 2L0 2Q0 0,2 0L8 0Q10 
 snapshot[`build() with constrained rounding reduces radius 1`] = `"M0.5 0L0.5 0Q0 0,0.5 0L0.5 0Q1 0,1.5 0L5.5 0Q10 0,5.5 0"`;
 
 snapshot[`build() with constrained rounding on very close points 1`] = `"M0.05 0L0.05 0Q0 0,0.05 0L0.05 0Q0.1 0,0.15000000000000002 0L0.15000000000000002 0Q0.2 0,0.15000000000000002 0"`;
+
+snapshot[`RoundedPathBuilder created from PathBuilder points 1`] = `"M0.7071067811865475 0.7071067811865475L0.7071067811865475 0.7071067811865475Q0 0,1 0L9 0Q10 0,10 1L10 9Q10 10,9.292893218813452 9.292893218813452"`;

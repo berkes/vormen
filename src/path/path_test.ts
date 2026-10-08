@@ -1,7 +1,7 @@
 /**
  * Unit tests for PathBuilder.
  */
-import { PathBuilder } from "./path_builder.ts";
+import { PathBuilder } from "./path.ts";
 import { Point } from "../primitives/point.ts";
 import { assert, assertEquals, assertThrows } from "@std/assert";
 
@@ -33,20 +33,6 @@ Deno.test("PathBuilder constructor with single point", () => {
   assertEquals(builder.end, p(5, 5));
 });
 
-Deno.test("withRounding sets radius and returns this", () => {
-  const builder = new PathBuilder([p(0, 0), p(10, 10)]);
-  const result = builder.withRounding(5);
-
-  assert(result === builder);
-});
-
-Deno.test("withRoundingConstrained sets constrained and returns this", () => {
-  const builder = new PathBuilder([p(0, 0), p(10, 10)]);
-  const result = builder.withRoundingConstrained(true);
-
-  assert(result === builder);
-});
-
 Deno.test("withClosed sets closed and returns this", () => {
   const builder = new PathBuilder([p(0, 0), p(10, 10)]);
   const result = builder.withClosed(true);
@@ -61,16 +47,6 @@ Deno.test("push adds point and returns this", () => {
   assert(result === builder);
   assertEquals(builder.points, [p(0, 0), p(10, 10), p(20, 20)]);
   assertEquals(builder.end, p(20, 20));
-});
-
-Deno.test("chain multiple builder methods", () => {
-  const builder = new PathBuilder([p(0, 0), p(10, 10)])
-    .withRounding(5)
-    .withRoundingConstrained(true)
-    .withClosed(true)
-    .push(p(20, 0));
-
-  assertEquals(builder.points, [p(0, 0), p(10, 10), p(20, 0)]);
 });
 
 Deno.test("get returns point at valid index", () => {
@@ -210,50 +186,6 @@ Deno.test("build() with closed path and no rounding", async (t) => {
   const builder = new PathBuilder([p(0, 0), p(10, 0), p(10, 10)]).withClosed(
     true,
   );
-  const result = builder.build();
-
-  await t.assertSnapshot(result);
-});
-
-Deno.test("build() with rounding on square path", async (t) => {
-  const builder = new PathBuilder([p(0, 0), p(10, 0), p(10, 10), p(0, 10)])
-    .withRounding(2);
-  const result = builder.build();
-
-  await t.assertSnapshot(result);
-});
-
-Deno.test("build() with rounding on triangle path", async (t) => {
-  const builder = new PathBuilder([p(0, 0), p(10, 0), p(5, 10)]).withRounding(
-    1,
-  );
-  const result = builder.build();
-
-  await t.assertSnapshot(result);
-});
-
-Deno.test("build() with rounding and closed path", async (t) => {
-  const builder = new PathBuilder([p(0, 0), p(10, 0), p(10, 10), p(0, 10)])
-    .withRounding(2)
-    .withClosed(true);
-  const result = builder.build();
-
-  await t.assertSnapshot(result);
-});
-
-Deno.test("build() with constrained rounding reduces radius", async (t) => {
-  const builder = new PathBuilder([p(0, 0), p(1, 0), p(10, 0)])
-    .withRounding(5)
-    .withRoundingConstrained(true);
-  const result = builder.build();
-
-  await t.assertSnapshot(result);
-});
-
-Deno.test("build() with constrained rounding on very close points", async (t) => {
-  const builder = new PathBuilder([p(0, 0), p(0.1, 0), p(0.2, 0)])
-    .withRounding(10)
-    .withRoundingConstrained(true);
   const result = builder.build();
 
   await t.assertSnapshot(result);

@@ -15,7 +15,7 @@ const draw = (settings: Settings) => {
     .rect(settings.getInt("size"), settings.getInt("size"))
     .id("the-rect")
     .fill(settings.getString("color"));
-  return drawing;
+  return drawing.svg();
 };
 
 Vormen(draw, defaultSettings);

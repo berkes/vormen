@@ -123,3 +123,22 @@ Deno.test("render with default outfile generates filename", async () => {
     );
   }
 });
+
+Deno.test("render hardcoded svg string drawing", async () => {
+  const drawingPath = new URL(
+    "drawings/hardcoded_svg_drawing.ts",
+    import.meta.url,
+  ).pathname;
+  const command = new Deno.Command(Deno.execPath(), {
+    args: ["run", "--allow-all", drawingPath, "render", "--outfile=-"],
+    cwd: new URL(".", import.meta.url).pathname,
+  });
+  const { code, stdout, stderr } = await command.output();
+  const stdoutText = new TextDecoder().decode(stdout);
+  const stderrText = new TextDecoder().decode(stderr);
+  assertEquals(code, 0, `exit code nonzero. Error: ${stderrText}`);
+  assertEquals(
+    stdoutText,
+    `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100" viewBox="0 0 100 100">\n    <rect x="10" y="10" width="80" height="80" fill="red" />\n  </svg>\n`,
+  );
+});

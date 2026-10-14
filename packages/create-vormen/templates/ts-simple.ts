@@ -13,7 +13,7 @@ const draw = () => {
     .fill("none")
     .stroke({ width: 1, color: "black" });
 
-  return drawing;
+  return drawing.svg();
 };
 
 Vormen(draw, settings);

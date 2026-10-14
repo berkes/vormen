@@ -14,7 +14,7 @@ const settings = new Settings({
   seed: "fancy-red-chicken",
 });
 
-function draw(settings: Settings): Drawing {
+function draw(settings: Settings): string {
   const drawing = new Drawing()
     .withA4Size()
     .withMargin(20)
@@ -49,7 +49,7 @@ function draw(settings: Settings): Drawing {
     drawing.getInnerHeight(),
   );
 
-  return drawing;
+  return drawing.svg();
 }
 
 Vormen(draw, settings);

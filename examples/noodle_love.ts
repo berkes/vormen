@@ -20,7 +20,7 @@ const settings = new Settings({
   seed: "noodle-love",
 });
 
-function draw(settings: Settings): Drawing {
+function draw(settings: Settings): string {
   const drawing = new Drawing()
     .withA4Size()
     .withMargin(20)
@@ -83,7 +83,7 @@ function draw(settings: Settings): Drawing {
   const text = canvas.text(`Noodle ${rand.seed}`);
   text.x(0).y(drawing.getInnerHeight());
 
-  return drawing;
+  return drawing.svg();
 }
 
 Vormen(draw, settings);

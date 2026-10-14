@@ -51,8 +51,7 @@ export async function render(
   settings: Settings,
   outfile?: string,
 ): Promise<void> {
-  const drawing = await draw(settings);
-  const svg = drawing.svg();
+  const svg = await draw(settings);
 
   if (outfile === "-") {
     console.log(svg);

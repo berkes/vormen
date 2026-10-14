@@ -172,8 +172,7 @@ export async function serve(
       }
 
       const settings = deepMergeSettings(defaultSettings.toObject(), overrides);
-      const drawing = await draw(settings);
-      const svg = drawing.svg();
+      const svg = await draw(settings);
 
       return new Response(html(svg, settings), {
         headers: { "content-type": "text/html" },
@@ -182,8 +181,7 @@ export async function serve(
 
     // Serve the initial page
     const settings = defaultSettings;
-    const drawing = await draw(settings);
-    const svg = drawing.svg();
+    const svg = await draw(settings);
 
     return new Response(html(svg, settings), {
       headers: { "content-type": "text/html" },

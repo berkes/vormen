@@ -65,7 +65,7 @@ const draw = (settings) => {
       );
   });
 
-  return drawing;
+  return drawing.svg();
 };
 
 Vormen(draw, defaultSettings);

@@ -5,13 +5,12 @@
  */
 
 import type { Settings } from "../settings/settings.ts";
-import type { Drawing } from "../drawing/drawing.ts";
 
 /**
- * Draw function type - a factory that takes settings and returns a Drawing.
+ * Draw function type - a factory that takes settings and returns an SVG string.
  * This is the recommended shape as it allows re-rendering with different settings.
  */
-export type DrawFunction = (settings: Settings) => Drawing | Promise<Drawing>;
+export type DrawFunction = (settings: Settings) => string | Promise<string>;
 
 /**
  * Internal type for settings data before converting to Settings class.

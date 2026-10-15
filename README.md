@@ -31,14 +31,12 @@ the runner as its last line. Here's a full example:
 ```Javascript
 import { Drawing, Grid, Noise, Settings, Vormen } from "@berkes/vormen";
 
-const schema = {
+const defaults = {
   rotationStrength: 35,
 };
 
-const defaultSettings = new Settings(schema);
-
 const draw = (rawSettings) => {
-  const settings = Settings.parse(schema, rawSettings);
+  const settings = Settings.parse(defaults, rawSettings);
   // Create a drawing with a4 size, equal margins on all sides and a white background.
   const drawing = new Drawing().withA4Size().withMargin(20).withBackground(
     "white",
@@ -71,7 +69,7 @@ const draw = (rawSettings) => {
   return drawing.svg();
 };
 
-Vormen(draw, defaultSettings);
+Vormen(draw, defaults);
 ```
 
 In this example, we see a lot of things coming together.

@@ -1,8 +1,11 @@
 import { Drawing, Settings, type SettingsData, Vormen } from "@berkes/vormen";
 
-const schema = {};
+const defaultSettings = {
+  strokeWidth: 1,
+};
 
-const draw = (_settings: SettingsData) => {
+const draw = (rawSettings: SettingsData) => {
+  const settings = Settings.parse(defaultSettings, rawSettings);
   const drawing = new Drawing().withA4Size();
   const canvas = drawing.build();
 
@@ -11,9 +14,9 @@ const draw = (_settings: SettingsData) => {
     .rect(100, 100)
     .move(50, 50)
     .fill("none")
-    .stroke({ width: 1, color: "black" });
+    .stroke({ width: settings.strokeWidth, color: "black" });
 
   return drawing.svg();
 };
 
-Vormen(draw, new Settings(schema));
+Vormen(draw, defaultSettings);

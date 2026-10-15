@@ -22,9 +22,7 @@ import { serve } from "./server.ts";
  * SettingsData object whose values define each setting's canonical type and
  * default), or a Settings instance created with `Settings.parse()`.
  */
-export type VormenSettings<TSchema extends SettingsSchema> =
-  | TSchema
-  | Settings<TSchema>;
+export type VormenSettings<TSchema extends SettingsSchema> = TSchema;
 
 /**
  * Main Vormen function - the entry point for running a drawing.

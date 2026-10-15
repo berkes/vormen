@@ -88,4 +88,4 @@ function draw(rawSettings: SettingsData): string {
   return drawing.svg();
 }
 
-Vormen(draw, new Settings(schema));
+Vormen(draw, schema);

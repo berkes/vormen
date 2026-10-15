@@ -1,12 +1,12 @@
 import { Drawing, Settings, type SettingsData, Vormen } from "@berkes/vormen";
 
-const schema = {
+const defaults = {
   size: 100,
   color: "blue",
 };
 
 const draw = (rawSettings: SettingsData) => {
-  const settings = Settings.parse(schema, rawSettings);
+  const settings = Settings.parse(defaults, rawSettings);
   const drawing = new Drawing().withSize(
     settings.size * 2,
     settings.size * 2,
@@ -19,4 +19,4 @@ const draw = (rawSettings: SettingsData) => {
   return drawing.svg();
 };
 
-Vormen(draw, new Settings(schema));
+Vormen(draw, defaults);

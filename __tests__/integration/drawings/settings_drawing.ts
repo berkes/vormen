@@ -1,12 +1,12 @@
 import { Drawing, Settings, type SettingsData, Vormen } from "@berkes/vormen";
 
-const schema = {
+const defaults = {
   text: "Vormen",
   strokeWidth: 1,
 } satisfies SettingsData;
 
 function draw(rawSettings: SettingsData): string {
-  const settings = Settings.parse(schema, rawSettings);
+  const settings = Settings.parse(defaults, rawSettings);
   const drawing = new Drawing().withSize(100, 100);
   const canvas = drawing.build();
   const label = canvas.text(settings.text).move(10, 50);
@@ -15,4 +15,4 @@ function draw(rawSettings: SettingsData): string {
   return drawing.svg();
 }
 
-Vormen(draw, new Settings(schema));
+Vormen(draw, defaults);

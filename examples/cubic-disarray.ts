@@ -15,13 +15,13 @@ import {
   Vormen,
 } from "@berkes/vormen";
 
-const schema = {
+const defaultSettings = {
   rotationStrength: 2,
   seed: "fancy-red-chicken",
 };
 
 function draw(rawSettings: SettingsData): string {
-  const settings = Settings.parse(schema, rawSettings);
+  const settings = Settings.parse(defaultSettings, rawSettings);
   const drawing = new Drawing()
     .withA4Size()
     .withMargin(20)
@@ -52,4 +52,4 @@ function draw(rawSettings: SettingsData): string {
   return drawing.svg();
 }
 
-Vormen(draw, new Settings(schema));
+Vormen(draw, defaultSettings);

@@ -1,21 +1,22 @@
-import { Drawing, Settings, Vormen } from "@berkes/vormen";
+import { Drawing, Settings, type SettingsData, Vormen } from "@berkes/vormen";
 
-const defaultSettings = new Settings({
+const schema = {
   size: 100,
   color: "blue",
-});
+};
 
-const draw = (settings: Settings) => {
+const draw = (rawSettings: SettingsData) => {
+  const settings = Settings.parse(schema, rawSettings);
   const drawing = new Drawing().withSize(
-    settings.getInt("size") * 2,
-    settings.getInt("size") * 2,
+    settings.size * 2,
+    settings.size * 2,
   );
   const canvas = drawing.build();
   canvas
-    .rect(settings.getInt("size"), settings.getInt("size"))
+    .rect(settings.size, settings.size)
     .id("the-rect")
-    .fill(settings.getString("color"));
+    .fill(settings.color);
   return drawing.svg();
 };
 
-Vormen(draw, defaultSettings);
+Vormen(draw, new Settings(schema));

@@ -1,8 +1,8 @@
-import { Drawing, Settings, Vormen } from "@berkes/vormen";
+import { Drawing, Settings, type SettingsData, Vormen } from "@berkes/vormen";
 
-const settings = new Settings({});
+const schema = {};
 
-const draw = () => {
+const draw = (_settings: SettingsData) => {
   const drawing = new Drawing().withA4Size();
   const canvas = drawing.build();
 
@@ -16,4 +16,4 @@ const draw = () => {
   return drawing.svg();
 };
 
-Vormen(draw, settings);
+Vormen(draw, new Settings(schema));

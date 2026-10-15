@@ -1,4 +1,4 @@
-import { assertEquals } from "@std/assert";
+import { assertEquals, assertStringIncludes } from "@std/assert";
 
 // Use the test drawing file in the same directory
 const testDrawingPath =
@@ -141,4 +141,74 @@ Deno.test("render hardcoded svg string drawing", async () => {
     stdoutText,
     `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100" viewBox="0 0 100 100">\n    <rect x="10" y="10" width="80" height="80" fill="red" />\n  </svg>\n`,
   );
+});
+
+Deno.test("render settings drawing with schema-based typed settings", async () => {
+  const drawingPath = new URL(
+    "drawings/settings_drawing.ts",
+    import.meta.url,
+  ).pathname;
+  const command = new Deno.Command(Deno.execPath(), {
+    args: ["run", "--allow-all", drawingPath, "render", "--outfile=-"],
+    cwd: new URL(".", import.meta.url).pathname,
+  });
+  const { code, stdout, stderr } = await command.output();
+  const stdoutText = new TextDecoder().decode(stdout);
+  const stderrText = new TextDecoder().decode(stderr);
+  assertEquals(code, 0, `exit code nonzero. Error: ${stderrText}`);
+  // The default settings: text "Vormen" and strokeWidth 1 are used.
+  assertStringIncludes(stdoutText, ">Vormen<");
+  assertStringIncludes(stdoutText, 'stroke-width="1"');
+});
+
+Deno.test("render settings drawing with --setting overrides", async () => {
+  const drawingPath = new URL(
+    "drawings/settings_drawing.ts",
+    import.meta.url,
+  ).pathname;
+  const command = new Deno.Command(Deno.execPath(), {
+    args: [
+      "run",
+      "--allow-all",
+      drawingPath,
+      "render",
+      "--outfile=-",
+      "--setting.text=Hello Vormen",
+      "--setting.strokeWidth=4",
+    ],
+    cwd: new URL(".", import.meta.url).pathname,
+  });
+  const { code, stdout, stderr } = await command.output();
+  const stdoutText = new TextDecoder().decode(stdout);
+  const stderrText = new TextDecoder().decode(stderr);
+  assertEquals(code, 0, `exit code nonzero. Error: ${stderrText}`);
+  // The overrides are parsed to their canonical types and used in the draw fn.
+  assertStringIncludes(stdoutText, ">Hello Vormen<");
+  assertStringIncludes(stdoutText, 'stroke-width="4"');
+  assertStringIncludes(stdoutText, 'stroke="black"');
+});
+
+Deno.test("render plain Record drawing without the Settings class", async () => {
+  const drawingPath = new URL(
+    "drawings/plain_record_drawing.ts",
+    import.meta.url,
+  ).pathname;
+  const command = new Deno.Command(Deno.execPath(), {
+    args: [
+      "run",
+      "--allow-all",
+      drawingPath,
+      "render",
+      "--outfile=-",
+      "--setting.strokeWidth=5",
+    ],
+    cwd: new URL(".", import.meta.url).pathname,
+  });
+  const { code, stdout, stderr } = await command.output();
+  const stdoutText = new TextDecoder().decode(stdout);
+  const stderrText = new TextDecoder().decode(stderr);
+  assertEquals(code, 0, `exit code nonzero. Error: ${stderrText}`);
+  // The drawing uses the plain record passed to Vormen, without Settings.
+  assertStringIncludes(stdoutText, ">Vormen without Settings<");
+  assertStringIncludes(stdoutText, 'stroke-width="5"');
 });

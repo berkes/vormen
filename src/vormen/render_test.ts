@@ -1,7 +1,7 @@
 import { assertStringIncludes } from "@std/assert";
 import { render } from "./render.ts";
 import { Drawing } from "../drawing/drawing.ts";
-import { Settings } from "../settings/settings.ts";
+import type { SettingsData } from "../settings/settings.ts";
 
 function drawingSvg(): string {
   const drawing = new Drawing().withSize(100, 100);
@@ -11,11 +11,9 @@ function drawingSvg(): string {
 
 Deno.test("render with outfile writes to file", async () => {
   const testFile = await Deno.makeTempFile();
-  const settings = new Settings({});
-  const draw = (_settings: Settings) => drawingSvg();
-
+  const draw = (_settings: SettingsData) => drawingSvg();
   try {
-    await render(draw, settings, testFile);
+    await render(draw, {}, testFile);
     const content = await Deno.readTextFile(testFile);
     assertStringIncludes(content, "<svg");
     assertStringIncludes(content, "width");
@@ -26,13 +24,11 @@ Deno.test("render with outfile writes to file", async () => {
 
 Deno.test("render with hardcoded svg string writes exact string", async () => {
   const testFile = await Deno.makeTempFile();
-  const settings = new Settings({});
   const hardcoded =
     `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" fill="red" /></svg>`;
-  const draw = (_settings: Settings) => hardcoded;
-
+  const draw = (_settings: SettingsData) => hardcoded;
   try {
-    await render(draw, settings, testFile);
+    await render(draw, {}, testFile);
     const content = await Deno.readTextFile(testFile);
     assertStringIncludes(content, hardcoded);
   } finally {
@@ -41,18 +37,15 @@ Deno.test("render with hardcoded svg string writes exact string", async () => {
 });
 
 Deno.test("render with outfile=- writes to stdout", async () => {
-  const settings = new Settings({});
-  const draw = (_settings: Settings) => drawingSvg();
-
+  const draw = (_settings: SettingsData) => drawingSvg();
   // Capture console.log output
   let output = "";
   const originalLog = console.log;
   console.log = (msg: string) => {
     output = msg;
   };
-
   try {
-    await render(draw, settings, "-");
+    await render(draw, {}, "-");
     assertStringIncludes(output, "<svg");
     assertStringIncludes(output, "width");
   } finally {
@@ -61,13 +54,10 @@ Deno.test("render with outfile=- writes to stdout", async () => {
 });
 
 Deno.test("render with undefined outfile uses defaultOutfile", async () => {
-  const settings = new Settings({});
-  const draw = (_settings: Settings) => drawingSvg();
-
+  const draw = (_settings: SettingsData) => drawingSvg();
   // We can't easily test the actual file creation without Deno.mainModule
   // but we can verify the function doesn't throw
-  await render(draw, settings, undefined);
-
+  await render(draw, {}, undefined);
   // The file should have been created in saves/ directory
   // Clean up any test files that might have been created
   try {

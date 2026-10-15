@@ -3,10 +3,7 @@
  *
  * This module provides the web server functionality for the Vormen library.
  */
-
-import { Settings } from "../settings/settings.ts";
-import type { DrawFunction } from "@berkes/vormen";
-import type { SettingsData } from "./types.ts";
+import type { DrawFunction, SettingsData } from "./types.ts";
 
 /**
  * Deep merge settings - for nested objects.
@@ -15,16 +12,16 @@ import type { SettingsData } from "./types.ts";
 function deepMergeSettings(
   defaults: SettingsData,
   overrides: SettingsData,
-): Settings {
-  return Settings.merge(defaults, overrides);
+): SettingsData {
+  return { ...defaults, ...overrides };
 }
 
+// deno-fmt-ignore
 /**
- * HTML template for the SPA
+ * HTML template for the SPA. Formatted for readability, not for deno fmt.
  */
-function html(svg: string, settings: Settings): string {
-  return `
-<!DOCTYPE html>
+function html(svg: string, settings: SettingsData): string {
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -107,13 +104,13 @@ function html(svg: string, settings: Settings): string {
       <h2>Settings</h2>
       <form id="settings-form">
         ${
-    Object.entries(settings.toObject()).map(([key, value]) => `
-          <div class="setting">
-          <label for="${key}">${key}</label>
-          <input type="text" class="setting-input" id="${key}" name="${key}" value="${value}">
-          </div>
+          Object.entries(settings).map(([key, value]) => `
+            <div class="setting">
+              <label for="${key}">${key}</label>
+              <input type="text" class="setting-input" id="${key}" name="${key}" value="${value}">
+            </div>
           `).join("")
-  }
+        }
       </form>
     </div>
   </div>
@@ -127,7 +124,6 @@ function html(svg: string, settings: Settings): string {
         });
       });
     }
-
     async function update() {
       const formData = new FormData(form);
       const params = new URLSearchParams();
@@ -147,8 +143,7 @@ function html(svg: string, settings: Settings): string {
     };
   </script>
 </body>
-</html>
-`;
+</html>`;
 }
 
 /**
@@ -157,40 +152,31 @@ function html(svg: string, settings: Settings): string {
  */
 export async function serve(
   draw: DrawFunction,
-  defaultSettings: Settings,
+  defaultSettings: SettingsData,
   port: number,
 ): Promise<never> {
   const handler = async (req: Request): Promise<Response> => {
     const url = new URL(req.url);
-
     if (url.pathname === "/render") {
       // Parse query params as settings overrides
       const overrides: SettingsData = {};
       for (const [key, value] of url.searchParams.entries()) {
-        const num = Number(value);
-        overrides[key] = isNaN(num) ? value : num;
+        overrides[key] = value;
       }
-
-      const settings = deepMergeSettings(defaultSettings.toObject(), overrides);
+      const settings = deepMergeSettings(defaultSettings, overrides);
       const svg = await draw(settings);
-
       return new Response(html(svg, settings), {
         headers: { "content-type": "text/html" },
       });
     }
-
     // Serve the initial page
-    const settings = defaultSettings;
-    const svg = await draw(settings);
-
-    return new Response(html(svg, settings), {
+    const svg = await draw(defaultSettings);
+    return new Response(html(svg, defaultSettings), {
       headers: { "content-type": "text/html" },
     });
   };
-
   const server = Deno.serve({ port }, handler);
   console.log(`Vormen server running at http://localhost:${port}`);
-
   await server.finished;
   throw new Error("Server should never finish");
 }

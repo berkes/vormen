@@ -13,14 +13,16 @@ import {
   Random,
   readSvg,
   Settings,
+  type SettingsData,
   Vormen,
 } from "@berkes/vormen";
 
-const settings = new Settings({
+const schema = {
   seed: "noodle-love",
-});
+};
 
-function draw(settings: Settings): string {
+function draw(rawSettings: SettingsData): string {
+  const settings = Settings.parse(schema, rawSettings);
   const drawing = new Drawing()
     .withA4Size()
     .withMargin(20)
@@ -37,7 +39,7 @@ function draw(settings: Settings): string {
     .withRows(ROWS)
     .withSquareCells();
 
-  const rand = new Random(settings.getString("seed"));
+  const rand = new Random(settings.seed);
 
   const tileNames = ["tile_round", "tile_cross"];
   const tiles = tileNames.map((tileName) => {
@@ -86,4 +88,4 @@ function draw(settings: Settings): string {
   return drawing.svg();
 }
 
-Vormen(draw, settings);
+Vormen(draw, new Settings(schema));

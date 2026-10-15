@@ -3,7 +3,7 @@ import { Drawing, Settings, type SettingsData, Vormen } from "@berkes/vormen";
 const schema = {
   text: "Vormen",
   strokeWidth: 1,
-};
+} satisfies SettingsData;
 
 function draw(rawSettings: SettingsData): string {
   const settings = Settings.parse(schema, rawSettings);

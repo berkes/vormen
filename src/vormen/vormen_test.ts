@@ -1,8 +1,9 @@
 import { assertStringIncludes } from "@std/assert";
 import { Drawing, Margin } from "../drawing/drawing.ts";
+import type { SettingsData } from "../settings/settings.ts";
 
 // Test helper to create a simple drawing factory
-function draw(_settings: Record<string, string>): string {
+function draw(_settings: SettingsData): string {
   const drawing = new Drawing()
     .withSize(100, 100)
     .withMargin(Margin.ZERO);

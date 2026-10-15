@@ -8,15 +8,19 @@
  * - Serve mode: serves a web app with the SVG and a settings UI
  */
 import { program } from "commander";
-import { Settings, type SettingsSchema } from "../settings/settings.ts";
-import type { DrawFunction, SettingsData } from "./types.ts";
+import {
+  Settings,
+  type SettingsData,
+  type SettingsSchema,
+} from "../settings/settings.ts";
+import type { DrawFunction } from "./types.ts";
 import { render } from "./render.ts";
 import { serve } from "./server.ts";
 
 /**
  * Default settings for a drawing, passed to Vormen. Either a schema (a plain
- * object whose values define each setting's canonical type and default), or a
- * Settings instance created with `Settings.fromCLI()`.
+ * SettingsData object whose values define each setting's canonical type and
+ * default), or a Settings instance created with `Settings.parse()`.
  */
 export type VormenSettings<TSchema extends SettingsSchema> =
   | TSchema
@@ -32,8 +36,8 @@ export type VormenSettings<TSchema extends SettingsSchema> =
  * - Either renders to a file/stdout or starts a web server
  *
  * DrawFn and Vormen do not depend on the Settings class: the drawing receives
- * its settings as a Record<string, string> and can parse them with
- * `Settings.fromCLI()` or any settings implementation of its choice.
+ * its settings as a SettingsData record and can parse them with
+ * `Settings.parse()` or any settings implementation of its choice.
  *
  * @param draw - The drawing factory function
  * @param defaultSettings - Default settings for the drawing (a schema or a
@@ -45,15 +49,10 @@ export function Vormen<TSchema extends SettingsSchema>(
 ): void {
   const defaults: SettingsData = defaultSettings instanceof Settings
     ? defaultSettings.asRecord()
-    : Object.fromEntries(
-      Object.entries(defaultSettings).map(([key, value]) => [
-        key,
-        String(value),
-      ]),
-    );
+    : { ...defaultSettings };
   const settingsOpts = Object.entries(defaults).map(([name, def]) => ({
     name,
-    default: def,
+    default: String(def),
   }));
   program
     .name("Vormen drawing")

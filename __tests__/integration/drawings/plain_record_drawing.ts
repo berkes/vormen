@@ -1,11 +1,11 @@
-import { Drawing, Vormen } from "@berkes/vormen";
+import { Drawing, type SettingsData, Vormen } from "@berkes/vormen";
 
 // A drawing without the Settings class: it receives its settings as a plain
-// Record<string, string> and works with them directly.
-const draw = (rawSettings: Record<string, string>) => {
+// SettingsData record and works with them directly.
+const draw = (rawSettings: SettingsData) => {
   const drawing = new Drawing().withSize(100, 100);
   const canvas = drawing.build();
-  const label = canvas.text(rawSettings.text).move(10, 50);
+  const label = canvas.text(String(rawSettings.text)).move(10, 50);
   label.font({ size: 16 });
   label.stroke({
     color: "black",

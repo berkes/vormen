@@ -6,15 +6,22 @@
  * Run it and redirect the output to a file:
  *   deno run examples/cubic-disarray.ts > cubic-disarray.svg
  */
-import { Drawing, Grid, Random, Settings, Vormen } from "@berkes/vormen";
+import {
+  Drawing,
+  Grid,
+  Random,
+  Settings,
+  type SettingsData,
+  Vormen,
+} from "@berkes/vormen";
 
 const schema = {
   rotationStrength: 2,
   seed: "fancy-red-chicken",
 };
 
-function draw(rawSettings: Record<string, string>): string {
-  const settings = Settings.fromCLI(schema, rawSettings);
+function draw(rawSettings: SettingsData): string {
+  const settings = Settings.parse(schema, rawSettings);
   const drawing = new Drawing()
     .withA4Size()
     .withMargin(20)

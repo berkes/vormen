@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert/equals";
-import { Settings } from "./settings.ts";
+import { Settings, type SettingsData } from "./settings.ts";
 
 const schema = {
   seed: "default-seed",
@@ -21,8 +21,8 @@ Deno.test("Settings constructor overrides defaults with typed data", () => {
   assertEquals(settings.get("enabled"), true);
 });
 
-Deno.test("Settings fromCLI parses raw strings to canonical types", () => {
-  const settings = Settings.fromCLI(schema, {
+Deno.test("Settings parse parses raw strings to canonical types", () => {
+  const settings = Settings.parse(schema, {
     seed: "abc123",
     stroke_width: "5",
     enabled: "false",
@@ -32,13 +32,37 @@ Deno.test("Settings fromCLI parses raw strings to canonical types", () => {
   assertEquals(settings.get("enabled"), false);
 });
 
-Deno.test("Settings fromCLI parses boolean true case-insensitively", () => {
-  const settings = Settings.fromCLI(schema, { enabled: "TRUE" });
+Deno.test("Settings parse parses boolean true case-insensitively", () => {
+  const settings = Settings.parse(schema, { enabled: "TRUE" });
   assertEquals(settings.get("enabled"), true);
 });
 
-Deno.test("Settings fromCLI ignores keys not in the schema", () => {
-  const settings = Settings.fromCLI(schema, {
+Deno.test("Settings parse passes already-typed values through unchanged", () => {
+  const settings = Settings.parse(schema, {
+    seed: "abc",
+    stroke_width: 5,
+    enabled: false,
+  });
+  assertEquals(settings.get("seed"), "abc");
+  assertEquals(settings.get("stroke_width"), 5);
+  assertEquals(settings.get("enabled"), false);
+});
+
+Deno.test("SettingsData rejects unsupported value types", () => {
+  const schema: SettingsData = {
+    text: "Vormen",
+    strokeWidth: 1,
+    enabled: true,
+    // @ts-expect-error: Date is not a SettingValue
+    today: new Date(),
+  };
+  assertEquals(schema.text, "Vormen");
+  assertEquals(schema.strokeWidth, 1);
+  assertEquals(schema.enabled, true);
+});
+
+Deno.test("Settings parse ignores keys not in the schema", () => {
+  const settings = Settings.parse(schema, {
     unknown: "42",
     seed: "override",
   });
@@ -46,8 +70,8 @@ Deno.test("Settings fromCLI ignores keys not in the schema", () => {
   assertEquals(settings.has("unknown"), false);
 });
 
-Deno.test("Settings fromCLI keeps schema defaults for missing keys", () => {
-  const settings = Settings.fromCLI(schema, {});
+Deno.test("Settings parse keeps schema defaults for missing keys", () => {
+  const settings = Settings.parse(schema, {});
   assertEquals(settings.get("stroke_width"), 1);
   assertEquals(settings.get("enabled"), true);
 });

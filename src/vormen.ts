@@ -24,6 +24,7 @@ export { readSvg } from "./drawing/read.ts";
 // Settings domain
 export {
   Settings,
+  type SettingsData,
   type SettingsType,
   type SettingValue,
 } from "./settings/settings.ts";
@@ -48,4 +49,4 @@ export { Cell, Grid } from "./grid/grid.ts";
 // Vormen domain (main entry point)
 export { Vormen } from "./vormen/vormen.ts";
 export type { VormenSettings } from "./vormen/vormen.ts";
-export type { DrawFunction, SettingsData } from "./vormen/types.ts";
+export type { DrawFunction } from "./vormen/types.ts";

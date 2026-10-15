@@ -2,24 +2,32 @@
  * Settings - Configuration management for drawings.
  *
  * This module provides the Settings class for managing drawing parameters.
- * Settings are constructed from a schema: a plain object whose values define
- * the canonical type and default of each setting. The class is generic over
- * its schema, so each setting is available with its correct type, either
- * through the typed `get()` or - for instances created with `fromCLI()` -
+ * Settings are constructed from a schema: a SettingsData object whose values
+ * define the canonical type and default of each setting. The class is generic
+ * over its schema, so each setting is available with its correct type, either
+ * through the typed `get()` or - for instances created with `parse()` -
  * through plain property access.
  */
 
 /**
  * Types a setting can have. Each setting has exactly one of these as its
- * canonical type.
+ * canonical type. Any other type (Date, object, array, ...) is rejected at
+ * compile time.
  */
 export type SettingValue = string | number | boolean;
+
+/**
+ * Settings data: settings as passed between Vormen modules and drawing
+ * functions. Use this type when declaring a schema, so values of
+ * unsupported types (Date, object, array, ...) are type errors.
+ */
+export type SettingsData = Record<string, SettingValue>;
 
 /**
  * A schema of settings: each key names a setting, each value its canonical
  * type and default.
  */
-export type SettingsSchema = Readonly<Record<string, SettingValue>>;
+export type SettingsSchema = Readonly<SettingsData>;
 
 type SettingsOption = {
   "name": string;
@@ -30,8 +38,8 @@ type SettingsOption = {
  * Settings class for managing drawing parameters.
  *
  * Generic over a schema: the schema's keys and value types become the keys and
- * types of the settings. Construct with typed values, or parse raw CLI string
- * values with `Settings.fromCLI()`.
+ * types of the settings. Construct with typed values, or parse raw string
+ * values (from the CLI, the web UI, or elsewhere) with `Settings.parse()`.
  *
  * @typeParam TSchema - The schema this instance holds settings for.
  */
@@ -85,18 +93,14 @@ export class Settings<TSchema extends SettingsSchema> {
   }
 
   /**
-   * Convert this Settings instance to a plain Record<string, string> for use
-   * with decoupled modules like DrawFn and Vormen. Values are stringified;
-   * `Settings.fromCLI()` can parse them back to their canonical types.
+   * Convert this Settings instance to a plain SettingsData record for use
+   * with decoupled modules like DrawFn and Vormen. `Settings.parse()` can
+   * parse the result back to the canonical types.
    *
-   * @returns The settings as a record of strings
+   * @returns The settings as a SettingsData record
    */
-  asRecord(): Record<string, string> {
-    const result: Record<string, string> = {};
-    for (const [key, value] of Object.entries(this._data)) {
-      result[key] = String(value);
-    }
-    return result;
+  asRecord(): SettingsData {
+    return { ...this._data };
   }
 
   /**
@@ -125,23 +129,26 @@ export class Settings<TSchema extends SettingsSchema> {
   }
 
   /**
-   * Create a Settings instance from raw CLI string values.
+   * Create a Settings instance by parsing raw settings data.
    *
-   * Values are parsed to the canonical type defined by the schema at
-   * construction time. Keys not present in the schema are ignored.
+   * The raw values can come from any source: the CLI (`--setting.key=value`),
+   * the web UI (query params), or a drawing's own defaults. String values are
+   * parsed to the canonical type defined by the schema; values that already
+   * have their canonical type pass through unchanged. Keys not present in
+   * the schema are ignored.
    *
    * The returned instance also allows typed property access
    * (`settings.seed`), typed as the schema.
    *
    * @param schema The schema defining the settings and their types
-   * @param raw The raw CLI values, e.g. { stroke_width: "5" }
+   * @param raw The raw settings data
    * @returns A new Settings instance with parsed values
    */
-  static fromCLI<TSchema extends SettingsSchema>(
+  static parse<TSchema extends SettingsSchema>(
     schema: TSchema,
-    raw: Record<string, string>,
+    raw: SettingsData,
   ): Settings<TSchema> & TSchema {
-    const parsed: Record<string, SettingValue> = {};
+    const parsed: SettingsData = {};
     for (const [key, value] of Object.entries(raw)) {
       if (key in schema) {
         parsed[key] = parseValue(value, schema[key as keyof TSchema]);
@@ -166,14 +173,21 @@ export class Settings<TSchema extends SettingsSchema> {
 }
 
 /**
- * Parse one raw CLI string to the canonical type of the schema default.
+ * Parse one raw value to the canonical type of the schema default. Values
+ * that already have their canonical type pass through unchanged.
  */
-function parseValue(value: string, reference: SettingValue): SettingValue {
-  if (typeof reference === "number") {
-    return Number(value);
-  }
-  if (typeof reference === "boolean") {
-    return value.toLowerCase() === "true";
+function parseValue(
+  value: SettingValue,
+  reference: SettingValue,
+): SettingValue {
+  if (typeof value === "string") {
+    if (typeof reference === "number") {
+      return Number(value);
+    }
+    if (typeof reference === "boolean") {
+      return value.toLowerCase() === "true";
+    }
+    return value;
   }
   return value;
 }

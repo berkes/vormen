@@ -1,12 +1,12 @@
-import { Drawing, Settings, Vormen } from "@berkes/vormen";
+import { Drawing, Settings, type SettingsData, Vormen } from "@berkes/vormen";
 
 const schema = {
   size: 100,
   color: "blue",
 };
 
-const draw = (rawSettings: Record<string, string>) => {
-  const settings = Settings.fromCLI(schema, rawSettings);
+const draw = (rawSettings: SettingsData) => {
+  const settings = Settings.parse(schema, rawSettings);
   const drawing = new Drawing().withSize(
     settings.size * 2,
     settings.size * 2,

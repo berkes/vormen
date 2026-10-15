@@ -38,7 +38,7 @@ const schema = {
 const defaultSettings = new Settings(schema);
 
 const draw = (rawSettings) => {
-  const settings = Settings.fromCLI(schema, rawSettings);
+  const settings = Settings.parse(schema, rawSettings);
   // Create a drawing with a4 size, equal margins on all sides and a white background.
   const drawing = new Drawing().withA4Size().withMargin(20).withBackground(
     "white",
@@ -186,10 +186,11 @@ We assume `deno run drawing.ts` where `drawing.ts` uses `Vormen`.
   `--setting.theSettingName=bar` to render with that setting instead of the
   default from the drawing.
 
-Drawings receive their settings as a `Record<string, string>`, so the Vormen and
-Drawing modules work without the Settings class. A drawing that wants typed
-settings parses the record inside its draw function, e.g. with
-`Settings.fromCLI(schema, rawSettings)`.
+Drawings receive their settings as a `SettingsData` record
+(`Record<string, string | number | boolean>`), so the Vormen and Drawing modules
+work without the Settings class. A drawing that wants typed settings parses the
+record inside its draw function, e.g. with
+`Settings.parse(schema, rawSettings)`.
 
 In future, we should be able to use `node drawing.js`, `npx`, `node run`, `yarn`
 or any runtime that can execute a javascript (or typescript) file.
@@ -280,28 +281,32 @@ Configuration management for drawings. Contains the Settings class for managing
 drawing parameters.
 
 Settings are declared as a schema: a plain object whose values define each
-setting's canonical type (string, number or boolean) and its default.
+setting's canonical type (string, number or boolean) and its default. Only
+strings, numbers and booleans are valid setting values; declare your schema with
+the `SettingsData` type to get compile-time errors for anything else.
 
 ```javascript
-const schema = {
+const schema: SettingsData = {
   seed: "default-seed",
   strokeWidth: 1,
   enabled: true,
 };
 
-const settings = Settings.fromCLI(schema, rawSettings);
+const settings = Settings.parse(schema, rawSettings);
 new Random(settings.seed); // seed is a string
 path.stroke({ width: settings.strokeWidth }); // strokeWidth is a number
 ```
 
-`Settings.fromCLI()` parses raw string values (from the CLI, a web server, or
-elsewhere) to each setting's canonical type at construction, and returns an
-instance that also allows typed property access. `asRecord()` converts an
-instance back to a plain `Record<string, string>`.
+`Settings.parse()` parses raw values (from the CLI, a web server, or elsewhere)
+to each setting's canonical type at construction, and returns an instance that
+also allows typed property access. `asRecord()` converts an instance back to a
+plain `SettingsData` record.
 
 Settings is optional: `DrawFn` and `Vormen` do not depend on it. Drawings
-receive their settings as a `Record<string, string>` and can parse them with
-`Settings.fromCLI()`, their own implementation, or use them directly.
+receive their settings as a `SettingsData` record
+(`Record<string, string |
+number | boolean>`) and can parse them with
+`Settings.parse()`, their own implementation, or use them directly.
 
 ### Development
 

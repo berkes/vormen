@@ -13,6 +13,7 @@ import {
   Random,
   readSvg,
   Settings,
+  type SettingsData,
   Vormen,
 } from "@berkes/vormen";
 
@@ -20,8 +21,8 @@ const schema = {
   seed: "noodle-love",
 };
 
-function draw(rawSettings: Record<string, string>): string {
-  const settings = Settings.fromCLI(schema, rawSettings);
+function draw(rawSettings: SettingsData): string {
+  const settings = Settings.parse(schema, rawSettings);
   const drawing = new Drawing()
     .withA4Size()
     .withMargin(20)

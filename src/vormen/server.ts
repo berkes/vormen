@@ -16,15 +16,134 @@ function deepMergeSettings(
   return { ...defaults, ...overrides };
 }
 
+// deno-fmt-ignore
 /**
- * HTML template for the SPA
+ * HTML template for the SPA. Formatted for readability, not for deno fmt.
  */
 function html(svg: string, settings: SettingsData): string {
-  return `<!DOCTYPE html><html lang="en"><head>  <meta charset="UTF-8">  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Vormen - Drawing</title>  <style>    body {      font-family: sans-serif;      margin: 0;      padding: 20px;      display: flex;      flex-direction: column;      gap: 20px;    }    .container {      display: flex;      gap: 20px;    }    .svg-container {      flex: 1;    }    .svg-paper {      display: inline-block;      padding: 0;      margin: 0;      background: white;      border: 1px solid #ccc;      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);    }    .svg-paper svg {      display: block;      max-width: 100%;      max-height: 100%;    }    .settings {      width: 300px;      padding: 20px;      border: 1px solid #ccc;      border-radius: 5px;      background: #f5f5f5;    }    .settings h2 {      margin-top: 0;    }    .setting {      margin-bottom: 15px;    }    .setting label {      display: block;      margin-bottom: 5px;      font-weight: bold;    }    .setting input {      width: 100%;      padding: 5px;      box-sizing: border-box;    }    button {      padding: 10px 20px;      background: #0074d9;      color: white;      border: none;      border-radius: 5px;      cursor: pointer;    }    button:hover {      background: #005fa3;    }  </style></head><body>  <h1>Vormen Drawing</h1>  <div class="container">    <div class="svg-container">      <div class="svg-paper">        ${svg}      </div>    </div>    <div class="settings">      <h2>Settings</h2>      <form id="settings-form">        ${
-    Object.entries(settings).map(([key, value]) =>
-      `          <div class="setting">          <label for="${key}">${key}</label>          <input type="text" class="setting-input" id="${key}" name="${key}" value="${value}">          </div>          `
-    ).join("")
-  }      </form>    </div>  </div>  <script>  <script>    const form = document.getElementById('settings-form');    for (const input of form.querySelectorAll('.setting-input')) {      // On change, submit the form      input.addEventListener('change', (e) => {        update().then(() => {          console.log('updated');        });      });    }    async function update() {      const formData = new FormData(form);      const params = new URLSearchParams();      for (const [key, value] of formData.entries()) {        params.append(key, value);      }      const response = await fetch('/render?' + params.toString());      const html = await response.text();      // Replace the SVG container content      const parser = new DOMParser();      const doc = parser.parseFromString(html, 'text/html');      const newSvg = doc.querySelector('svg');      const oldSvg = document.querySelector('.svg-paper');      if (newSvg && oldSvg) {        oldSvg.innerHTML = newSvg.outerHTML;      }    };  </script></body></html>`;
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vormen - Drawing</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+    }
+    .svg-container {
+      flex: 1;
+    }
+    .svg-paper {
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+      background: white;
+      border: 1px solid #ccc;
+      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
+    }
+    .svg-paper svg {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+    }
+    .settings {
+      width: 300px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f5f5f5;
+    }
+    .settings h2 {
+      margin-top: 0;
+    }
+    .setting {
+      margin-bottom: 15px;
+    }
+    .setting label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .setting input {
+      width: 100%;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 20px;
+      background: #0074d9;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Vormen Drawing</h1>
+  <div class="container">
+    <div class="svg-container">
+      <div class="svg-paper">
+        ${svg}
+      </div>
+    </div>
+    <div class="settings">
+      <h2>Settings</h2>
+      <form id="settings-form">
+        ${
+          Object.entries(settings).map(([key, value]) => `
+            <div class="setting">
+              <label for="${key}">${key}</label>
+              <input type="text" class="setting-input" id="${key}" name="${key}" value="${value}">
+            </div>
+          `).join("")
+        }
+      </form>
+    </div>
+  </div>
+  <script>
+    const form = document.getElementById('settings-form');
+    for (const input of form.querySelectorAll('.setting-input')) {
+      // On change, submit the form
+      input.addEventListener('change', (e) => {
+        update().then(() => {
+          console.log('updated');
+        });
+      });
+    }
+    async function update() {
+      const formData = new FormData(form);
+      const params = new URLSearchParams();
+      for (const [key, value] of formData.entries()) {
+        params.append(key, value);
+      }
+      const response = await fetch('/render?' + params.toString());
+      const html = await response.text();
+      // Replace the SVG container content
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const newSvg = doc.querySelector('svg');
+      const oldSvg = document.querySelector('.svg-paper');
+      if (newSvg && oldSvg) {
+        oldSvg.innerHTML = newSvg.outerHTML;
+      }
+    };
+  </script>
+</body>
+</html>`;
 }
 
 /**

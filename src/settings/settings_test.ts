@@ -1,80 +1,107 @@
 import { assertEquals } from "@std/assert/equals";
 import { Settings } from "./settings.ts";
 
-Deno.test("Settings class get method", () => {
-  const settings = new Settings({ test: "value", num: 42, bool: true });
+const schema = {
+  seed: "default-seed",
+  stroke_width: 1,
+  enabled: true,
+};
 
-  assertEquals(settings.get("test"), "value");
-  assertEquals(settings.get("num"), 42);
-  assertEquals(settings.get("bool"), true);
-  assertEquals(settings.get("nonexistent"), undefined);
+Deno.test("Settings stores schema defaults", () => {
+  const settings = new Settings(schema);
+  assertEquals(settings.get("seed"), "default-seed");
+  assertEquals(settings.get("stroke_width"), 1);
+  assertEquals(settings.get("enabled"), true);
 });
 
-Deno.test("Settings class getString method", () => {
-  const settings = new Settings({ str: "hello", num: 42, bool: true });
-
-  assertEquals(settings.getString("str"), "hello");
-  assertEquals(settings.getString("num"), "42");
-  assertEquals(settings.getString("bool"), "true");
+Deno.test("Settings constructor overrides defaults with typed data", () => {
+  const settings = new Settings(schema, { stroke_width: 5, seed: "abc" });
+  assertEquals(settings.get("seed"), "abc");
+  assertEquals(settings.get("stroke_width"), 5);
+  assertEquals(settings.get("enabled"), true);
 });
 
-Deno.test("Settings class getInt method", () => {
-  const settings = new Settings({ str: "hello", num: 42, bool: true });
-
-  assertEquals(settings.getInt("num"), 42);
-  assertEquals(settings.getInt("str"), NaN);
-  assertEquals(settings.getInt("bool"), 1);
+Deno.test("Settings fromCLI parses raw strings to canonical types", () => {
+  const settings = Settings.fromCLI(schema, {
+    seed: "abc123",
+    stroke_width: "5",
+    enabled: "false",
+  });
+  assertEquals(settings.get("seed"), "abc123");
+  assertEquals(settings.get("stroke_width"), 5);
+  assertEquals(settings.get("enabled"), false);
 });
 
-Deno.test("Settings class getBoolean method", () => {
-  const settings = new Settings({ str: "hello", num: 42, bool: true, zero: 0 });
-
-  assertEquals(settings.getBoolean("bool"), true);
-  assertEquals(settings.getBoolean("str"), true);
-  assertEquals(settings.getBoolean("zero"), false);
-  assertEquals(settings.getBoolean("num"), true);
+Deno.test("Settings fromCLI parses boolean true case-insensitively", () => {
+  const settings = Settings.fromCLI(schema, { enabled: "TRUE" });
+  assertEquals(settings.get("enabled"), true);
 });
 
-Deno.test("Settings class has method", () => {
-  const settings = new Settings({ test: "value" });
+Deno.test("Settings fromCLI ignores keys not in the schema", () => {
+  const settings = Settings.fromCLI(schema, {
+    unknown: "42",
+    seed: "override",
+  });
+  assertEquals(settings.get("seed"), "override");
+  assertEquals(settings.has("unknown"), false);
+});
 
-  assertEquals(settings.has("test"), true);
+Deno.test("Settings fromCLI keeps schema defaults for missing keys", () => {
+  const settings = Settings.fromCLI(schema, {});
+  assertEquals(settings.get("stroke_width"), 1);
+  assertEquals(settings.get("enabled"), true);
+});
+
+Deno.test("Settings get returns the schema-defined type per key", () => {
+  const settings = new Settings(schema);
+  const seed: string = settings.get("seed");
+  const strokeWidth: number = settings.get("stroke_width");
+  const enabled: boolean = settings.get("enabled");
+  assertEquals(seed, "default-seed");
+  assertEquals(strokeWidth, 1);
+  assertEquals(enabled, true);
+});
+
+Deno.test("Settings has method", () => {
+  const settings = new Settings(schema);
+  assertEquals(settings.has("seed"), true);
   assertEquals(settings.has("nonexistent"), false);
 });
 
-Deno.test("Settings class keys method", () => {
-  const settings = new Settings({ a: 1, b: 2, c: 3 });
-
-  const keys = settings.keys();
-  assertEquals(keys.sort(), ["a", "b", "c"]);
+Deno.test("Settings keys method", () => {
+  const settings = new Settings(schema);
+  assertEquals(settings.keys().sort(), ["enabled", "seed", "stroke_width"]);
 });
 
-Deno.test("Settings class toObject method", () => {
-  const settings = new Settings({ test: "value", num: 42 });
-
+Deno.test("Settings toObject method", () => {
+  const settings = new Settings(schema, { stroke_width: 3 });
   const obj = settings.toObject();
-  assertEquals(obj.test, "value");
-  assertEquals(obj.num, 42);
+  assertEquals(obj.seed, "default-seed");
+  assertEquals(obj.stroke_width, 3);
+  assertEquals(obj.enabled, true);
 });
 
-Deno.test("Settings class merge method", () => {
-  const settings = new Settings({ a: 1, b: 2 });
-  const merged = settings.merge({ b: 3, c: 4 });
-
-  assertEquals(merged.get("a"), 1);
-  assertEquals(merged.get("b"), 3);
-  assertEquals(merged.get("c"), 4);
+Deno.test("Settings merge method with typed object", () => {
+  const settings = new Settings(schema, { stroke_width: 2 });
+  const merged = settings.merge({ stroke_width: 4, seed: "merged" });
+  assertEquals(merged.get("seed"), "merged");
+  assertEquals(merged.get("stroke_width"), 4);
+  assertEquals(merged.get("enabled"), true);
 });
 
-Deno.test("Settings class static from method", () => {
-  const settings = Settings.from({ test: "value" });
-
-  assertEquals(settings.get("test"), "value");
+Deno.test("Settings merge method with Settings instance", () => {
+  const settings = new Settings(schema, { stroke_width: 2 });
+  const overrides = new Settings(schema, { stroke_width: 9, seed: "other" });
+  const merged = settings.merge(overrides);
+  assertEquals(merged.get("seed"), "other");
+  assertEquals(merged.get("stroke_width"), 9);
 });
 
-Deno.test("Settings class static merge method", () => {
-  const settings = Settings.merge({ a: 1 }, { b: 2 });
-
-  assertEquals(settings.get("a"), 1);
-  assertEquals(settings.get("b"), 2);
+Deno.test("Settings toOptions method stringifies defaults", () => {
+  const settings = new Settings(schema, { stroke_width: 7 });
+  assertEquals(settings.toOptions(), [
+    { name: "seed", default: "default-seed" },
+    { name: "stroke_width", default: "7" },
+    { name: "enabled", default: "true" },
+  ]);
 });

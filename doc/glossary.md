@@ -34,7 +34,10 @@ RasterImage
 
 Settings
 : Configuration management for drawings. Contains the Settings class
-for managing drawing parameters.
+for managing drawing parameters. Settings are declared as a Schema: a plain
+object whose values define each setting's canonical type (string, number or
+boolean) and default. Drawings receive settings as a Record<string, string> and
+can parse them with Settings; the Settings class is optional.
 
 Shapes
 : Pre-built geometric shapes.

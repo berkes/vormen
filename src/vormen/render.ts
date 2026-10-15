@@ -3,9 +3,7 @@
  *
  * This module provides the rendering functionality for the Vormen library.
  */
-
-import type { Settings } from "../settings/settings.ts";
-import type { DrawFunction } from "./types.ts";
+import type { DrawFunction, SettingsData } from "./types.ts";
 
 /**
  * Generate default output filename in format: saves/[drawingfilename]-[iso-date-time-with-seconds].svg
@@ -16,16 +14,14 @@ function defaultOutfile(): string {
     const pathname = new URL(mainModule).pathname;
     const basename = pathname.split("/").pop() || "drawing";
     const filename = basename.replace(/\.[^.]+$/, "");
-
     const now = new Date();
     const timestamp =
-      now.toISOString().replace(/T/, "-").replace(/:/g, "-").split(".")[0];
-
+      now.toISOString().replace("T", "-").replace(/:/g, "-").split(".")[0];
     return `saves/${filename}-${timestamp}.svg`;
   } catch {
     const now = new Date();
     const timestamp =
-      now.toISOString().replace(/T/, "-").replace(/:/g, "-").split(".")[0];
+      now.toISOString().replace("T", "-").replace(/:/g, "-").split(".")[0];
     return `saves/drawing-${timestamp}.svg`;
   }
 }
@@ -48,11 +44,10 @@ async function writeSvg(svg: string, outfile: string): Promise<void> {
  */
 export async function render(
   draw: DrawFunction,
-  settings: Settings,
+  settings: SettingsData,
   outfile?: string,
 ): Promise<void> {
   const svg = await draw(settings);
-
   if (outfile === "-") {
     console.log(svg);
   } else {

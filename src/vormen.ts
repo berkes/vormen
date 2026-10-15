@@ -47,4 +47,5 @@ export { Cell, Grid } from "./grid/grid.ts";
 
 // Vormen domain (main entry point)
 export { Vormen } from "./vormen/vormen.ts";
-export type { DrawFunction } from "./vormen/types.ts";
+export type { VormenSettings } from "./vormen/vormen.ts";
+export type { DrawFunction, SettingsData } from "./vormen/types.ts";

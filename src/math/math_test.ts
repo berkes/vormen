@@ -1,5 +1,5 @@
 import { assertAlmostEquals, assertEquals } from "@std/assert";
-import { constrain, map } from "./math.ts";
+import { almostEqual, constrain, map } from "./math.ts";
 
 Deno.test("constrain ints within", () => {
   assertEquals(constrain(10, 1, 100), 10);
@@ -38,4 +38,16 @@ Deno.test("map ints outside", () => {
 });
 Deno.test("map float within", () => {
   assertAlmostEquals(map(5.5, 0, 10, 0, 100), 55.0, 0.1);
+});
+
+Deno.test("almostEqual with default epsilon (0.001)", () => {
+  assertEquals(almostEqual(1.0, 1.0), true);
+  assertEquals(almostEqual(1.0, 1.0000000001), true);
+  assertEquals(almostEqual(1.0, 1.01), false);
+});
+
+Deno.test("almostEqual with custom epsilon", () => {
+  assertEquals(almostEqual(1.0, 1.0, 0.00000001), true);
+  assertEquals(almostEqual(1.0, 1.00000001, 0.00000001), true);
+  assertEquals(almostEqual(1.0, 1.0000001, 0.00000001), false);
 });

@@ -23,3 +23,7 @@ export function map(
 ): number {
   return ((x - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
 }
+
+export function almostEqual(a: number, b: number, epsilon = 0.001): boolean {
+  return Math.abs(a - b) < epsilon;
+}

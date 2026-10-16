@@ -18,8 +18,16 @@ export class Point {
     return this._x;
   }
 
+  set x(x: number) {
+    this._x = x;
+  }
+
   get y(): number {
     return this._y;
+  }
+
+  set y(y: number) {
+    this._y = y;
   }
 
   /**

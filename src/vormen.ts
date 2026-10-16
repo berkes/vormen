@@ -30,7 +30,7 @@ export {
 } from "./settings/settings.ts";
 
 // Math domain
-export { constrain } from "./math/math.ts";
+export { constrain, map, almostEqual } from "./math/math.ts";
 export { Random } from "./math/random.ts";
 export { Noise } from "./math/noise.ts";
 

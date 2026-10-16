@@ -74,3 +74,65 @@ Deno.test("Cell centerX and centerY", () => {
   assertEquals(cell.centerX, 5);
   assertEquals(cell.centerY, 5);
 });
+
+Deno.test("intersections()", () => {
+  const grid = new Grid().withSize(30, 30).withCols(3).withRows(3);
+  const intersections = grid.intersections();
+  assertEquals(intersections.length, 16);
+  assertEquals(intersections.map((p) => p.toString()), [
+    "(0, 0)",
+    "(10, 0)",
+    "(20, 0)",
+    "(30, 0)",
+    "(0, 10)",
+    "(10, 10)",
+    "(20, 10)",
+    "(30, 10)",
+    "(0, 20)",
+    "(10, 20)",
+    "(20, 20)",
+    "(30, 20)",
+    "(0, 30)",
+    "(10, 30)",
+    "(20, 30)",
+    "(30, 30)",
+  ]);
+});
+
+Deno.test("intersections() with non-square cells", () => {
+  const grid = new Grid().withSize(20, 30).withCols(2).withRows(3);
+  const intersections = grid.intersections();
+  assertEquals(intersections.length, 12);
+  assertEquals(intersections.map((p) => `${p.x},${p.y}`), [
+    "0,0",
+    "10,0",
+    "20,0",
+    "0,10",
+    "10,10",
+    "20,10",
+    "0,20",
+    "10,20",
+    "20,20",
+    "0,30",
+    "10,30",
+    "20,30",
+  ]);
+});
+
+Deno.test("intersections() with padding uses outer cell size", () => {
+  const grid = new Grid().withSize(30, 30).withCols(3).withRows(3)
+    .withPadding(1);
+  const intersections = grid.intersections();
+  assertEquals(intersections.length, 16);
+  assertEquals(intersections[0].toString(), "(0, 0)");
+  assertEquals(intersections[1].toString(), "(10, 0)");
+  assertEquals(intersections[15].toString(), "(30, 30)");
+});
+
+Deno.test("intersections() on empty grid", () => {
+  const noCols = new Grid().withSize(30, 30).withRows(3);
+  assertEquals(noCols.intersections(), []);
+
+  const noRows = new Grid().withSize(30, 30).withCols(3);
+  assertEquals(noRows.intersections(), []);
+});

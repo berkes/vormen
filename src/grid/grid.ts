@@ -1,5 +1,6 @@
 import { G, Line, Rect, Text } from "@svgdotjs/svg.js";
 import { Direction } from "../primitives/direction.ts";
+import { Point } from "../primitives/point.ts";
 
 /**
  * Grid - A grid system for organizing cells in a drawing
@@ -320,6 +321,29 @@ export class Grid {
       return this.cells()[row * this._nCols + col];
     }
     return undefined;
+  }
+
+  /**
+   * Get all intersections of the grid lines as Points.
+   *
+   * Returns the points where the grid's dividing lines cross, including the
+   * outer edges: (numCols + 1) * (numRows + 1) points. The points are sorted
+   * in ascending order by y, then by x. Returns an empty array when the grid
+   * has no rows or no columns.
+   */
+  intersections(): Point[] {
+    if (this._nCols === 0 || this._nRows === 0) {
+      return [];
+    }
+    const points: Point[] = [];
+    const stepX = this.outerCellWidth;
+    const stepY = this.outerCellHeight;
+    for (let row = 0; row <= this._nRows; row++) {
+      for (let col = 0; col <= this._nCols; col++) {
+        points.push(new Point(col * stepX, row * stepY));
+      }
+    }
+    return points;
   }
 
   _generateCells(): Cell[] {

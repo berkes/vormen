@@ -207,7 +207,9 @@ Grid uses the builder pattern for configuration and is iterable over its cells,
 yielding Cell objects that provide position and dimension information. The grid
 isn't visible, but allows us to position elements in a grid with easy tools like
 being able to loop over all the cells, get X and Y coordinates of a cell, add
-paddings between cells and so on.
+paddings between cells and so on. `grid.intersections()` returns all points
+where the grid lines cross, including the outer edges, sorted in ascending order
+by y and then by x.
 
 ### Math
 

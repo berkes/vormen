@@ -27,13 +27,11 @@ export class Random {
   }
 
   between(min: number, max: number): number {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(this.next() * (max - min + 1)) + min;
-  }
-
-  betweenFloat(min: number, max: number): number {
-    return this.next() * (max - min) + min;
+    if (Number.isInteger(min) && Number.isInteger(max)) {
+      return Math.floor(this.next() * (max - min + 1)) + min;
+    } else {
+      return this.next() * (max - min) + min;
+    }
   }
 
   chance(chance: number): boolean {

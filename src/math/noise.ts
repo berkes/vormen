@@ -17,8 +17,8 @@ class Noise {
     this._noise = createNoise2D(prng);
   }
 
-  get(x: number, y: number): number {
-    return this._noise(x, y);
+  get(x: number, y: number, axisScale: number = 1.0): number {
+    return this._noise(x * axisScale, y * axisScale);
   }
 }
 

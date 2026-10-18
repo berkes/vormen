@@ -28,7 +28,7 @@ function draw(rawSettings: SettingsData): string {
     .withBackgroundColor("#eee");
   const canvas = drawing.build();
   const grid = new Grid()
-    .withSize(drawing.getInnerWidth(), drawing.getInnerHeight())
+    .withSize(drawing.width, drawing.height)
     .withCols(8)
     .withRows(9)
     .withPadding(4)
@@ -47,7 +47,7 @@ function draw(rawSettings: SettingsData): string {
   });
   // Add seeed
   canvas.text(`seed ${settings.seed}`).x(0).cy(
-    drawing.getInnerHeight(),
+    drawing.height,
   );
   return drawing.svg();
 }

@@ -167,17 +167,39 @@ export class Drawing {
   }
 
   /**
-   * Get the width of the drawing area inside the margins
+   * @deprecated Use .height instead
    */
   getInnerWidth(): number {
-    return this._width - this._margin.left - this._margin.right;
+    return this.height;
+  }
+
+  /**
+   * @deprecated Use .height instead
+   */
+  getInnerHeight(): number {
+    return this.height;
   }
 
   /**
    * Get the height of the drawing area inside the margins
    */
-  getInnerHeight(): number {
+  get height(): number {
     return this._height - this._margin.top - this._margin.bottom;
+  }
+
+  /**
+   * Get the width of the drawing area inside the margins
+   */
+  get width(): number {
+    return this._width - this._margin.left - this._margin.right;
+  }
+
+  get outerHeight(): number {
+    return this._height;
+  }
+
+  get outerWidth(): number {
+    return this._width;
   }
 
   get margin(): Margin {

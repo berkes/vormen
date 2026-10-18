@@ -34,7 +34,7 @@ function draw(rawSettings: SettingsData): string {
   const ROWS = 25;
 
   const grid = new Grid()
-    .withSize(drawing.getInnerWidth(), drawing.getInnerHeight())
+    .withSize(drawing.width, drawing.height)
     .withCols(COLUMNS)
     .withRows(ROWS)
     .withSquareCells();
@@ -83,7 +83,7 @@ function draw(rawSettings: SettingsData): string {
   );
 
   const text = canvas.text(`Noodle ${rand.seed}`);
-  text.x(0).y(drawing.getInnerHeight());
+  text.x(0).y(drawing.height);
 
   return drawing.svg();
 }

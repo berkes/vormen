@@ -24,15 +24,15 @@ Deno.test("builder chains from the constructor", () => {
     .withMargin(20)
     .withBackgroundColor("#eee");
 
-  assertEquals(drawing.getInnerWidth(), A4_WIDTH_USER_UNITS - 40);
-  assertEquals(drawing.getInnerHeight(), A4_HEIGHT_USER_UNITS - 40);
+  assertEquals(drawing.width, A4_WIDTH_USER_UNITS - 40);
+  assertEquals(drawing.height, A4_HEIGHT_USER_UNITS - 40);
 });
 
 Deno.test("withSize() sets the drawing dimensions", () => {
   const drawing = new Drawing(svgElement()).withSize(300, 400);
 
-  assertEquals(drawing.getInnerWidth(), 300);
-  assertEquals(drawing.getInnerHeight(), 400);
+  assertEquals(drawing.width, 300);
+  assertEquals(drawing.height, 400);
 });
 
 Deno.test("withSize() sizes the drawing and its viewBox", () => {
@@ -49,8 +49,8 @@ Deno.test("withMargin() accepts a Margin", () => {
     .withSize(300, 400)
     .withMargin(new Margin(10, 20, 30, 40));
 
-  assertEquals(drawing.getInnerWidth(), 260); // 300 - 10 - 30
-  assertEquals(drawing.getInnerHeight(), 340); // 400 - 20 - 40
+  assertEquals(drawing.width, 260); // 300 - 10 - 30
+  assertEquals(drawing.height, 340); // 400 - 20 - 40
 });
 
 Deno.test("withMargin() offsets the margin group by the margin", () => {

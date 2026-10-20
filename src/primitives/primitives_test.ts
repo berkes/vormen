@@ -1,6 +1,7 @@
 /**
  * Unit tests for Point and Vector primitives.
  */
+import { Line } from "./line.ts";
 import { Point, Vector } from "./point.ts";
 import {
   assert,
@@ -236,4 +237,19 @@ Deno.test("Vector.rotate() - zero vector rotation", () => {
   const rotated = v.rotate(Math.PI / 2);
   assertEquals(rotated.x, 0);
   assertEquals(rotated.y, 0);
+});
+
+Deno.test("Line.length - calculates length of line", () => {
+  const line = new Line(new Point(0, 0), new Point(3, 4));
+  assertEquals(line.length, 5);
+});
+
+Deno.test("Line.length() - calculates length of line with negative coordinates", () => {
+  const line = new Line(new Point(-1, -1), new Point(2, 3));
+  assertEquals(line.length, 5);
+});
+
+Deno.test("Line.length() - calculates length of line with same start and end points", () => {
+  const line = new Line(new Point(1, 1), new Point(1, 1));
+  assertEquals(line.length, 0);
 });

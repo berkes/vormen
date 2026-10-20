@@ -49,3 +49,10 @@ Typography
 Vormen
 : Main execution module for running drawings. Contains the Vormen
 function, render, and serve.
+
+Webapp
+: The browser UI served in serve mode: the rendered drawing plus the tools
+around it, such as the settings form and download. Called "webapp", not "SPA"
+or "app". Its sources live in `src/webapp/` and are bundled into assets that
+the serve runner embeds (see
+[ADR-0005](adr/ADR-0005-Serve-Webapp-Architecture.md)).

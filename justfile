@@ -80,9 +80,13 @@ version-push:
 release:
     #!/usr/bin/env bash
     set -euo pipefail
-    if [ "$(git branch --show-current)" != "main" ]; then
-      echo "Error: not on main branch" >&2
-      exit 1
+    BRANCH=$(git branch --show-current)
+    if [ "$BRANCH" != "main" ]; then
+      TAG=$(git describe --tags --exact-match 2>/dev/null || true)
+      if [ -z "$TAG" ] || [[ "$TAG" != v* ]]; then
+        echo "Error: not on main branch (and not on a v* tag in CI)" >&2
+        exit 1
+      fi
     fi
     if [ -n "$(git status --porcelain)" ]; then
       echo "Error: workspace is dirty" >&2

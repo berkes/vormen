@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches: [main]
-    tags: ['v*']
+    tags: ["v*"]
   pull_request:
 
 jobs:
@@ -15,11 +15,8 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: lts
-      - run: deno ci
-      - run: deno check
-      - run: deno lint
-      - run: deno fmt --check
-      - run: deno test --allow-run --allow-write --allow-read
+      - uses: taiki-e/install-action@just
+      - run: just check-all
 
   publish:
     # Releases only happen when a v* tag is pushed. On branch pushes and
@@ -36,7 +33,6 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: lts
-      - run: deno ci
       - name: Publish vormen package
         run: deno publish
       - name: Publish create-vormen package

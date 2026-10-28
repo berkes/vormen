@@ -76,7 +76,7 @@ version-push:
     git push origin main "v$VERSION"
 
 # Publish the packages to JSR and npm. Run after the version tag is pushed.
-# Publishing to npm requires NPM_TOKEN in the environment (Actions secret).
+# In CI, npm publishing uses trusted publishing (OIDC): no token is needed.
 release:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -88,20 +88,12 @@ release:
       echo "Error: workspace is dirty" >&2
       exit 1
     fi
-    if [ -z "${NPM_TOKEN:-}" ]; then
-      echo "Error: NPM_TOKEN is not set. Add it as an Actions secret or export it." >&2
-      exit 1
-    fi
     deno publish
-    NPMRC=$(mktemp)
-    trap 'rm -f "$NPMRC" ${TARBALL:-}' EXIT
-    REGISTRY=$(npm config get registry)
-    echo "//${REGISTRY#*//}:_authToken=${NPM_TOKEN}" > "$NPMRC"
     TARBALL=$(deno pack 2>&1 >/dev/null | grep -oE '[^ ]+\.tgz' | tail -1)
-    npm publish "$TARBALL" --access public --userconfig "$NPMRC"
+    npm publish "$TARBALL" --access public
     rm -f "$TARBALL"
     cd packages/create-vormen
     deno publish
     TARBALL=$(deno pack 2>&1 >/dev/null | grep -oE '[^ ]+\.tgz' | tail -1)
-    npm publish "$TARBALL" --access public --userconfig "$NPMRC"
+    npm publish "$TARBALL" --access public
     rm -f "$TARBALL"

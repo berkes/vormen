@@ -75,7 +75,8 @@ version-push:
     VERSION=$(jq -r .version deno.json)
     git push origin main "v$VERSION"
 
-# Publish the packages to JSR. Run after the version tag is pushed.
+# Publish the packages to JSR and npm. Run after the version tag is pushed.
+# Publishing to npm requires NPM_TOKEN in the environment (Actions secret).
 release:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -87,27 +88,11 @@ release:
       echo "Error: workspace is dirty" >&2
       exit 1
     fi
-    deno publish
-    cd packages/create-vormen && deno publish
-
-# Publish the packages to npm. Packs the root and create-vormen packages
-# with `deno pack` and publishes the tarballs. Requires NPM_TOKEN in the
-# environment (Actions secret).
-release-npm:
-    #!/usr/bin/env bash
-    set -euo pipefail
     if [ -z "${NPM_TOKEN:-}" ]; then
       echo "Error: NPM_TOKEN is not set. Add it as an Actions secret or export it." >&2
       exit 1
     fi
-    if [ "$(git branch --show-current)" != "main" ]; then
-      echo "Error: not on main branch" >&2
-      exit 1
-    fi
-    if [ -n "$(git status --porcelain)" ]; then
-      echo "Error: workspace is dirty" >&2
-      exit 1
-    fi
+    deno publish
     NPMRC=$(mktemp)
     trap 'rm -f "$NPMRC" ${TARBALL:-}' EXIT
     REGISTRY=$(npm config get registry)
@@ -116,6 +101,7 @@ release-npm:
     npm publish "$TARBALL" --access public --userconfig "$NPMRC"
     rm -f "$TARBALL"
     cd packages/create-vormen
+    deno publish
     TARBALL=$(deno pack 2>&1 >/dev/null | grep -oE '[^ ]+\.tgz' | tail -1)
     npm publish "$TARBALL" --access public --userconfig "$NPMRC"
     rm -f "$TARBALL"

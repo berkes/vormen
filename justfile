@@ -92,12 +92,19 @@ release:
       echo "Error: workspace is dirty" >&2
       exit 1
     fi
+    publish_npm() {
+      local TARBALL=$(deno pack 2>&1 >/dev/null | grep -oE '[^ ]+\.tgz' | tail -1)
+      local DIR=$(mktemp -d)
+      tar -xzf "$TARBALL" -C "$DIR"
+      jq '.repository = "https://github.com/berkes/vormen"' "$DIR/package/package.json" > "$DIR/package/package.json.tmp"
+      mv "$DIR/package/package.json.tmp" "$DIR/package/package.json"
+      tar -czf "$TARBALL" -C "$DIR" package
+      rm -rf "$DIR"
+      npm publish "$TARBALL" --access public
+      rm -f "$TARBALL"
+    }
     deno publish
-    TARBALL=$(deno pack 2>&1 >/dev/null | grep -oE '[^ ]+\.tgz' | tail -1)
-    npm publish "$TARBALL" --access public
-    rm -f "$TARBALL"
+    publish_npm
     cd packages/create-vormen
     deno publish
-    TARBALL=$(deno pack 2>&1 >/dev/null | grep -oE '[^ ]+\.tgz' | tail -1)
-    npm publish "$TARBALL" --access public
-    rm -f "$TARBALL"
+    publish_npm

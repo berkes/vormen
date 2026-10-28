@@ -5,6 +5,13 @@ scripts for creating generative with SVG.
 
 It is written in typescript, and managed and ran with `deno`.
 
+## Installing the toolchain
+
+Install `just` and `deno`. Both are required. `deno` is available from
+[deno.com](https://deno.com), `just` from [just.systems](https://just.systems)
+or your package manager. With `just` installed, `just install` installs deno and
+all dependencies.
+
 ## Project contents
 
 - src/ All typescript sourcecode
@@ -17,15 +24,23 @@ It is written in typescript, and managed and ran with `deno`.
 ## Deno
 
 Use the `deno` skill. Never update package.json, deno.json or deno.lock manually
-unless explicitly allowed. Use `deno` to manage dependencies. Use `deno` to run
-code. Never revert to npx, tsc, npm, yarn or other tools, as those will break
-the project severely.
+unless explicitly allowed. Use `deno` to manage dependencies. Never revert to
+npx, tsc, npm, yarn or other tools, as those will break the project severely.
+
+## Just
+
+We use `just` as the main and only common entry point for tasks. Common tasks
+like checking, testing, versioning and releasing are defined in the justfile and
+must be run through `just` (e.g. `just check-all`). Use `deno` directly only for
+deep diving or uncommon tasks (e.g. `deno run some/file.ts` or
+`deno test src/some/module_test.ts`). Never revert to npx, tsc, npm, yarn or
+other tools, as those will break the project severely.
 
 ## Project guidelines
 
 - We always write tests first. Each feature has at least an integration test.
   Each module has its own unit tests.
-- We always run `deno run check:all` to check all linting, formatting and tests.
+- We always run `just check-all` to check all linting, formatting and tests.
 - Keep the public API as small as possible. Do not export functions that have no
   use outside the module.
 - Non-exported (private) items do not need unit tests.
@@ -43,7 +58,7 @@ the project severely.
 - Changed features require changed integration tests.
 - New modules or changed modules require new test or changed unit tests.
 - There are no linting, typing or other errors.
-- `deno run check:all` reports no errors or warnings.
+- `just check-all` reports no errors or warnings.
 - temporary files are cleaned up.
 - New features are documented in README.
 - Changed features are changed in the README documentation.

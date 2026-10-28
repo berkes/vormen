@@ -108,7 +108,7 @@ All example SVGs are generated and committed, and can be regenerated with a
 single command:
 
 ```bash
-deno task generate:examples
+just generate-examples
 ```
 
 ## Pick and Choose
@@ -310,13 +310,17 @@ number | boolean>`) and can parse them with
 
 ### Development
 
-The project uses Deno for development. Run tests with `deno test -P` (-P to
-allow the default deno permissions)
+The project uses Deno for development, with `just` as the common entry point for
+tasks. Install both with `just install` (or install `just` with your package
+manager and Deno from [deno.com](https://deno.com)). Run all checks with
+`just check-all`, or `just --list` to see all available tasks.
 
 ## Releases
 
-Releases are built by CI. To publish one, push a tag that starts with `v` (for
-example `v1.2.3`).
+Releases are built by CI. To publish one, run `just version patch` (or `minor`
+or `major`) on a clean `main`, then `just version-push` to push the version
+commit and its tag. Only pushing a tag that starts with `v` (for example
+`v1.2.3`) triggers a release.
 
 ## Future
 

@@ -7,7 +7,7 @@
  * - Render mode (default): renders the drawing to an SVG file on disk
  * - Serve mode: serves a web app with the SVG and a settings UI
  */
-import { program } from "commander";
+import { Option, program } from "commander";
 import {
   Settings,
   type SettingsData,
@@ -29,7 +29,7 @@ export type VormenSettings<TSchema extends SettingsSchema> = TSchema;
  *
  * This function:
  * - Parses command-line arguments for options (--outfile, --serve, --port)
- *   and settings overrides (--setting.key=value)
+ *   and settings overrides (--settings.key=value)
  * - Merges command-line overrides with default settings
  * - Either renders to a file/stdout or starts a web server
  *
@@ -76,17 +76,26 @@ export function Vormen<TSchema extends SettingsSchema>(
       await render(draw, { ...defaults, ...overrides }, opts.outfile);
     });
   const extractSettings = (opts: object): SettingsData => {
-    const filtered = Object.entries(opts).filter(([k, _v]) =>
-      k.startsWith("setting.")
-    ).map(([k, v]) => [k.slice(8), v]);
-    return Object.fromEntries(filtered);
+    const prefixes = ["s.", "setting.", "settings."];
+    const overrides: SettingsData = {};
+    for (const [key, value] of Object.entries(opts)) {
+      const prefix = prefixes.find((candidate) => key.startsWith(candidate));
+      if (prefix) {
+        overrides[key.slice(prefix.length)] = value;
+      }
+    }
+    return overrides;
   };
   settingsOpts.forEach((opt) => {
-    renderCommand.option(
-      `--setting.${opt.name} <value>`,
-      `Setting for ${opt.name}`,
-      opt.default,
+    const flags = (prefix: string) => `--${prefix}${opt.name} <value>`;
+    renderCommand.addOption(
+      new Option(flags("settings."), `Setting for ${opt.name}`),
     );
+    for (const prefix of ["setting.", "s."]) {
+      renderCommand.addOption(
+        new Option(flags(prefix), `Setting for ${opt.name}`).hideHelp(),
+      );
+    }
   });
   program.parse(process.argv);
 }

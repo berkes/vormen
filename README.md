@@ -92,7 +92,7 @@ deno run drawing.ts render --outfile - > drawing.svg
 Or override settings
 
 ```bash
-deno run drawing.ts render --outfile drawing.svg --setting.rotationStrength=10
+deno run drawing.ts render --outfile drawing.svg --settings.rotationStrength=10
 ```
 
 ## Examples
@@ -181,7 +181,7 @@ We assume `deno run drawing.ts` where `drawing.ts` uses `Vormen`.
   re-rendered with the changes.
 - `deno run drawing.ts render --outfile file.svg` will render the svg to the
   file. Additionally, any settings can be overridden with
-  `--setting.theSettingName=bar` to render with that setting instead of the
+  `--settings.theSettingName=bar` to render with that setting instead of the
   default from the drawing.
 
 Drawings receive their settings as a `SettingsData` record

@@ -131,7 +131,7 @@ export class Settings<TSchema extends SettingsSchema> {
   /**
    * Create a Settings instance by parsing raw settings data.
    *
-   * The raw values can come from any source: the CLI (`--setting.key=value`),
+   * The raw values can come from any source: the CLI (`--settings.key=value`),
    * the web UI (query params), or a drawing's own defaults. String values are
    * parsed to the canonical type defined by the schema; values that already
    * have their canonical type pass through unchanged. Keys not present in

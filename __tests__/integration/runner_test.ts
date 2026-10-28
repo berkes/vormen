@@ -188,6 +188,112 @@ Deno.test("render settings drawing with --setting overrides", async () => {
   assertStringIncludes(stdoutText, 'stroke="black"');
 });
 
+Deno.test("render stroke drawing without settings overrides", async () => {
+  const drawingPath = new URL(
+    "drawings/stroke_drawing.ts",
+    import.meta.url,
+  ).pathname;
+  const command = new Deno.Command(Deno.execPath(), {
+    args: ["run", "--allow-all", drawingPath, "render", "--outfile=-"],
+    cwd: new URL(".", import.meta.url).pathname,
+  });
+  const { code, stdout, stderr } = await command.output();
+  const stdoutText = new TextDecoder().decode(stdout);
+  const stderrText = new TextDecoder().decode(stderr);
+  assertEquals(code, 0, `exit code nonzero. Error: ${stderrText}`);
+  // The default strokeWidth 2 is used.
+  assertStringIncludes(stdoutText, 'stroke-width="2"');
+});
+
+Deno.test("render stroke drawing with --settings override", async () => {
+  const drawingPath = new URL(
+    "drawings/stroke_drawing.ts",
+    import.meta.url,
+  ).pathname;
+  const command = new Deno.Command(Deno.execPath(), {
+    args: [
+      "run",
+      "--allow-all",
+      drawingPath,
+      "render",
+      "--outfile=-",
+      "--settings.strokeWidth=4",
+    ],
+    cwd: new URL(".", import.meta.url).pathname,
+  });
+  const { code, stdout, stderr } = await command.output();
+  const stdoutText = new TextDecoder().decode(stdout);
+  const stderrText = new TextDecoder().decode(stderr);
+  assertEquals(code, 0, `exit code nonzero. Error: ${stderrText}`);
+  assertStringIncludes(stdoutText, 'stroke-width="4"');
+});
+
+Deno.test("render stroke drawing with --setting override", async () => {
+  const drawingPath = new URL(
+    "drawings/stroke_drawing.ts",
+    import.meta.url,
+  ).pathname;
+  const command = new Deno.Command(Deno.execPath(), {
+    args: [
+      "run",
+      "--allow-all",
+      drawingPath,
+      "render",
+      "--outfile=-",
+      "--setting.strokeWidth=4",
+    ],
+    cwd: new URL(".", import.meta.url).pathname,
+  });
+  const { code, stdout, stderr } = await command.output();
+  const stdoutText = new TextDecoder().decode(stdout);
+  const stderrText = new TextDecoder().decode(stderr);
+  assertEquals(code, 0, `exit code nonzero. Error: ${stderrText}`);
+  assertStringIncludes(stdoutText, 'stroke-width="4"');
+});
+
+Deno.test("render stroke drawing with --s override", async () => {
+  const drawingPath = new URL(
+    "drawings/stroke_drawing.ts",
+    import.meta.url,
+  ).pathname;
+  const command = new Deno.Command(Deno.execPath(), {
+    args: [
+      "run",
+      "--allow-all",
+      drawingPath,
+      "render",
+      "--outfile=-",
+      "--s.strokeWidth=4",
+    ],
+    cwd: new URL(".", import.meta.url).pathname,
+  });
+  const { code, stdout, stderr } = await command.output();
+  const stdoutText = new TextDecoder().decode(stdout);
+  const stderrText = new TextDecoder().decode(stderr);
+  assertEquals(code, 0, `exit code nonzero. Error: ${stderrText}`);
+  assertStringIncludes(stdoutText, 'stroke-width="4"');
+});
+
+Deno.test("render --help shows settings options without alias clutter", async () => {
+  const drawingPath = new URL(
+    "drawings/stroke_drawing.ts",
+    import.meta.url,
+  ).pathname;
+  const command = new Deno.Command(Deno.execPath(), {
+    args: ["run", "--allow-all", drawingPath, "render", "--help"],
+    cwd: new URL(".", import.meta.url).pathname,
+  });
+  const { code, stdout, stderr } = await command.output();
+  const stdoutText = new TextDecoder().decode(stdout);
+  const stderrText = new TextDecoder().decode(stderr);
+  assertEquals(code, 0, `exit code nonzero. Error: ${stderrText}`);
+  // The canonical plural option is listed.
+  assertStringIncludes(stdoutText, "--settings.strokeWidth");
+  // The aliases are hidden from help.
+  assertEquals(stdoutText.includes("--setting."), false);
+  assertEquals(stdoutText.includes("--s."), false);
+});
+
 Deno.test("render plain Record drawing without the Settings class", async () => {
   const drawingPath = new URL(
     "drawings/plain_record_drawing.ts",

@@ -75,7 +75,8 @@ version-push:
     VERSION=$(jq -r .version deno.json)
     git push origin main "v$VERSION"
 
-# Publish the packages to JSR. Run after the version tag is pushed.
+# Publish the packages to JSR and npm. Run after the version tag is pushed.
+# In CI, npm publishing uses trusted publishing (OIDC): no token is needed.
 release:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -88,4 +89,11 @@ release:
       exit 1
     fi
     deno publish
-    cd packages/create-vormen && deno publish
+    TARBALL=$(deno pack 2>&1 >/dev/null | grep -oE '[^ ]+\.tgz' | tail -1)
+    npm publish "$TARBALL" --access public
+    rm -f "$TARBALL"
+    cd packages/create-vormen
+    deno publish
+    TARBALL=$(deno pack 2>&1 >/dev/null | grep -oE '[^ ]+\.tgz' | tail -1)
+    npm publish "$TARBALL" --access public
+    rm -f "$TARBALL"

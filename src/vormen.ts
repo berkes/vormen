@@ -6,7 +6,12 @@
  */
 
 // Drawing domain
-export { Drawing, Margin, StandardSize } from "./drawing/drawing.ts";
+export {
+  Drawing,
+  type Element,
+  Margin,
+  StandardSize,
+} from "./drawing/drawing.ts";
 export { readSvg } from "./drawing/read.ts";
 
 // Settings domain

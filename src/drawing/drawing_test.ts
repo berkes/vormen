@@ -1,9 +1,10 @@
 import {
+  assert,
   assertAlmostEquals,
   assertEquals,
   assertStringIncludes,
 } from "@std/assert";
-import { registerWindow } from "@svgdotjs/svg.js";
+import { Circle, registerWindow } from "@svgdotjs/svg.js";
 import { createSVGWindow } from "svgdom";
 import { Drawing, Margin, StandardSize } from "./drawing.ts";
 
@@ -46,6 +47,40 @@ Deno.test("withSize() sets the drawing dimensions", () => {
 
   assertEquals(drawing.width, 300);
   assertEquals(drawing.height, 400);
+});
+
+Deno.test("withDefs() adds the given elements to a defs on build", () => {
+  const circle = new Circle().radius(10).id("dot");
+
+  const drawing = new Drawing(svgElement()).withSize(300, 400).withDefs([
+    circle,
+  ]);
+  drawing.build();
+
+  assertEquals(circle.node.parentNode?.nodeName, "defs");
+  assertStringIncludes(drawing.svg(), "<defs");
+  assertStringIncludes(drawing.svg(), 'id="dot"');
+});
+
+Deno.test("withDefs() replaces the previously set defs", () => {
+  const first = new Circle().radius(10).id("first");
+  const second = new Circle().radius(20).id("second");
+
+  const drawing = new Drawing(svgElement()).withSize(300, 400).withDefs([
+    first,
+  ]).withDefs([second]);
+  drawing.build();
+
+  assertEquals(second.node.parentNode?.nodeName, "defs");
+  assertStringIncludes(drawing.svg(), 'id="second"');
+  assert(!drawing.svg().includes('id="first"'));
+});
+
+Deno.test("build adds no defs when none are set", () => {
+  const drawing = new Drawing(svgElement()).withSize(300, 400);
+  drawing.build();
+
+  assert(!drawing.svg().includes("<defs"));
 });
 
 Deno.test("withSize() sizes the drawing and its viewBox", () => {

@@ -9,12 +9,15 @@
  * - Standard size presets (A3, A4, A5)
  * - Margin support
  * - Background color support
+ * - Definition elements support
  */
 
-import type { G, Svg } from "@svgdotjs/svg.js";
+import type { Element, G, Svg } from "@svgdotjs/svg.js";
 import { registerWindow, SVG } from "@svgdotjs/svg.js";
 import { createSVGWindow } from "svgdom";
 import type { HTMLElement } from "jsdom";
+
+export type { Element } from "@svgdotjs/svg.js";
 
 /**
  * Factor to convert user units to millimeters: 1 user unit = 0.264583 mm
@@ -61,6 +64,7 @@ export class Drawing {
   private _height: number;
   private _margin: Margin;
   private _backgroundColor: string;
+  private _defs: Element[];
   private _svg: Svg;
 
   /**
@@ -71,6 +75,7 @@ export class Drawing {
     this._height = 0;
     this._margin = Margin.ZERO;
     this._backgroundColor = "transparent";
+    this._defs = [];
 
     if (element === undefined) {
       const window = createSVGWindow();
@@ -102,6 +107,20 @@ export class Drawing {
     const dimensions = STANDARD_SIZES[size];
     this._width = dimensions.width;
     this._height = dimensions.height;
+    return this;
+  }
+
+  /**
+   * Set the definition elements of the drawing.
+   *
+   * The elements are placed in a `<defs>` element of the SVG on build().
+   * Calling this again replaces the previously set elements.
+   *
+   * @param elements The svg.js elements to define, e.g. gradients or
+   * reusable shapes
+   */
+  withDefs(elements: Element[]): Drawing {
+    this._defs = elements;
     return this;
   }
 
@@ -186,6 +205,14 @@ export class Drawing {
     const draw = this._svg.size(this._width, this._height);
     // Set viewBox to the drawing dimensions
     draw.viewbox(0, 0, this._width, this._height);
+
+    // Add the definition elements, if any
+    if (this._defs.length > 0) {
+      const defs = this._svg.defs();
+      for (const element of this._defs) {
+        defs.add(element);
+      }
+    }
 
     // Draw a background
     const bgRect = draw.rect(this._width, this._height);

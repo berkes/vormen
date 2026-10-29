@@ -208,6 +208,11 @@ with standard sizes, margins, and backgrounds. This is a simplified API that
 wraps svg.js to create drawings with standard size presets (A3, A4, A5), margin
 support, and background color support.
 
+Definition elements (e.g. gradients or reusable shapes) are set with
+`withDefs(elements)`, where each element is an svg.js `Element`. They are placed
+in the `<defs>` of the SVG when the drawing is built. Calling `withDefs()` again
+replaces the previously set elements.
+
 ### Grid
 
 A grid system for organizing cells in a drawing. Contains Grid and Cell classes.

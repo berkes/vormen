@@ -88,14 +88,32 @@ export class Drawing {
   }
 
   /**
+   * Copy this drawing's configuration onto a new Drawing.
+   *
+   * The copy shares the underlying svg.js document; the builder
+   * configuration (size, margin, background, defs) is distinct.
+   */
+  private _copy(): Drawing {
+    const copy = Object.create(Drawing.prototype) as Drawing;
+    copy._width = this._width;
+    copy._height = this._height;
+    copy._margin = this._margin;
+    copy._backgroundColor = this._backgroundColor;
+    copy._defs = [...this._defs];
+    copy._svg = this._svg;
+    return copy;
+  }
+
+  /**
    * Set the drawing size.
    * @param width Width of the drawing in user units
    * @param height Height of the drawing in user units
    */
   withSize(width: number, height: number): Drawing {
-    this._width = width;
-    this._height = height;
-    return this;
+    const copy = this._copy();
+    copy._width = width;
+    copy._height = height;
+    return copy;
   }
 
   /**
@@ -105,9 +123,10 @@ export class Drawing {
    */
   withStandardSize(size: StandardSize): Drawing {
     const dimensions = STANDARD_SIZES[size];
-    this._width = dimensions.width;
-    this._height = dimensions.height;
-    return this;
+    const copy = this._copy();
+    copy._width = dimensions.width;
+    copy._height = dimensions.height;
+    return copy;
   }
 
   /**
@@ -120,8 +139,9 @@ export class Drawing {
    * reusable shapes
    */
   withDefs(elements: Element[]): Drawing {
-    this._defs = elements;
-    return this;
+    const copy = this._copy();
+    copy._defs = [...elements];
+    return copy;
   }
 
   /**
@@ -129,12 +149,13 @@ export class Drawing {
    * @param margin Margin value or Margin instance
    */
   withMargin(margin: Margin | number): Drawing {
+    const copy = this._copy();
     if (typeof margin === "number") {
-      this._margin = Margin.from(margin);
+      copy._margin = Margin.from(margin);
     } else {
-      this._margin = margin;
+      copy._margin = margin;
     }
-    return this;
+    return copy;
   }
 
   /**
@@ -144,8 +165,9 @@ export class Drawing {
    * @param color Background color for the drawing (any CSS color string)
    */
   withBackgroundColor(color: string): Drawing {
-    this._backgroundColor = color;
-    return this;
+    const copy = this._copy();
+    copy._backgroundColor = color;
+    return copy;
   }
 
   /**

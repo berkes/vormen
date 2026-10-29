@@ -20,14 +20,27 @@ export class PathBuilder {
     this._points = points;
   }
 
+  /**
+   * Copy this builder's configuration onto a new builder of the same class.
+   * Subclasses must override this to copy their own configuration.
+   */
+  protected _copy(): this {
+    const copy = Object.create(Object.getPrototypeOf(this)) as this;
+    copy._points = [...this._points];
+    copy._closed = this._closed;
+    return copy;
+  }
+
   withClosed(closed: boolean): this {
-    this._closed = closed;
-    return this;
+    const copy = this._copy();
+    copy._closed = closed;
+    return copy;
   }
 
   push(point: Point): this {
-    this._points.push(point);
-    return this;
+    const copy = this._copy();
+    copy._points.push(point);
+    return copy;
   }
 
   get(idx: number): Point {

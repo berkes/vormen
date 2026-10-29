@@ -148,14 +148,34 @@ export class Grid {
   }
 
   /**
+   * Copy this grid's configuration onto a new Grid.
+   *
+   * The cells cache is not copied: cells of a copy are generated against the
+   * copy, so their grid back-reference points to the copy.
+   */
+  private _copy(): Grid {
+    const copy = new Grid();
+    copy._width = this._width;
+    copy._height = this._height;
+    copy._paddingTop = this._paddingTop;
+    copy._paddingRight = this._paddingRight;
+    copy._paddingBottom = this._paddingBottom;
+    copy._paddingLeft = this._paddingLeft;
+    copy._nCols = this._nCols;
+    copy._nRows = this._nRows;
+    return copy;
+  }
+
+  /**
    * Set the total grid dimensions
    * @param width Total width of the grid
    * @param height Total height of the grid
    */
   withSize(width: number, height: number): Grid {
-    this._width = width;
-    this._height = height;
-    return this;
+    const copy = this._copy();
+    copy._width = width;
+    copy._height = height;
+    return copy;
   }
 
   /**
@@ -163,8 +183,9 @@ export class Grid {
    * @param nCols Number of columns
    */
   withCols(nCols: number): Grid {
-    this._nCols = Math.max(0, Math.floor(nCols));
-    return this;
+    const copy = this._copy();
+    copy._nCols = Math.max(0, Math.floor(nCols));
+    return copy;
   }
 
   /**
@@ -172,8 +193,9 @@ export class Grid {
    * @param nRows Number of rows
    */
   withRows(nRows: number): Grid {
-    this._nRows = Math.max(0, Math.floor(nRows));
-    return this;
+    const copy = this._copy();
+    copy._nRows = Math.max(0, Math.floor(nRows));
+    return copy;
   }
 
   /**
@@ -181,11 +203,12 @@ export class Grid {
    * @param padding Padding size in user units
    */
   withPadding(padding: number): Grid {
-    this._paddingTop = padding;
-    this._paddingRight = padding;
-    this._paddingBottom = padding;
-    this._paddingLeft = padding;
-    return this;
+    const copy = this._copy();
+    copy._paddingTop = padding;
+    copy._paddingRight = padding;
+    copy._paddingBottom = padding;
+    copy._paddingLeft = padding;
+    return copy;
   }
 
   /**
@@ -193,8 +216,9 @@ export class Grid {
    * @param top Top padding in user units
    */
   withPaddingTop(top: number): Grid {
-    this._paddingTop = top;
-    return this;
+    const copy = this._copy();
+    copy._paddingTop = top;
+    return copy;
   }
 
   /**
@@ -202,8 +226,9 @@ export class Grid {
    * @param right Right padding in user units
    */
   withPaddingRight(right: number): Grid {
-    this._paddingRight = right;
-    return this;
+    const copy = this._copy();
+    copy._paddingRight = right;
+    return copy;
   }
 
   /**
@@ -211,8 +236,9 @@ export class Grid {
    * @param bottom Bottom padding in user units
    */
   withPaddingBottom(bottom: number): Grid {
-    this._paddingBottom = bottom;
-    return this;
+    const copy = this._copy();
+    copy._paddingBottom = bottom;
+    return copy;
   }
 
   /**
@@ -220,22 +246,24 @@ export class Grid {
    * @param left Left padding in user units
    */
   withPaddingLeft(left: number): Grid {
-    this._paddingLeft = left;
-    return this;
+    const copy = this._copy();
+    copy._paddingLeft = left;
+    return copy;
   }
 
   /**
    * Adjust height to make cells square
    */
   withSquareCells(): Grid {
+    const copy = this._copy();
     if (this._nCols > 0 && this._nRows > 0) {
       const hPadding = this._paddingLeft;
       const cellWidth = (this._width - (this._nCols + 1) * hPadding) /
         this._nCols;
       const vPadding = this._paddingTop;
-      this._height = this._nRows * cellWidth + (this._nRows + 1) * vPadding;
+      copy._height = this._nRows * cellWidth + (this._nRows + 1) * vPadding;
     }
-    return this;
+    return copy;
   }
 
   /**

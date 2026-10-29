@@ -1,5 +1,44 @@
-import { assertEquals } from "@std/assert";
+import { assertEquals, assertNotStrictEquals } from "@std/assert";
 import { Grid } from "./grid.ts";
+
+Deno.test("with-methods return a distinct Grid and leave the original unchanged", () => {
+  const base = new Grid().withSize(300, 400);
+
+  const withCols = base.withCols(10);
+  assertNotStrictEquals(withCols, base);
+  assertEquals(withCols.numCols, 10);
+  assertEquals(base.numCols, 0);
+
+  const withRows = withCols.withRows(20);
+  assertNotStrictEquals(withRows, withCols);
+  assertEquals(withRows.numRows, 20);
+  assertEquals(withCols.numRows, 0);
+
+  const padded = withRows.withPadding(8);
+  assertNotStrictEquals(padded, withRows);
+  assertEquals(padded.cellWidth, 14); // 30 - 8 - 8
+  assertEquals(withRows.cellWidth, 30);
+
+  const withPaddingTop = padded.withPaddingTop(0);
+  assertNotStrictEquals(withPaddingTop, padded);
+  assertEquals(withPaddingTop.cellHeight, 12); // 20 - 0 - 8
+  assertEquals(padded.cellHeight, 4); // 20 - 8 - 8
+
+  const square = withRows.withSquareCells();
+  assertNotStrictEquals(square, withRows);
+  assertEquals(square.height, 600); // 20 rows * 30 wide cells
+  assertEquals(withRows.height, 400);
+});
+
+Deno.test("cells() of a copied grid are generated against the copy", () => {
+  const base = new Grid().withSize(100, 100).withCols(2).withRows(2);
+  assertEquals(base.cells().length, 4); // Warms the cells cache.
+
+  const padded = base.withPadding(10);
+
+  assertEquals(padded.cells()[0].width, 30); // 50 - 10 - 10
+  assertEquals(base.cells()[0].width, 50);
+});
 
 Deno.test("builder common", () => {
   const grid = new Grid().withSize(300, 400).withCols(10).withRows(20);

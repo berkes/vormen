@@ -2,6 +2,7 @@ import {
   assert,
   assertAlmostEquals,
   assertEquals,
+  assertNotStrictEquals,
   assertStringIncludes,
 } from "@std/assert";
 import { Circle, registerWindow } from "@svgdotjs/svg.js";
@@ -47,6 +48,36 @@ Deno.test("withSize() sets the drawing dimensions", () => {
 
   assertEquals(drawing.width, 300);
   assertEquals(drawing.height, 400);
+});
+
+Deno.test("with-methods return a distinct Drawing and leave the original unchanged", () => {
+  const base = new Drawing(svgElement());
+
+  const sized = base.withSize(300, 400);
+  assertNotStrictEquals(sized, base);
+  assertEquals(sized.width, 300);
+  assertEquals(base.width, 0);
+
+  const standard = base.withStandardSize(StandardSize.A4);
+  assertNotStrictEquals(standard, base);
+  assertAlmostEquals(standard.width, 793.70, 0.01);
+  assertEquals(base.outerWidth, 0);
+
+  const margined = sized.withMargin(20);
+  assertNotStrictEquals(margined, sized);
+  assertEquals(margined.width, 260);
+  assertEquals(sized.width, 300);
+
+  const withMarginInstance = sized.withMargin(new Margin(10, 20, 30, 40));
+  assertNotStrictEquals(withMarginInstance, sized);
+  assertEquals(withMarginInstance.width, 260); // 300 - 10 - 30
+  assertEquals(sized.margin.isZero(), true);
+
+  const withDefs = sized.withDefs([new Circle().radius(10).id("dot")]);
+  assertNotStrictEquals(withDefs, sized);
+
+  const colored = sized.withBackgroundColor("#eee");
+  assertNotStrictEquals(colored, sized);
 });
 
 Deno.test("withDefs() adds the given elements to a defs on build", () => {

@@ -115,17 +115,13 @@ export class Settings<TSchema extends SettingsSchema> {
   }
 
   /**
-   * Merge another settings object into this one.
+   * Merge another settings object into a new Settings instance.
    * @param other Settings or plain object to merge
-   * @returns this for chaining
+   * @returns A new Settings instance with the merged values
    */
-  merge(other: Settings<TSchema> | Partial<TSchema>): this {
-    if (other instanceof Settings) {
-      this._data = { ...this._data, ...other.toObject() };
-    } else {
-      this._data = { ...this._data, ...other };
-    }
-    return this;
+  merge(other: Settings<TSchema> | Partial<TSchema>): Settings<TSchema> {
+    const data = other instanceof Settings ? other.toObject() : other;
+    return new Settings(this._data, data);
   }
 
   /**

@@ -3,7 +3,7 @@
  */
 import { PathBuilder } from "./path.ts";
 import { Point } from "../primitives/point.ts";
-import { assert, assertEquals, assertThrows } from "@std/assert";
+import { assertEquals, assertNotStrictEquals, assertThrows } from "@std/assert";
 
 // Helper to create points for readability
 const p = (x: number, y: number) => new Point(x, y);
@@ -33,20 +33,24 @@ Deno.test("PathBuilder constructor with single point", () => {
   assertEquals(builder.end, p(5, 5));
 });
 
-Deno.test("withClosed sets closed and returns this", () => {
+Deno.test("withClosed returns a distinct builder and leaves the original unchanged", () => {
   const builder = new PathBuilder([p(0, 0), p(10, 10)]);
   const result = builder.withClosed(true);
 
-  assert(result === builder);
+  assertNotStrictEquals(result, builder);
+  assertEquals(builder.build(), "M0 0L0 0L10 10");
+  assertEquals(result.build(), "M0 0L0 0L10 10Z");
 });
 
-Deno.test("push adds point and returns this", () => {
+Deno.test("push returns a distinct builder and leaves the original unchanged", () => {
   const builder = new PathBuilder([p(0, 0), p(10, 10)]);
   const result = builder.push(p(20, 20));
 
-  assert(result === builder);
-  assertEquals(builder.points, [p(0, 0), p(10, 10), p(20, 20)]);
-  assertEquals(builder.end, p(20, 20));
+  assertNotStrictEquals(result, builder);
+  assertEquals(builder.points, [p(0, 0), p(10, 10)]);
+  assertEquals(builder.end, p(10, 10));
+  assertEquals(result.points, [p(0, 0), p(10, 10), p(20, 20)]);
+  assertEquals(result.end, p(20, 20));
 });
 
 Deno.test("get returns point at valid index", () => {
@@ -211,19 +215,19 @@ Deno.test("getCyclic with single point", () => {
   assertEquals(builder.getCyclic(-100), p(5, 5));
 });
 
-Deno.test("push preserves existing points", () => {
+Deno.test("push preserves the points given to the constructor", () => {
   const points = [p(0, 0), p(10, 10)];
-  const builder = new PathBuilder(points);
-  builder.push(p(20, 20));
+  const builder = new PathBuilder(points).push(p(20, 20));
 
-  assertEquals(points, [p(0, 0), p(10, 10), p(20, 20)]);
+  assertEquals(points, [p(0, 0), p(10, 10)]);
+  assertEquals(builder.points, [p(0, 0), p(10, 10), p(20, 20)]);
 });
 
-Deno.test("multiple push calls", () => {
-  const builder = new PathBuilder([p(0, 0)]);
-  builder.push(p(10, 10));
-  builder.push(p(20, 20));
-  builder.push(p(30, 30));
+Deno.test("multiple push calls chain into one builder", () => {
+  const builder = new PathBuilder([p(0, 0)])
+    .push(p(10, 10))
+    .push(p(20, 20))
+    .push(p(30, 30));
 
   assertEquals(builder.points, [p(0, 0), p(10, 10), p(20, 20), p(30, 30)]);
 });

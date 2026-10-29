@@ -1,4 +1,5 @@
 import { assertEquals } from "@std/assert/equals";
+import { assertNotStrictEquals } from "@std/assert/not-strict-equals";
 import { Settings, type SettingsData } from "./settings.ts";
 
 const schema = {
@@ -119,6 +120,17 @@ Deno.test("Settings merge method with Settings instance", () => {
   const merged = settings.merge(overrides);
   assertEquals(merged.get("seed"), "other");
   assertEquals(merged.get("stroke_width"), 9);
+});
+
+Deno.test("Settings merge returns a distinct Settings and leaves the original unchanged", () => {
+  const settings = new Settings(schema, { stroke_width: 2 });
+  const merged = settings.merge({ stroke_width: 4, seed: "merged" });
+
+  assertNotStrictEquals(merged, settings);
+  assertEquals(settings.get("stroke_width"), 2);
+  assertEquals(settings.get("seed"), "default-seed");
+  assertEquals(merged.get("stroke_width"), 4);
+  assertEquals(merged.get("seed"), "merged");
 });
 
 Deno.test("Settings toOptions method stringifies defaults", () => {

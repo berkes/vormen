@@ -16,14 +16,23 @@ export class RoundedPathBuilder extends PathBuilder {
   private _radius: number = 0;
   private _constrained: boolean = false;
 
+  protected override _copy(): this {
+    const copy = super._copy();
+    copy._radius = this._radius;
+    copy._constrained = this._constrained;
+    return copy;
+  }
+
   withRounding(radius: number): this {
-    this._radius = radius;
-    return this;
+    const copy = this._copy();
+    copy._radius = radius;
+    return copy;
   }
 
   withRoundingConstrained(constrained: boolean): this {
-    this._constrained = constrained;
-    return this;
+    const copy = this._copy();
+    copy._constrained = constrained;
+    return copy;
   }
 
   protected override buildSegments(): string {

@@ -213,16 +213,21 @@ Definition elements (e.g. gradients or reusable shapes) are set with
 in the `<defs>` of the SVG when the drawing is built. Calling `withDefs()` again
 replaces the previously set elements.
 
+All `with*()` methods return a new `Drawing` and leave the drawing they were
+called on unchanged, so one base drawing can be branched into several
+variations. The copies share the underlying SVG document.
+
 ### Grid
 
 A grid system for organizing cells in a drawing. Contains Grid and Cell classes.
 Grid uses the builder pattern for configuration and is iterable over its cells,
-yielding Cell objects that provide position and dimension information. The grid
-isn't visible, but allows us to position elements in a grid with easy tools like
-being able to loop over all the cells, get X and Y coordinates of a cell, add
-paddings between cells and so on. `grid.intersections()` returns all points
-where the grid lines cross, including the outer edges, sorted in ascending order
-by y and then by x.
+yielding Cell objects that provide position and dimension information. Every
+`with*()` method returns a new `Grid` and leaves the grid it was called on
+unchanged. The grid isn't visible, but allows us to position elements in a grid
+with easy tools like being able to loop over all the cells, get X and Y
+coordinates of a cell, add paddings between cells and so on.
+`grid.intersections()` returns all points where the grid lines cross, including
+the outer edges, sorted in ascending order by y and then by x.
 
 ### Math
 
@@ -288,6 +293,10 @@ Both builders are constructed from points, so a path built with one can be
 re-drawn with the other by re-using the points, e.g.
 `new RoundedPathBuilder(linearPath.points)`.
 
+All builder methods (`withClosed()`, `push()`, `withRounding()` and
+`withRoundingConstrained()`) return a new builder and leave the builder they
+were called on unchanged.
+
 ### Settings
 
 Configuration management for drawings. Contains the Settings class for managing
@@ -313,7 +322,8 @@ path.stroke({ width: settings.strokeWidth }); // strokeWidth is a number
 `Settings.parse()` parses raw values (from the CLI, a web server, or elsewhere)
 to each setting's canonical type at construction, and returns an instance that
 also allows typed property access. `asRecord()` converts an instance back to a
-plain `SettingsData` record.
+plain `SettingsData` record. `merge()` returns a new `Settings` instance and
+leaves the instance it was called on unchanged.
 
 Settings is optional: `DrawFn` and `Vormen` do not depend on it. Drawings
 receive their settings as a `SettingsData` record

@@ -6,7 +6,7 @@
  * Container (Group) positioned at the margin offset, ready for drawing.
  *
  * Features:
- * - Paper size presets (A3, A4, A5)
+ * - Standard size presets (A3, A4, A5)
  * - Margin support
  * - Background color support
  */
@@ -19,51 +19,35 @@ import type { HTMLElement } from "jsdom";
 /**
  * Factor to convert user units to millimeters: 1 user unit = 0.264583 mm
  */
-export const USER_UNIT_FACTOR_MM = 0.264583;
+const USER_UNIT_FACTOR_MM = 0.264583;
+
+/** Convert millimeters to user units. */
+function mm(millimeters: number): number {
+  return millimeters / USER_UNIT_FACTOR_MM;
+}
 
 /**
- * A4 paper width in user units: 210mm / USER_UNIT_FACTOR_MM ≈ 793.70
+ * Standard sizes a drawing can take, e.g. StandardSize.A4.
+ *
+ * Physical paper sizes (A-series now; letter, legal, postcard etc. later) and
+ * digital sizes (instagram, hd, 4k etc. later) all live in this one enum and
+ * the STANDARD_SIZES map. Never add a size as a separate const or builder
+ * method; add it here and to the map instead.
  */
-export const A4_WIDTH_USER_UNITS = 210 / USER_UNIT_FACTOR_MM;
+export enum StandardSize {
+  A3 = "A3",
+  A4 = "A4",
+  A5 = "A5",
+}
 
 /**
- * A4 paper height in user units: 297mm / USER_UNIT_FACTOR_MM ≈ 1122.52
+ * Map of standard sizes to their dimensions in user units.
  */
-export const A4_HEIGHT_USER_UNITS = 297 / USER_UNIT_FACTOR_MM;
-
-/**
- * A3 paper width in user units: 297mm / USER_UNIT_FACTOR_MM ≈ 1122.52
- */
-export const A3_WIDTH_USER_UNITS = 297 / USER_UNIT_FACTOR_MM;
-
-/**
- * A3 paper height in user units: 420mm / USER_UNIT_FACTOR_MM ≈ 1587.40
- */
-export const A3_HEIGHT_USER_UNITS = 420 / USER_UNIT_FACTOR_MM;
-
-/**
- * A5 paper width in user units: 148mm / USER_UNIT_FACTOR_MM ≈ 559.80
- */
-export const A5_WIDTH_USER_UNITS = 148 / USER_UNIT_FACTOR_MM;
-
-/**
- * A5 paper height in user units: 210mm / USER_UNIT_FACTOR_MM ≈ 793.70
- */
-export const A5_HEIGHT_USER_UNITS = 210 / USER_UNIT_FACTOR_MM;
-
-/**
- * Paper size presets
- */
-export type PaperSize = "A3" | "A4" | "A5";
-
-/**
- * Map of paper sizes to their dimensions in user units
- */
-export const PAPER_SIZES: Record<PaperSize, { width: number; height: number }> =
+const STANDARD_SIZES: Record<StandardSize, { width: number; height: number }> =
   {
-    A3: { width: A3_WIDTH_USER_UNITS, height: A3_HEIGHT_USER_UNITS },
-    A4: { width: A4_WIDTH_USER_UNITS, height: A4_HEIGHT_USER_UNITS },
-    A5: { width: A5_WIDTH_USER_UNITS, height: A5_HEIGHT_USER_UNITS },
+    A3: { width: mm(297), height: mm(420) },
+    A4: { width: mm(210), height: mm(297) },
+    A5: { width: mm(148), height: mm(210) },
   };
 
 /**
@@ -110,36 +94,15 @@ export class Drawing {
   }
 
   /**
-   * Set the drawing size to a preset paper size.
+   * Set the drawing size to a standard size, e.g. "A4".
    *
-   * @param size The paper size preset
+   * @param size The standard size name
    */
-  withPaperSize(size: PaperSize): Drawing {
-    const dimensions = PAPER_SIZES[size];
+  withStandardSize(size: StandardSize): Drawing {
+    const dimensions = STANDARD_SIZES[size];
     this._width = dimensions.width;
     this._height = dimensions.height;
     return this;
-  }
-
-  /**
-   * Set the drawing size to A3 (297mm x 420mm).
-   */
-  withA3Size(): Drawing {
-    return this.withPaperSize("A3");
-  }
-
-  /**
-   * Set the drawing size to A4 (210mm x 297mm).
-   */
-  withA4Size(): Drawing {
-    return this.withPaperSize("A4");
-  }
-
-  /**
-   * Set the drawing size to A5 (148mm x 210mm).
-   */
-  withA5Size(): Drawing {
-    return this.withPaperSize("A5");
   }
 
   /**

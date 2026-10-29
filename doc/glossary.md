@@ -11,7 +11,7 @@ Color
 
 Drawing
 : The basis of SVG creation. Contains the Drawing class for building SVG
-artwork with paper sizes, margins, and backgrounds.
+artwork with standard sizes, margins, and backgrounds.
 
 Grid
 : A grid system for organizing cells in a drawing. Contains Grid and Cell
@@ -42,6 +42,13 @@ the Settings class is optional.
 
 Shapes
 : Pre-built geometric shapes.
+
+Standard size
+: A named preset drawing size, a member of the StandardSize enum, e.g.
+`StandardSize.A4`. Physical paper sizes and digital sizes (hd, 4k, instagram
+etc.) are all standard sizes, defined in one map in the Drawing module and
+selected with `withStandardSize`. Use "standard size", not "paper size", when a
+size may be non-physical.
 
 Typography
 : Text rendering and font management.

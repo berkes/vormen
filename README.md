@@ -29,7 +29,14 @@ function that takes settings and returns a `string`, then hands that function to
 the runner as its last line. Here's a full example:
 
 ```Javascript
-import { Drawing, Grid, Noise, Settings, Vormen } from "@berkes/vormen";
+import {
+  Drawing,
+  Grid,
+  Noise,
+  Settings,
+  StandardSize,
+  Vormen,
+} from "@berkes/vormen";
 
 const defaults = {
   rotationStrength: 35,
@@ -38,9 +45,10 @@ const defaults = {
 const draw = (rawSettings) => {
   const settings = Settings.parse(defaults, rawSettings);
   // Create a drawing with a4 size, equal margins on all sides and a white background.
-  const drawing = new Drawing().withA4Size().withMargin(20).withBackground(
-    "white",
-  );
+  const drawing = new Drawing().withStandardSize(StandardSize.A4).withMargin(20)
+    .withBackground(
+      "white",
+    );
   // From this drawing, we extract the area that we can draw on.
   const canvas = drawing.build();
 
@@ -135,9 +143,9 @@ Or just the page builder, by letting that create the SVG string and then
 
 ```javascript
 import { writeFileSync } from "node:fs";
-import { Drawing } from "@berkes/vormen";
+import { Drawing, StandardSize } from "@berkes/vormen";
 
-const drawing = new Drawing().withA4Size().withMargin(20);
+const drawing = new Drawing().withStandardSize(StandardSize.A4).withMargin(20);
 const canvas = drawing.build();
 
 for(i = 0, i < 8, i++) {
@@ -196,9 +204,9 @@ or any runtime that can execute a javascript (or typescript) file.
 ### Drawing
 
 The basis of SVG creation. Contains the Drawing class for building SVG artwork
-with paper sizes, margins, and backgrounds. This is a simplified API that wraps
-svg.js to create drawings with paper size presets (A3, A4, A5), margin support,
-and background color support.
+with standard sizes, margins, and backgrounds. This is a simplified API that
+wraps svg.js to create drawings with standard size presets (A3, A4, A5), margin
+support, and background color support.
 
 ### Grid
 

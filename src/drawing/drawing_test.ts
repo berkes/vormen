@@ -1,12 +1,11 @@
-import { assertEquals, assertStringIncludes } from "@std/assert";
+import {
+  assertAlmostEquals,
+  assertEquals,
+  assertStringIncludes,
+} from "@std/assert";
 import { registerWindow } from "@svgdotjs/svg.js";
 import { createSVGWindow } from "svgdom";
-import {
-  A4_HEIGHT_USER_UNITS,
-  A4_WIDTH_USER_UNITS,
-  Drawing,
-  Margin,
-} from "./drawing.ts";
+import { Drawing, Margin, StandardSize } from "./drawing.ts";
 
 /**
  * svg.js draws into a DOM, which does not exist outside the browser. svgdom
@@ -20,12 +19,26 @@ function svgElement() {
 
 Deno.test("builder chains from the constructor", () => {
   const drawing = new Drawing(svgElement())
-    .withA4Size()
+    .withStandardSize(StandardSize.A4)
     .withMargin(20)
     .withBackgroundColor("#eee");
 
-  assertEquals(drawing.width, A4_WIDTH_USER_UNITS - 40);
-  assertEquals(drawing.height, A4_HEIGHT_USER_UNITS - 40);
+  assertAlmostEquals(drawing.width, 753.70, 0.01); // 793.70 - 2 * 20
+  assertAlmostEquals(drawing.height, 1082.52, 0.01); // 1122.52 - 2 * 20
+});
+
+Deno.test("withStandardSize() sets the drawing dimensions in user units", () => {
+  const a3 = new Drawing(svgElement()).withStandardSize(StandardSize.A3);
+  assertAlmostEquals(a3.outerWidth, 1122.52, 0.01); // 297mm
+  assertAlmostEquals(a3.outerHeight, 1587.40, 0.01); // 420mm
+
+  const a4 = new Drawing(svgElement()).withStandardSize(StandardSize.A4);
+  assertAlmostEquals(a4.outerWidth, 793.70, 0.01); // 210mm
+  assertAlmostEquals(a4.outerHeight, 1122.52, 0.01); // 297mm
+
+  const a5 = new Drawing(svgElement()).withStandardSize(StandardSize.A5);
+  assertAlmostEquals(a5.outerWidth, 559.37, 0.01); // 148mm
+  assertAlmostEquals(a5.outerHeight, 793.70, 0.01); // 210mm
 });
 
 Deno.test("withSize() sets the drawing dimensions", () => {

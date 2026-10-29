@@ -14,6 +14,7 @@ import {
   readSvg,
   Settings,
   type SettingsData,
+  StandardSize,
   Vormen,
 } from "@berkes/vormen";
 
@@ -24,7 +25,7 @@ const schema = {
 function draw(rawSettings: SettingsData): string {
   const settings = Settings.parse(schema, rawSettings);
   const drawing = new Drawing()
-    .withA4Size()
+    .withStandardSize(StandardSize.A4)
     .withMargin(20)
     .withBackgroundColor("#fff");
 

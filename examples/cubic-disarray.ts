@@ -12,6 +12,7 @@ import {
   Random,
   Settings,
   type SettingsData,
+  StandardSize,
   Vormen,
 } from "@berkes/vormen";
 
@@ -23,7 +24,7 @@ const defaultSettings = {
 function draw(rawSettings: SettingsData): string {
   const settings = Settings.parse(defaultSettings, rawSettings);
   const drawing = new Drawing()
-    .withA4Size()
+    .withStandardSize(StandardSize.A4)
     .withMargin(20)
     .withBackgroundColor("#eee");
   const canvas = drawing.build();

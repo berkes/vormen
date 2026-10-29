@@ -23,7 +23,9 @@ drawing imports and invokes as its last line:
 import { Vormen } from "@berkes/vormen/runner";
 
 const draw = (settings: Settings) => {
-  const drawing = new Drawing().withA4Size().withMargin(20);
+  const drawing = new Drawing().withStandardSize(StandardSize.A4).withMargin(
+    20,
+  );
   const canvas = drawing.build();
   /* ...draw into canvas... */
   return drawing;

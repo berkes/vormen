@@ -6,19 +6,7 @@
  */
 
 // Drawing domain
-export {
-  A3_HEIGHT_USER_UNITS,
-  A3_WIDTH_USER_UNITS,
-  A4_HEIGHT_USER_UNITS,
-  A4_WIDTH_USER_UNITS,
-  A5_HEIGHT_USER_UNITS,
-  A5_WIDTH_USER_UNITS,
-  Drawing,
-  Margin,
-  PAPER_SIZES,
-  type PaperSize,
-  USER_UNIT_FACTOR_MM,
-} from "./drawing/drawing.ts";
+export { Drawing, Margin, StandardSize } from "./drawing/drawing.ts";
 export { readSvg } from "./drawing/read.ts";
 
 // Settings domain

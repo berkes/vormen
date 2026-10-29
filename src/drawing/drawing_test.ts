@@ -19,6 +19,23 @@ function svgElement() {
   return window.document.documentElement;
 }
 
+/**
+ * Capture the warnings console.warn emits while fn runs.
+ */
+function captureWarnings(fn: () => void): string[] {
+  const warnings: string[] = [];
+  const original = console.warn;
+  console.warn = (...args: unknown[]) => {
+    warnings.push(args.join(" "));
+  };
+  try {
+    fn();
+  } finally {
+    console.warn = original;
+  }
+  return warnings;
+}
+
 Deno.test("builder chains from the constructor", () => {
   const drawing = new Drawing(svgElement())
     .withStandardSize(StandardSize.A4)
@@ -78,6 +95,50 @@ Deno.test("with-methods return a distinct Drawing and leave the original unchang
 
   const colored = sized.withBackgroundColor("#eee");
   assertNotStrictEquals(colored, sized);
+});
+
+Deno.test("builder methods do not warn before build()", () => {
+  const drawing = new Drawing(svgElement());
+
+  const warnings = captureWarnings(() => {
+    drawing.withSize(300, 400).withMargin(20).withBackgroundColor("#eee");
+  });
+
+  assertEquals(warnings, []);
+});
+
+Deno.test("builder methods warn once each after build()", () => {
+  const drawing = new Drawing(svgElement()).withSize(300, 400);
+  drawing.build();
+
+  const warnings = captureWarnings(() => {
+    drawing.withSize(100, 100);
+    drawing.withStandardSize(StandardSize.A5);
+    drawing.withMargin(20);
+    drawing.withBackgroundColor("#eee");
+    drawing.withDefs([]);
+  });
+
+  assertEquals(warnings.length, 5);
+  assertEquals(warnings[0], warnings[4]); // one generic message
+});
+
+Deno.test("build() locks the drawing it was called on, not its copies", () => {
+  const drawing = new Drawing(svgElement()).withSize(300, 400);
+  const branch = drawing.withMargin(20);
+
+  drawing.build();
+
+  const warnings = captureWarnings(() => {
+    branch.withBackgroundColor("#eee");
+  });
+  assertEquals(warnings, []);
+
+  const branchedAfterBuild = drawing.withMargin(40);
+  const moreWarnings = captureWarnings(() => {
+    branchedAfterBuild.withBackgroundColor("#eee");
+  });
+  assertEquals(moreWarnings, []);
 });
 
 Deno.test("withDefs() adds the given elements to a defs on build", () => {

@@ -217,6 +217,10 @@ All `with*()` methods return a new `Drawing` and leave the drawing they were
 called on unchanged, so one base drawing can be branched into several
 variations. The copies share the underlying SVG document.
 
+Calling `build()` locks the drawing it is called on. Builder methods called on a
+locked drawing log a warning to the console: they return a new, unlocked
+`Drawing`, but cannot change what the earlier `build()` produced.
+
 ### Grid
 
 A grid system for organizing cells in a drawing. Contains Grid and Cell classes.

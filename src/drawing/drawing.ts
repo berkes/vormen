@@ -66,6 +66,7 @@ export class Drawing {
   private _backgroundColor: string;
   private _defs: Element[];
   private _svg: Svg;
+  private _locked: boolean;
 
   /**
    * Create a new Drawing with default settings.
@@ -76,6 +77,7 @@ export class Drawing {
     this._margin = Margin.ZERO;
     this._backgroundColor = "transparent";
     this._defs = [];
+    this._locked = false;
 
     if (element === undefined) {
       const window = createSVGWindow();
@@ -91,7 +93,9 @@ export class Drawing {
    * Copy this drawing's configuration onto a new Drawing.
    *
    * The copy shares the underlying svg.js document; the builder
-   * configuration (size, margin, background, defs) is distinct.
+   * configuration (size, margin, background, defs) is distinct. A copy is
+   * never locked: only build() locks, and it locks the drawing it is called
+   * on.
    */
   private _copy(): Drawing {
     const copy = Object.create(Drawing.prototype) as Drawing;
@@ -101,7 +105,24 @@ export class Drawing {
     copy._backgroundColor = this._backgroundColor;
     copy._defs = [...this._defs];
     copy._svg = this._svg;
+    copy._locked = false;
     return copy;
+  }
+
+  /**
+   * Warn when a builder method is called on a locked drawing.
+   *
+   * build() locks the drawing it is called on. Builder methods on a locked
+   * drawing return a new drawing and never change what the earlier build()
+   * produced, which is rarely what the caller intended.
+   */
+  private _warnIfLocked(): void {
+    if (this._locked) {
+      console.warn(
+        "Builder method called on a Drawing that was already built. " +
+          "It returns a new Drawing; the already built result is unchanged.",
+      );
+    }
   }
 
   /**
@@ -110,6 +131,7 @@ export class Drawing {
    * @param height Height of the drawing in user units
    */
   withSize(width: number, height: number): Drawing {
+    this._warnIfLocked();
     const copy = this._copy();
     copy._width = width;
     copy._height = height;
@@ -122,6 +144,7 @@ export class Drawing {
    * @param size The standard size name
    */
   withStandardSize(size: StandardSize): Drawing {
+    this._warnIfLocked();
     const dimensions = STANDARD_SIZES[size];
     const copy = this._copy();
     copy._width = dimensions.width;
@@ -139,6 +162,7 @@ export class Drawing {
    * reusable shapes
    */
   withDefs(elements: Element[]): Drawing {
+    this._warnIfLocked();
     const copy = this._copy();
     copy._defs = [...elements];
     return copy;
@@ -149,6 +173,7 @@ export class Drawing {
    * @param margin Margin value or Margin instance
    */
   withMargin(margin: Margin | number): Drawing {
+    this._warnIfLocked();
     const copy = this._copy();
     if (typeof margin === "number") {
       copy._margin = Margin.from(margin);
@@ -165,6 +190,7 @@ export class Drawing {
    * @param color Background color for the drawing (any CSS color string)
    */
   withBackgroundColor(color: string): Drawing {
+    this._warnIfLocked();
     const copy = this._copy();
     copy._backgroundColor = color;
     return copy;
@@ -214,7 +240,8 @@ export class Drawing {
    * Build and return an svg.js Group positioned at the margin offset.
    *
    * This adopts the given SVG element, sets up viewBox, adds the background,
-   * creates a margin group, and returns it.
+   * creates a margin group, and returns it. Building locks the drawing: any
+   * builder method called on it afterwards warns in the console.
    *
    * The element is required: svg.js needs a DOM to work against, and it is up
    * to the caller to supply one (a browser document, or a shim such as svgdom).
@@ -223,6 +250,7 @@ export class Drawing {
    * @returns The margin group (svg.js Container) ready for drawing
    */
   build(): G {
+    this._locked = true;
     // Size to drawing dimensions
     const draw = this._svg.size(this._width, this._height);
     // Set viewBox to the drawing dimensions

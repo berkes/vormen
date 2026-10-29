@@ -13,6 +13,10 @@ Drawing
 : The basis of SVG creation. Contains the Drawing class for building SVG
 artwork with standard sizes, margins, and backgrounds.
 
+  A Drawing is _locked_ by calling build(). Builder methods called on a locked
+Drawing warn in the console and return a new, unlocked Drawing; they cannot
+change what the earlier build() produced.
+
 Grid
 : A grid system for organizing cells in a drawing. Contains Grid and Cell
 classes.

@@ -50,6 +50,19 @@ other tools, as those will break the project severely.
   both `setSize("a4")` and `setSizeA4()` we choose one. Same goes for arguments:
   one type. So not `setMargin(number | number[] | string | Margin)` we pick one.
 - Our API offers with good defaults and the ability to override.
+- Complex objects are split into a Thing and a ThingBuilder (e.g. `Grid` and
+  `GridBuilder`). A class needs a builder when users must be able to configure
+  three or more attributes independently before it is useful. The builder has
+  one chainable method per attribute, named after the attribute it sets (e.g.
+  `.cols(10)`), each returning the builder itself, and a final `build()` that
+  returns the Thing with all attributes set. The Thing takes all attributes in
+  its constructor and exposes getters (and setters where mutation is supported)
+  for its public attributes. Getters and setters may be derived instead of
+  mapping to internal variables, e.g. a width minus its margins.
+- Simple classes do not get a builder: value objects whose constructor arguments
+  are all required (Point, Line, Margin), services (Random, Noise) and
+  configuration records (Settings). If every attribute is required, the
+  constructor is the builder.
 
 ## Strong DONT's
 

@@ -5,8 +5,8 @@ import { Point } from "../primitives/point.ts";
 /**
  * Grid - A grid system for organizing cells in a drawing
  *
- * Grid uses the builder pattern for configuration and is iterable,
- * yielding Cell objects in row-major order.
+ * Grid uses the builder pattern for configuration and exposes its cells in
+ * row-major order through cells().
  */
 
 /**
@@ -120,7 +120,7 @@ export class Cell {
 /**
  * Grid - A grid system for organizing content
  *
- * Grid uses the builder pattern and is iterable over its cells.
+ * Grid uses the builder pattern and exposes its cells through cells().
  */
 export class Grid {
   private _width: number;

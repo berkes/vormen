@@ -197,20 +197,6 @@ export class Drawing {
   }
 
   /**
-   * @deprecated Use .height instead
-   */
-  getInnerWidth(): number {
-    return this.height;
-  }
-
-  /**
-   * @deprecated Use .height instead
-   */
-  getInnerHeight(): number {
-    return this.height;
-  }
-
-  /**
    * Get the height of the drawing area inside the margins
    */
   get height(): number {

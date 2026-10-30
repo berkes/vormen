@@ -44,6 +44,12 @@ other tools, as those will break the project severely.
 - Keep the public API as small as possible. Do not export functions that have no
   use outside the module.
 - Non-exported (private) items do not need unit tests.
+- Until release 1.0.0, we don't offer backwards compatibility, but prefer
+  simpler, code.
+- Our API offers _one_ way, to be used. So rather than multiple methods, like
+  both `setSize("a4")` and `setSizeA4()` we choose one. Same goes for arguments:
+  one type. So not `setMargin(number | number[] | string | Margin)` we pick one.
+- Our API offers with good defaults and the ability to override.
 
 ## Strong DONT's
 

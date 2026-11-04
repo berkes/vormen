@@ -46,6 +46,7 @@ export enum StandardSize {
   A3 = "A3",
   A4 = "A4",
   A5 = "A5",
+  Postcard = "Postcard",
 }
 
 /**
@@ -56,6 +57,7 @@ const STANDARD_SIZES: Record<StandardSize, { width: number; height: number }> =
     A3: { width: mm(297), height: mm(420) },
     A4: { width: mm(210), height: mm(297) },
     A5: { width: mm(148), height: mm(210) },
+    Postcard: { width: mm(105), height: mm(148) },
   };
 
 /**

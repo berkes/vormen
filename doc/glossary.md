@@ -3,6 +3,12 @@
 This document defines the domain-specific terminology used throughout the Vormen
 library.
 
+Caption
+: Printable metadata rendered as SVG text in the margin of a drawing. Set on
+  a Drawing with `withCaption(caption)`, built with `CaptionBuilder`. The
+  caption template resolves `{placeholders}` against the drawing's Metadata
+  (e.g. `{title}`, `{author}`) and each generator setting (e.g. `{seed}`).
+
 Cell
 : A single cell in a grid, providing position and dimension information.
 
@@ -24,6 +30,15 @@ classes.
 Math
 : Calculation utilities, randomness, and noise generation. Contains
 constrain, Random, Noise, and Stringifiable.
+
+Metadata
+: Machine-readable metadata embedded in an SVG drawing: title, description,
+  author/creator, copyright/rights, date, URL/source, license, keywords and
+  the generator settings. Contains the Metadata and MetadataBuilder classes.
+  Set on a Drawing with `withMetadata(metadata)`; serialized on build() as
+  `<title>`, `<desc>` and a `<metadata>` element with RDF/XML (Dublin Core /
+  Creative Commons) plus the generator settings as JSON in the `vormen:`
+  namespace.
 
 Path
 : Building SVG path data strings from points. Contains the PathBuilder

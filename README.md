@@ -213,6 +213,19 @@ Definition elements (e.g. gradients or reusable shapes) are set with
 in the `<defs>` of the SVG when the drawing is built. Calling `withDefs()` again
 replaces the previously set elements.
 
+Metadata is attached with `withMetadata(metadata)`, where the metadata is built
+with `MetadataBuilder` (see the Metadata module below). On `build()`, the
+metadata is serialized into the SVG as `<title>` and `<desc>` child elements of
+the root and a `<metadata>` element with an RDF/XML block (Dublin Core /
+Creative Commons, the same shape Inkscape writes and reads), plus the generator
+settings as JSON in the `vormen:` namespace. Serializing the metadata does not
+alter the drawing geometry.
+
+A printable metadata caption is attached with `withCaption(caption)` (see the
+Metadata module below). On `build()` it is rendered as SVG text in the margin at
+the caption's position (bottom-right by default). If the margin on that side is
+too small, the viewBox is expanded so the caption never covers the artwork.
+
 All `with*()` methods return a new `Drawing` and leave the drawing they were
 called on unchanged, so one base drawing can be branched into several
 variations. The copies share the underlying SVG document.
@@ -220,6 +233,48 @@ variations. The copies share the underlying SVG document.
 Calling `build()` locks the drawing it is called on. Builder methods called on a
 locked drawing log a warning to the console: they return a new, unlocked
 `Drawing`, but cannot change what the earlier `build()` produced.
+
+### Metadata
+
+Embedding metadata in the SVG. Contains the Metadata and MetadataBuilder classes
+for machine-readable metadata, and the Caption and CaptionBuilder classes for
+printable metadata.
+
+```javascript
+const metadata = new MetadataBuilder()
+  .title("Cubic Disarray")
+  .description("A grid of rotating squares, after Georg Nees")
+  .author("Bär Kessels")
+  .copyright("Copyright 2026 Bär Kessels")
+  .date(new Date())
+  .url("https://github.com/berkes/vormen")
+  .license("https://creativecommons.org/licenses/by/4.0/")
+  .keywords(["generative", "grid"])
+  .settings(settings.asRecord()) // store the seed and other settings as JSON
+  .build();
+const caption = new CaptionBuilder()
+  .template("{title} — {author} — seed: {seed}") // default: "{title} — {author} — {seed}"
+  .position(CaptionPosition.BottomRight) // default: bottom-right
+  .fontFamily("sans-serif")
+  .fontSize(10)
+  .color("#000")
+  .build();
+
+const drawing = new Drawing()
+  .withStandardSize(StandardSize.A4)
+  .withMargin(20)
+  .withMetadata(metadata)
+  .withCaption(caption);
+```
+
+On `build()`, the metadata is written as `<title>`, `<desc>` and `<metadata>`
+(the latter holding RDF/XML with `dc:`/`cc:` terms and a `vormen:generator`
+element with the settings as JSON). Files written this way open in Inkscape with
+title, author and license in Document Properties → Metadata, and
+`exiftool file.svg` extracts title, creator, rights and date. The caption is
+printed as SVG text in the margin; its template resolves `{placeholders}`
+against the metadata fields and each generator setting (e.g. `{seed}`), and
+placeholders without a value are dropped.
 
 ### Grid
 

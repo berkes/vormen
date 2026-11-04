@@ -14,6 +14,14 @@ export {
 } from "./drawing/drawing.ts";
 export { readSvg } from "./drawing/read.ts";
 
+// Metadata domain
+export {
+  Caption,
+  CaptionBuilder,
+  CaptionPosition,
+} from "./metadata/caption.ts";
+export { Metadata, MetadataBuilder } from "./metadata/metadata.ts";
+
 // Settings domain
 export {
   Settings,

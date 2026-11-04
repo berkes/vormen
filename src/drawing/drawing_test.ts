@@ -8,6 +8,8 @@ import {
 import { Circle, registerWindow } from "@svgdotjs/svg.js";
 import { createSVGWindow } from "svgdom";
 import { Drawing, Margin, StandardSize } from "./drawing.ts";
+import { CaptionBuilder, CaptionPosition } from "../metadata/caption.ts";
+import { MetadataBuilder } from "../metadata/metadata.ts";
 
 /**
  * svg.js draws into a DOM, which does not exist outside the browser. svgdom
@@ -117,10 +119,12 @@ Deno.test("builder methods warn once each after build()", () => {
     drawing.withMargin(20);
     drawing.withBackgroundColor("#eee");
     drawing.withDefs([]);
+    drawing.withMetadata(new MetadataBuilder().build());
+    drawing.withCaption(new CaptionBuilder().build());
   });
 
-  assertEquals(warnings.length, 5);
-  assertEquals(warnings[0], warnings[4]); // one generic message
+  assertEquals(warnings.length, 7);
+  assertEquals(warnings[0], warnings[6]); // one generic message
 });
 
 Deno.test("build() locks the drawing it was called on, not its copies", () => {
@@ -257,4 +261,135 @@ Deno.test("element is created if not passed in", () => {
   const group = new Drawing().withSize(300, 400).build();
 
   assertEquals(group.root().node.nodeName, "svg");
+});
+
+function testMetadata() {
+  return new MetadataBuilder()
+    .title("Sunset Study")
+    .description("A generative sunset")
+    .author("Ada Lovelace")
+    .copyright("Copyright 2026 Ada Lovelace")
+    .date(new Date("2026-11-04T10:00:00.000Z"))
+    .url("https://example.com/sunset")
+    .license("https://creativecommons.org/licenses/by/4.0/")
+    .keywords(["generative", "sunset"])
+    .settings({ seed: "abc", iterations: 8 })
+    .build();
+}
+
+Deno.test("withMetadata() and withCaption() return a distinct Drawing and leave the original unchanged", () => {
+  const base = new Drawing(svgElement()).withSize(300, 400);
+  const metadata = testMetadata();
+  const caption = new CaptionBuilder().build();
+
+  const withMetadata = base.withMetadata(metadata);
+  assertNotStrictEquals(withMetadata, base);
+  assertEquals(withMetadata.metadata, metadata);
+  assertEquals(base.metadata, null);
+
+  const withCaption = withMetadata.withCaption(caption);
+  assertNotStrictEquals(withCaption, withMetadata);
+  assertEquals(withCaption.caption, caption);
+  assertEquals(withMetadata.caption, null);
+});
+
+Deno.test("build() serializes the metadata into the SVG without altering the drawing geometry", async (t) => {
+  const drawing = new Drawing(svgElement())
+    .withSize(300, 400)
+    .withMargin(20)
+    .withMetadata(testMetadata());
+  const group = drawing.build();
+  group.rect(10, 20).move(5, 5);
+
+  await t.assertSnapshot(drawing.svg());
+});
+
+Deno.test("build() adds no metadata elements when no metadata is set", () => {
+  const drawing = new Drawing(svgElement()).withSize(300, 400);
+  drawing.build();
+
+  const out = drawing.svg();
+  assert(!out.includes("<title>"), out);
+  assert(!out.includes("<desc>"), out);
+  assert(!out.includes("<metadata>"), out);
+  assert(!out.includes("metadata_caption"), out);
+});
+
+Deno.test("build() renders the caption in the margin when the margin has room", async (t) => {
+  const drawing = new Drawing(svgElement())
+    .withSize(300, 400)
+    .withMargin(20)
+    .withMetadata(testMetadata())
+    .withCaption(new CaptionBuilder().build());
+  drawing.build();
+
+  // lineHeight 12.5 fits in the 20 margin: no expansion.
+  await t.assertSnapshot(drawing.svg());
+});
+
+Deno.test("build() expands the viewBox when the drawing has no margin for the caption", async (t) => {
+  const drawing = new Drawing(svgElement())
+    .withSize(300, 400)
+    .withMetadata(testMetadata())
+    .withCaption(new CaptionBuilder().build());
+  const group = drawing.build();
+  group.rect(10, 20).move(5, 5);
+
+  // lineHeight 12.5 is added below the artwork: viewBox grows to 412.5.
+  await t.assertSnapshot(drawing.svg());
+});
+
+Deno.test("build() expands the viewBox at the top for a top caption", async (t) => {
+  const drawing = new Drawing(svgElement())
+    .withSize(300, 400)
+    .withMetadata(testMetadata())
+    .withCaption(
+      new CaptionBuilder()
+        .position(CaptionPosition.TopLeft)
+        .fontSize(20)
+        .fontFamily("monospace")
+        .color("#ff0000")
+        .template("{title} by {author}")
+        .build(),
+    );
+  drawing.build();
+
+  // lineHeight 25 is added above the artwork.
+  await t.assertSnapshot(drawing.svg());
+});
+
+Deno.test("build() does not expand the viewBox when the margin already fits the caption", async (t) => {
+  const drawing = new Drawing(svgElement())
+    .withSize(300, 400)
+    .withMargin(new Margin(10, 30, 10, 30))
+    .withMetadata(testMetadata())
+    .withCaption(
+      new CaptionBuilder().position(CaptionPosition.TopRight).fontSize(20)
+        .build(),
+    );
+  drawing.build();
+
+  await t.assertSnapshot(drawing.svg());
+});
+
+Deno.test("build() renders no caption when the template resolves to empty text", async (t) => {
+  const drawing = new Drawing(svgElement())
+    .withSize(300, 400)
+    .withCaption(new CaptionBuilder().template("{title}").build());
+  drawing.build();
+
+  const out = drawing.svg();
+  assert(!out.includes("metadata_caption"), out);
+  await t.assertSnapshot(out);
+});
+
+Deno.test("build() renders the caption from the metadata settings", () => {
+  const drawing = new Drawing(svgElement())
+    .withSize(300, 400)
+    .withMargin(20)
+    .withMetadata(new MetadataBuilder().settings({ seed: "xyz-123" }).build())
+    .withCaption(new CaptionBuilder().template("seed: {seed}").build());
+  drawing.build();
+
+  assertStringIncludes(drawing.svg(), "seed: xyz-123");
 });

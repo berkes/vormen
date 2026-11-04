@@ -10,12 +10,17 @@
  * - Margin support
  * - Background color support
  * - Definition elements support
+ * - Metadata (title, author, license, generator settings, ...) serialized as
+ *   `<title>`, `<desc>` and an RDF/XML `<metadata>` block on build()
+ * - An optional printable metadata caption rendered as SVG text in the margin
  */
 
 import type { Element, G, Svg } from "@svgdotjs/svg.js";
 import { registerWindow, SVG } from "@svgdotjs/svg.js";
 import { createSVGWindow } from "svgdom";
 import type { HTMLElement } from "jsdom";
+import { type Caption, CaptionPosition } from "../metadata/caption.ts";
+import { appendMetadata, type Metadata } from "../metadata/metadata.ts";
 
 export type { Element } from "@svgdotjs/svg.js";
 
@@ -65,6 +70,8 @@ export class Drawing {
   private _margin: Margin;
   private _backgroundColor: string;
   private _defs: Element[];
+  private _metadata: Metadata | null;
+  private _caption: Caption | null;
   private _svg: Svg;
   private _locked: boolean;
 
@@ -77,6 +84,8 @@ export class Drawing {
     this._margin = Margin.ZERO;
     this._backgroundColor = "transparent";
     this._defs = [];
+    this._metadata = null;
+    this._caption = null;
     this._locked = false;
 
     if (element === undefined) {
@@ -104,6 +113,8 @@ export class Drawing {
     copy._margin = this._margin;
     copy._backgroundColor = this._backgroundColor;
     copy._defs = [...this._defs];
+    copy._metadata = this._metadata;
+    copy._caption = this._caption;
     copy._svg = this._svg;
     copy._locked = false;
     return copy;
@@ -197,6 +208,42 @@ export class Drawing {
   }
 
   /**
+   * Set the metadata of the drawing.
+   *
+   * On build(), the metadata is serialized into the SVG: `<title>` and
+   * `<desc>` child elements of the root, and a `<metadata>` element with an
+   * RDF/XML block (Dublin Core / Creative Commons, Inkscape-compatible) plus
+   * the generator settings as JSON in the `vormen:` namespace. Serializing
+   * the metadata does not alter the drawing geometry.
+   *
+   * @param metadata The metadata to embed, built with MetadataBuilder
+   */
+  withMetadata(metadata: Metadata): Drawing {
+    this._warnIfLocked();
+    const copy = this._copy();
+    copy._metadata = metadata;
+    return copy;
+  }
+
+  /**
+   * Set the printable metadata caption of the drawing.
+   *
+   * On build(), the caption is rendered as SVG text in the margin at the
+   * caption's position (bottom-right by default). If the margin on that side
+   * is too small, the viewBox is expanded so the caption never covers the
+   * artwork. The caption template resolves `{placeholders}` against the
+   * drawing's metadata, e.g. `{title}`, `{author}` or `{seed}`.
+   *
+   * @param caption The caption to print, built with CaptionBuilder
+   */
+  withCaption(caption: Caption): Drawing {
+    this._warnIfLocked();
+    const copy = this._copy();
+    copy._caption = caption;
+    return copy;
+  }
+
+  /**
    * Get the height of the drawing area inside the margins
    */
   get height(): number {
@@ -223,6 +270,21 @@ export class Drawing {
   }
 
   /**
+   * Get the metadata of the drawing, or null when none was set.
+   */
+  get metadata(): Metadata | null {
+    return this._metadata;
+  }
+
+  /**
+   * Get the printable metadata caption of the drawing, or null when none was
+   * set.
+   */
+  get caption(): Caption | null {
+    return this._caption;
+  }
+
+  /**
    * Build and return an svg.js Group positioned at the margin offset.
    *
    * This adopts the given SVG element, sets up viewBox, adds the background,
@@ -237,10 +299,45 @@ export class Drawing {
    */
   build(): G {
     this._locked = true;
+
+    // Resolve the caption text against the metadata, if a caption is set
+    const caption = this._caption;
+    const captionText = caption
+      ? caption.render(this._metadata ? this._metadata.captionValues() : {})
+      : "";
+
+    // When the caption needs room, expand the viewBox on its side so the
+    // caption strip never covers the artwork
+    const viewBoxX = 0;
+    let viewBoxY = 0;
+    const viewBoxWidth = this._width;
+    let viewBoxHeight = this._height;
+    if (caption && captionText !== "") {
+      const needed = caption.lineHeight;
+      const atTop = caption.position === CaptionPosition.TopLeft ||
+        caption.position === CaptionPosition.TopRight;
+      if (atTop) {
+        if (this._margin.top < needed) {
+          const extra = needed - this._margin.top;
+          viewBoxY -= extra;
+          viewBoxHeight += extra;
+        }
+      } else {
+        if (this._margin.bottom < needed) {
+          viewBoxHeight += needed - this._margin.bottom;
+        }
+      }
+    }
+
     // Size to drawing dimensions
-    const draw = this._svg.size(this._width, this._height);
+    const draw = this._svg.size(viewBoxWidth, viewBoxHeight);
     // Set viewBox to the drawing dimensions
-    draw.viewbox(0, 0, this._width, this._height);
+    draw.viewbox(viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight);
+
+    // Serialize the metadata as title, desc and metadata elements
+    if (this._metadata) {
+      appendMetadata(draw.node, this._metadata);
+    }
 
     // Add the definition elements, if any
     if (this._defs.length > 0) {
@@ -251,10 +348,10 @@ export class Drawing {
     }
 
     // Draw a background
-    const bgRect = draw.rect(this._width, this._height);
+    const bgRect = draw.rect(viewBoxWidth, viewBoxHeight);
     bgRect.fill(this._backgroundColor);
     bgRect.id("background");
-    bgRect.move(0, 0);
+    bgRect.move(viewBoxX, viewBoxY);
     bgRect.back(); // Send to back
 
     // Create and return the margin group
@@ -263,6 +360,27 @@ export class Drawing {
       translateX: margin.left,
       translateY: margin.top,
     });
+
+    // Print the caption as text in the margin strip
+    if (caption && captionText !== "") {
+      const inset = caption.fontSize * 0.25;
+      const atRight = caption.position === CaptionPosition.BottomRight ||
+        caption.position === CaptionPosition.TopRight;
+      const atTop = caption.position === CaptionPosition.TopLeft ||
+        caption.position === CaptionPosition.TopRight;
+      const attributes: Record<string, string | number> = {
+        "x": atRight ? viewBoxX + viewBoxWidth - inset : viewBoxX + inset,
+        "y": atTop ? viewBoxY + inset : viewBoxY + viewBoxHeight - inset,
+        "text-anchor": atRight ? "end" : "start",
+        "font-size": caption.fontSize,
+        "font-family": caption.fontFamily,
+        "fill": caption.color,
+      };
+      if (atTop) {
+        attributes["dominant-baseline"] = "hanging";
+      }
+      draw.text(captionText).attr(attributes).id("metadata_caption");
+    }
 
     return margin_group;
   }

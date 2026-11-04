@@ -293,7 +293,7 @@ Deno.test("withMetadata() and withCaption() return a distinct Drawing and leave 
   assertEquals(withMetadata.caption, null);
 });
 
-Deno.test("build() serializes the metadata into the SVG without altering the drawing geometry", () => {
+Deno.test("build() serializes the metadata into the SVG without altering the drawing geometry", async (t) => {
   const drawing = new Drawing(svgElement())
     .withSize(300, 400)
     .withMargin(20)
@@ -301,32 +301,7 @@ Deno.test("build() serializes the metadata into the SVG without altering the dra
   const group = drawing.build();
   group.rect(10, 20).move(5, 5);
 
-  const out = drawing.svg();
-  assertStringIncludes(out, "<title>Sunset Study</title>");
-  assertStringIncludes(out, "<desc>A generative sunset</desc>");
-  assertStringIncludes(out, "<metadata>");
-  assertStringIncludes(out, "<dc:title>Sunset Study</dc:title>");
-  assertStringIncludes(out, "<dc:creator>Ada Lovelace</dc:creator>");
-  assertStringIncludes(
-    out,
-    "<dc:rights>Copyright 2026 Ada Lovelace</dc:rights>",
-  );
-  assertStringIncludes(out, "<dc:date>2026-11-04T10:00:00.000Z</dc:date>");
-  assertStringIncludes(
-    out,
-    '<cc:license rdf:resource="https://creativecommons.org/licenses/by/4.0/"></cc:license>',
-  );
-  assertStringIncludes(out, "<vormen:generator>");
-  // Geometry is unchanged: same size, viewBox, background, margin group and rect.
-  assertStringIncludes(out, 'width="300"');
-  assertStringIncludes(out, 'height="400"');
-  assertStringIncludes(out, 'viewBox="0 0 300 400"');
-  assertStringIncludes(
-    out,
-    '<rect width="300" height="400" fill="transparent" id="background" x="0" y="0">',
-  );
-  assertStringIncludes(out, "matrix(1,0,0,1,20,20)");
-  assertStringIncludes(out, '<rect width="10" height="20"');
+  await t.assertSnapshot(drawing.svg());
 });
 
 Deno.test("build() adds no metadata elements when no metadata is set", () => {
@@ -340,7 +315,7 @@ Deno.test("build() adds no metadata elements when no metadata is set", () => {
   assert(!out.includes("metadata_caption"), out);
 });
 
-Deno.test("build() renders the caption in the margin when the margin has room", () => {
+Deno.test("build() renders the caption in the margin when the margin has room", async (t) => {
   const drawing = new Drawing(svgElement())
     .withSize(300, 400)
     .withMargin(20)
@@ -348,19 +323,11 @@ Deno.test("build() renders the caption in the margin when the margin has room", 
     .withCaption(new CaptionBuilder().build());
   drawing.build();
 
-  const out = drawing.svg();
   // lineHeight 12.5 fits in the 20 margin: no expansion.
-  assertStringIncludes(out, 'viewBox="0 0 300 400"');
-  assertStringIncludes(out, 'height="400"');
-  assertStringIncludes(out, 'id="metadata_caption"');
-  assertStringIncludes(out, 'text-anchor="end"');
-  assertStringIncludes(out, 'x="297.5"');
-  assertStringIncludes(out, 'y="397.5"');
-  assertStringIncludes(out, "Sunset Study — Ada Lovelace — abc");
-  assert(!out.includes("dominant-baseline"), out);
+  await t.assertSnapshot(drawing.svg());
 });
 
-Deno.test("build() expands the viewBox when the drawing has no margin for the caption", () => {
+Deno.test("build() expands the viewBox when the drawing has no margin for the caption", async (t) => {
   const drawing = new Drawing(svgElement())
     .withSize(300, 400)
     .withMetadata(testMetadata())
@@ -368,24 +335,11 @@ Deno.test("build() expands the viewBox when the drawing has no margin for the ca
   const group = drawing.build();
   group.rect(10, 20).move(5, 5);
 
-  const out = drawing.svg();
   // lineHeight 12.5 is added below the artwork: viewBox grows to 412.5.
-  assertStringIncludes(out, 'viewBox="0 0 300 412.5"');
-  assertStringIncludes(out, 'height="412.5"');
-  assertStringIncludes(
-    out,
-    '<rect width="300" height="412.5" fill="transparent" id="background" x="0" y="0">',
-  );
-  assertStringIncludes(out, 'id="metadata_caption"');
-  assertStringIncludes(out, 'x="297.5"');
-  assertStringIncludes(out, 'y="410"');
-  assertStringIncludes(out, "Sunset Study — Ada Lovelace — abc");
-  // The artwork itself is untouched.
-  assertStringIncludes(out, "matrix(1,0,0,1,0,0)");
-  assertStringIncludes(out, '<rect width="10" height="20"');
+  await t.assertSnapshot(drawing.svg());
 });
 
-Deno.test("build() expands the viewBox at the top for a top caption", () => {
+Deno.test("build() expands the viewBox at the top for a top caption", async (t) => {
   const drawing = new Drawing(svgElement())
     .withSize(300, 400)
     .withMetadata(testMetadata())
@@ -400,22 +354,11 @@ Deno.test("build() expands the viewBox at the top for a top caption", () => {
     );
   drawing.build();
 
-  const out = drawing.svg();
   // lineHeight 25 is added above the artwork.
-  assertStringIncludes(out, 'viewBox="0 -25 300 425"');
-  assertStringIncludes(out, 'height="425"');
-  assertStringIncludes(out, 'id="metadata_caption"');
-  assertStringIncludes(out, 'text-anchor="start"');
-  assertStringIncludes(out, 'x="5"');
-  assertStringIncludes(out, 'y="-20"');
-  assertStringIncludes(out, 'dominant-baseline="hanging"');
-  assertStringIncludes(out, 'font-family="monospace"');
-  assertStringIncludes(out, 'font-size="20"');
-  assertStringIncludes(out, 'fill="#ff0000"');
-  assertStringIncludes(out, "Sunset Study by Ada Lovelace");
+  await t.assertSnapshot(drawing.svg());
 });
 
-Deno.test("build() does not expand the viewBox when the margin already fits the caption", () => {
+Deno.test("build() does not expand the viewBox when the margin already fits the caption", async (t) => {
   const drawing = new Drawing(svgElement())
     .withSize(300, 400)
     .withMargin(new Margin(10, 30, 10, 30))
@@ -426,14 +369,10 @@ Deno.test("build() does not expand the viewBox when the margin already fits the 
     );
   drawing.build();
 
-  const out = drawing.svg();
-  assertStringIncludes(out, 'viewBox="0 0 300 400"');
-  assertStringIncludes(out, 'x="295"');
-  assertStringIncludes(out, 'y="5"');
-  assertStringIncludes(out, 'text-anchor="end"');
+  await t.assertSnapshot(drawing.svg());
 });
 
-Deno.test("build() renders no caption when the template resolves to empty text", () => {
+Deno.test("build() renders no caption when the template resolves to empty text", async (t) => {
   const drawing = new Drawing(svgElement())
     .withSize(300, 400)
     .withCaption(new CaptionBuilder().template("{title}").build());
@@ -441,7 +380,7 @@ Deno.test("build() renders no caption when the template resolves to empty text",
 
   const out = drawing.svg();
   assert(!out.includes("metadata_caption"), out);
-  assertStringIncludes(out, 'viewBox="0 0 300 400"');
+  await t.assertSnapshot(out);
 });
 
 Deno.test("build() renders the caption from the metadata settings", () => {

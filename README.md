@@ -111,6 +111,7 @@ and the SVGs it generates.
 
 - [Cubic Disarray Example](doc/examples/cubic-disarray/README.md)
 - [Noodle Love Example](doc/examples/noodle-love/README.md)
+- [Metadata & Caption Example](doc/examples/metadata/README.md)
 
 All example SVGs are generated and committed, and can be regenerated with a
 single command:

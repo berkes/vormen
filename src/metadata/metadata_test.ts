@@ -1,4 +1,4 @@
-import { assert, assertEquals, assertStringIncludes } from "@std/assert";
+import { assert, assertEquals } from "@std/assert";
 import { registerWindow, SVG, Svg } from "@svgdotjs/svg.js";
 import { createSVGWindow } from "svgdom";
 import { appendMetadata, type Metadata, MetadataBuilder } from "./metadata.ts";
@@ -95,61 +95,13 @@ Deno.test("captionValues exposes metadata fields and settings as strings", () =>
   assertEquals(values.iterations, "8");
 });
 
-Deno.test("appendMetadata writes title, desc and an Inkscape-compatible RDF metadata block", () => {
+Deno.test("appendMetadata writes title, desc and an Inkscape-compatible RDF metadata block", async (t) => {
   const svg = SVG(svgElement());
   svg.size(100, 100);
   svg.rect(10, 10);
 
   appendMetadata(svg.node, fullMetadata());
   const out = svg.svg();
-
-  assertStringIncludes(out, "<title>Sunset Study</title>");
-  assertStringIncludes(
-    out,
-    "<desc>A generative sunset &amp; &lt;stars&gt;</desc>",
-  );
-  assertStringIncludes(out, "<metadata>");
-  assertStringIncludes(
-    out,
-    'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"',
-  );
-  assertStringIncludes(out, 'xmlns:dc="http://purl.org/dc/elements/1.1/"');
-  assertStringIncludes(out, 'xmlns:cc="http://creativecommons.org/ns#"');
-  assertStringIncludes(out, 'xmlns:vormen="https://github.com/berkes/vormen"');
-  assertStringIncludes(out, '<cc:Work rdf:about="">');
-  assertStringIncludes(out, "<dc:format>image/svg+xml</dc:format>");
-  assertStringIncludes(
-    out,
-    'rdf:resource="http://purl.org/dc/dcmitype/StillImage"',
-  );
-  assertStringIncludes(out, "<dc:title>Sunset Study</dc:title>");
-  assertStringIncludes(
-    out,
-    "<dc:description>A generative sunset &amp; &lt;stars&gt;</dc:description>",
-  );
-  assertStringIncludes(out, "<dc:creator>Ada Lovelace</dc:creator>");
-  assertStringIncludes(
-    out,
-    "<dc:rights>Copyright 2026 Ada Lovelace</dc:rights>",
-  );
-  assertStringIncludes(out, "<dc:date>2026-11-04T10:00:00.000Z</dc:date>");
-  assertStringIncludes(
-    out,
-    "<dc:source>https://example.com/sunset</dc:source>",
-  );
-  assertStringIncludes(
-    out,
-    '<cc:license rdf:resource="https://creativecommons.org/licenses/by/4.0/"></cc:license>',
-  );
-  assertStringIncludes(out, "<rdf:Bag>");
-  assertStringIncludes(out, "<rdf:li>generative</rdf:li>");
-  assertStringIncludes(out, "<rdf:li>sunset</rdf:li>");
-  // svgdom serializes double quotes in text as &quot;; the XML still parses
-  // back to the raw JSON (checked in the round-trip test below).
-  assertStringIncludes(
-    out,
-    "<vormen:generator>{&quot;settings&quot;:{&quot;seed&quot;:&quot;abc&quot;,&quot;iterations&quot;:8}}</vormen:generator>",
-  );
 
   const titleIndex = out.indexOf("<title>");
   const descIndex = out.indexOf("<desc>");
@@ -160,6 +112,7 @@ Deno.test("appendMetadata writes title, desc and an Inkscape-compatible RDF meta
       descIndex < metadataIndex && metadataIndex < rectIndex,
     `expected title, desc, metadata before the drawn content in: ${out}`,
   );
+  await t.assertSnapshot(out);
 });
 
 Deno.test("appendMetadata writes a non-URL license as element text", () => {
@@ -170,7 +123,7 @@ Deno.test("appendMetadata writes a non-URL license as element text", () => {
   );
   const out = svg.svg();
 
-  assertStringIncludes(out, "<cc:license>All rights reserved</cc:license>");
+  assert(out.includes("<cc:license>All rights reserved</cc:license>"), out);
 });
 
 Deno.test("appendMetadata writes nothing for an empty Metadata", () => {
@@ -185,39 +138,21 @@ Deno.test("appendMetadata writes nothing for an empty Metadata", () => {
   assert(!out.includes("<desc>"), out);
 });
 
-Deno.test("appendMetadata writes only the fields that are set", () => {
+Deno.test("appendMetadata writes only the fields that are set", async (t) => {
   const svg = SVG(svgElement());
 
   appendMetadata(svg.node, new MetadataBuilder().title("Only Title").build());
-  const out = svg.svg();
-
-  assertStringIncludes(out, "<title>Only Title</title>");
-  assertStringIncludes(out, "<dc:title>Only Title</dc:title>");
-  assert(!out.includes("<desc>"), out);
-  assert(!out.includes("dc:creator"), out);
-  assert(!out.includes("dc:rights"), out);
-  assert(!out.includes("dc:date"), out);
-  assert(!out.includes("dc:source"), out);
-  assert(!out.includes("cc:license"), out);
-  assert(!out.includes("rdf:Bag"), out);
-  assert(!out.includes("vormen:generator"), out);
+  await t.assertSnapshot(svg.svg());
 });
 
-Deno.test("appendMetadata writes the generator settings without other fields", () => {
+Deno.test("appendMetadata writes the generator settings without other fields", async (t) => {
   const svg = SVG(svgElement());
 
   appendMetadata(
     svg.node,
     new MetadataBuilder().settings({ seed: "xyz" }).build(),
   );
-  const out = svg.svg();
-
-  assert(!out.includes("<title>"), out);
-  assertStringIncludes(out, "<metadata>");
-  assertStringIncludes(
-    out,
-    "<vormen:generator>{&quot;settings&quot;:{&quot;seed&quot;:&quot;xyz&quot;}}</vormen:generator>",
-  );
+  await t.assertSnapshot(svg.svg());
 });
 
 Deno.test("appendMetadata output is well-formed XML that parses back", () => {

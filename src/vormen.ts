@@ -22,6 +22,11 @@ export {
 } from "./metadata/caption.ts";
 export { Metadata, MetadataBuilder } from "./metadata/metadata.ts";
 
+// Typography domain
+export { SvgFont } from "./typography/svg_font.ts";
+export type { PlacedGlyph } from "./typography/svg_font.ts";
+export { Text, TextBuilder } from "./typography/text.ts";
+
 // Settings domain
 export {
   Settings,

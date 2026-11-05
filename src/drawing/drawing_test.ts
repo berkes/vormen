@@ -10,6 +10,7 @@ import { createSVGWindow } from "svgdom";
 import { Drawing, Margin, StandardSize } from "./drawing.ts";
 import { CaptionBuilder, CaptionPosition } from "../metadata/caption.ts";
 import { MetadataBuilder } from "../metadata/metadata.ts";
+import { SvgFont } from "../typography/svg_font.ts";
 
 /**
  * svg.js draws into a DOM, which does not exist outside the browser. svgdom
@@ -323,7 +324,7 @@ Deno.test("build() renders the caption in the margin when the margin has room", 
     .withCaption(new CaptionBuilder().build());
   drawing.build();
 
-  // lineHeight 12.5 fits in the 20 margin: no expansion.
+  // lineHeight 20 (EMSTech ratio 2 at fontSize 10) fits in the 20 margin: no expansion.
   await t.assertSnapshot(drawing.svg());
 });
 
@@ -335,7 +336,7 @@ Deno.test("build() expands the viewBox when the drawing has no margin for the ca
   const group = drawing.build();
   group.rect(10, 20).move(5, 5);
 
-  // lineHeight 12.5 is added below the artwork: viewBox grows to 412.5.
+  // lineHeight 20 is added below the artwork: viewBox grows to 420.
   await t.assertSnapshot(drawing.svg());
 });
 
@@ -347,14 +348,14 @@ Deno.test("build() expands the viewBox at the top for a top caption", async (t) 
       new CaptionBuilder()
         .position(CaptionPosition.TopLeft)
         .fontSize(20)
-        .fontFamily("monospace")
+        .font(SvgFont.named("HersheySans1"))
         .color("#ff0000")
         .template("{title} by {author}")
         .build(),
     );
   drawing.build();
 
-  // lineHeight 25 is added above the artwork.
+  // lineHeight 40 (fontSize 20, ratio 2) is added above the artwork.
   await t.assertSnapshot(drawing.svg());
 });
 
@@ -391,5 +392,15 @@ Deno.test("build() renders the caption from the metadata settings", () => {
     .withCaption(new CaptionBuilder().template("seed: {seed}").build());
   drawing.build();
 
-  assertStringIncludes(drawing.svg(), "seed: xyz-123");
+  // The caption is plottable: its content appears as per-glyph path data in
+  // the caption group, not as a text element.
+  const placed = SvgFont.named("EMSTech").place(
+    "seed: xyz-123",
+    10,
+  );
+  const out = drawing.svg();
+  for (const glyph of placed.glyphs) {
+    assertStringIncludes(out, `d="${glyph.d}"`);
+  }
+  assert(!out.includes("<text"), out);
 });

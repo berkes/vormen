@@ -4,8 +4,9 @@
  * A seeded grid of circles on an A4 page. The drawing embeds metadata in the
  * SVG (title, author, copyright, date, url, license, keywords, and the
  * settings as JSON in the `vormen:` namespace, alongside the standard
- * RDF/XML block) and prints a caption with title, author and seed as SVG
- * text in the bottom margin.
+ * RDF/XML block) and prints a caption with title, author and seed in the
+ * bottom margin, as plottable pen-stroke paths from the bundled Hershey
+ * `futural` stroke font.
  *
  * Run it and redirect the output to a file:
  *   deno run examples/metadata.ts > metadata.svg

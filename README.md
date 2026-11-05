@@ -110,6 +110,7 @@ example has a page in [doc/examples/](doc/examples/) with a short explanation
 and the SVGs it generates.
 
 - [Cubic Disarray Example](doc/examples/cubic-disarray/README.md)
+- [Font Specimen Example](doc/examples/fonts/README.md)
 - [Noodle Love Example](doc/examples/noodle-love/README.md)
 - [Metadata & Caption Example](doc/examples/metadata/README.md)
 
@@ -223,9 +224,10 @@ settings as JSON in the `vormen:` namespace. Serializing the metadata does not
 alter the drawing geometry.
 
 A printable metadata caption is attached with `withCaption(caption)` (see the
-Metadata module below). On `build()` it is rendered as SVG text in the margin at
-the caption's position (bottom-right by default). If the margin on that side is
-too small, the viewBox is expanded so the caption never covers the artwork.
+Metadata module below). On `build()` it is rendered as plottable pen-stroke
+paths in the margin at the caption's position (bottom-right by default), so a
+pen plotter can draw it. If the margin on that side is too small, the viewBox is
+expanded so the caption never covers the artwork.
 
 All `with*()` methods return a new `Drawing` and leave the drawing they were
 called on unchanged, so one base drawing can be branched into several
@@ -256,8 +258,8 @@ const metadata = new MetadataBuilder()
 const caption = new CaptionBuilder()
   .template("{title} — {author} — seed: {seed}") // default: "{title} — {author} — {seed}"
   .position(CaptionPosition.BottomRight) // default: bottom-right
-  .fontFamily("sans-serif")
-  .fontSize(10)
+  .font(SvgFont.named("EMSTech")) // default: EMSTech, a plottable SVG stroke font
+  .fontSize(10) // cap height in user units
   .color("#000")
   .build();
 
@@ -273,9 +275,76 @@ On `build()`, the metadata is written as `<title>`, `<desc>` and `<metadata>`
 element with the settings as JSON). Files written this way open in Inkscape with
 title, author and license in Document Properties → Metadata, and
 `exiftool file.svg` extracts title, creator, rights and date. The caption is
-printed as SVG text in the margin; its template resolves `{placeholders}`
-against the metadata fields and each generator setting (e.g. `{seed}`), and
-placeholders without a value are dropped.
+printed in the margin as pen-stroke paths (see the Typography module), so it
+survives on a pen plotter; its template resolves `{placeholders}` against the
+metadata fields and each generator setting (e.g. `{seed}`), and placeholders
+without a value are dropped.
+
+### Typography
+
+Plottable text: rendering strings as pen strokes a pen plotter can draw, using
+SVG stroke fonts. Contains the Text and TextBuilder classes (a higher-level
+element that acts like svg.js `text()`, but builds paths) and the SvgFont class
+(SVG 1.1 fonts — the format Inkscape and Hershey Text use — with per-glyph
+`horiz-adv-x`, real vertical metrics, and `<hkern>` kerning pairs).
+
+```javascript
+const text = new TextBuilder()
+  .content("Hello plotter")
+  .font(SvgFont.named("EMSTech")) // or any bundled name; see bundledNames()
+  .size(20) // cap height in user units
+  .x(10) // left edge of the text
+  .y(100) // baseline of the text
+  .color("#000")
+  .strokeWidth(1)
+  .letterSpacing(0)
+  .build();
+
+text.addTo(canvas); // canvas is the group Drawing.build() returns
+```
+
+`addTo(container)` adds a `<g>` holding one stroked, unfilled `<path>` per glyph
+(each with a translate/scale transform that maps the font's y-up units into
+SVG's y-down): pen-up travel between strokes is an `M` move or a separate
+element, so every drawn line is a stroke the pen can follow. There is no SVG
+`<text>` in the output. `text.width`, `text.height`, `text.ascent` and
+`text.descent` give the rendered metrics. Text is single-line only, with no
+inline markup.
+
+41 stroke fonts ship with the package as real `.svg` files in
+`src/typography/fonts/` (the EMS display faces and the Hershey classics as SVG
+fonts; list them with `SvgFont.bundledNames()`). Because they are plain files in
+the package directory, they are included in the published npm and JSR packages
+too, and the library reads them **at runtime** (lazily, on first use) relative
+to its own module — no font data is embedded in the code. Reading bundled fonts
+needs read permission, e.g. `deno run --allow-read ...`; without it, load a font
+yourself with `SvgFont.fromData()` (see below). Fonts cover whatever glyphs the
+font file defines; accents are stripped and common punctuation (— – ‘ ’ “ ” …)
+is mapped to its ASCII stand-in, unknown characters are skipped. Spacing uses
+each glyph's `horiz-adv-x`, plus `<hkern>` pairs for fonts that define them,
+plus an optional `letterSpacing` on top. Licenses: the Hershey-derived files
+carry the Hershey use restriction and the EMS fonts are SIL OFL 1.1 — both
+documented with sources in `src/typography/fonts/README.md` (and OFL.txt).
+
+Bring your own SVG font and the typography module uses it like a bundled one
+(e.g. any font from
+[gitlab.com/oskay/svg-fonts](https://gitlab.com/oskay/svg-fonts)):
+
+```javascript
+// Deno: read the file for me
+const myFont = SvgFont.fromFile("ems", "./svg-fonts/fonts/EMS/EMSTech.svg");
+// Any runtime: read the file yourself (node:fs, fetch, ...) and pass the text
+const fromText = SvgFont.fromData("ems", svgText);
+
+const text = new TextBuilder().content("Engraved").font(myFont).size(20)
+  .build();
+```
+
+See the [Font Specimen example](doc/examples/fonts/README.md) for every bundled
+font rendered with the Text element.
+
+The metadata caption above uses this module: `CaptionBuilder.font()` picks the
+stroke font, and `Drawing.build()` renders the caption with a Text element.
 
 ### Grid
 

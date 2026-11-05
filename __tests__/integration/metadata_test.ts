@@ -3,9 +3,10 @@
  * that sets Metadata and a Caption, and the produced SVG embeds standard,
  * machine-readable metadata plus the printable caption.
  */
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals, assertStringIncludes } from "@std/assert";
 import { registerWindow, Svg } from "@svgdotjs/svg.js";
 import { createSVGWindow } from "svgdom";
+import { SvgFont } from "@berkes/vormen";
 
 const drawingPath = new URL(
   "drawings/metadata_drawing.ts",
@@ -65,13 +66,22 @@ Deno.test("render stores settings overrides in the embedded metadata", async () 
   assertEquals(generatorJson(svg), {
     settings: { seed: "override-99", iterations: 8, margin: 0 },
   });
-  assert(svg.includes("seed: override-99"), svg);
+  // The caption is plottable text: the overridden seed appears in the
+  // caption's per-glyph path data, rendered with the default EMSTech font at
+  // size 10.
+  const caption = SvgFont.named("EMSTech").place(
+    "Metadata Drawing — Vormen Tester — seed: override-99",
+    10,
+  );
+  for (const glyph of caption.glyphs) {
+    assertStringIncludes(svg, `d="${glyph.d}"`);
+  }
 });
 
 Deno.test("render prints the caption and expands the viewBox when there is no margin", async (t) => {
   const svg = await render();
 
-  // The 12.5 unit caption strip is added below the 300 high drawing, and the
+  // The 20 unit caption strip is added below the 300 high drawing, and the
   // artwork itself is untouched.
   await t.assertSnapshot(svg);
 });

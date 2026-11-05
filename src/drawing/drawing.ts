@@ -12,7 +12,8 @@
  * - Definition elements support
  * - Metadata (title, author, license, generator settings, ...) serialized as
  *   `<title>`, `<desc>` and an RDF/XML `<metadata>` block on build()
- * - An optional printable metadata caption rendered as SVG text in the margin
+ * - An optional printable metadata caption rendered as plottable pen-stroke
+ *   paths (a bundled SVG stroke font) in the margin
  */
 
 import type { Element, G, Svg } from "@svgdotjs/svg.js";
@@ -21,6 +22,7 @@ import { createSVGWindow } from "svgdom";
 import type { HTMLElement } from "jsdom";
 import { type Caption, CaptionPosition } from "../metadata/caption.ts";
 import { appendMetadata, type Metadata } from "../metadata/metadata.ts";
+import { TextBuilder } from "../typography/text.ts";
 
 export type { Element } from "@svgdotjs/svg.js";
 
@@ -230,11 +232,12 @@ export class Drawing {
   /**
    * Set the printable metadata caption of the drawing.
    *
-   * On build(), the caption is rendered as SVG text in the margin at the
-   * caption's position (bottom-right by default). If the margin on that side
-   * is too small, the viewBox is expanded so the caption never covers the
-   * artwork. The caption template resolves `{placeholders}` against the
-   * drawing's metadata, e.g. `{title}`, `{author}` or `{seed}`.
+   * On build(), the caption is rendered as plottable pen-stroke paths (a
+   * bundled SVG stroke font, so a pen plotter can draw it) in the margin
+   * at the caption's position (bottom-right by default). If the margin on
+   * that side is too small, the viewBox is expanded so the caption never
+   * covers the artwork. The caption template resolves `{placeholders}`
+   * against the drawing's metadata, e.g. `{title}`, `{author}` or `{seed}`.
    *
    * @param caption The caption to print, built with CaptionBuilder
    */
@@ -363,25 +366,29 @@ export class Drawing {
       translateY: margin.top,
     });
 
-    // Print the caption as text in the margin strip
+    // Print the caption as plottable pen-stroke paths in the margin strip.
+    // x/y follow SVG text semantics: x is the left edge, y is the baseline,
+    // so the text is inset from its corner by the cap height (top) or the
+    // descender depth (bottom).
     if (caption && captionText !== "") {
       const inset = caption.fontSize * 0.25;
       const atRight = caption.position === CaptionPosition.BottomRight ||
         caption.position === CaptionPosition.TopRight;
       const atTop = caption.position === CaptionPosition.TopLeft ||
         caption.position === CaptionPosition.TopRight;
-      const attributes: Record<string, string | number> = {
-        "x": atRight ? viewBoxX + viewBoxWidth - inset : viewBoxX + inset,
-        "y": atTop ? viewBoxY + inset : viewBoxY + viewBoxHeight - inset,
-        "text-anchor": atRight ? "end" : "start",
-        "font-size": caption.fontSize,
-        "font-family": caption.fontFamily,
-        "fill": caption.color,
-      };
-      if (atTop) {
-        attributes["dominant-baseline"] = "hanging";
-      }
-      draw.text(captionText).attr(attributes).id("metadata_caption");
+      const builder = new TextBuilder()
+        .content(captionText)
+        .font(caption.font)
+        .size(caption.fontSize)
+        .color(caption.color);
+      const probe = builder.build();
+      const x = atRight
+        ? viewBoxX + viewBoxWidth - inset - probe.width
+        : viewBoxX + inset;
+      const y = atTop
+        ? viewBoxY + inset + probe.ascent
+        : viewBoxY + viewBoxHeight - inset - probe.descent;
+      builder.x(x).y(y).build().addTo(draw).id("metadata_caption");
     }
 
     return margin_group;

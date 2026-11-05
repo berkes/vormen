@@ -1,5 +1,5 @@
 /**
- * Caption - Printable metadata rendered as SVG text in the margin of a
+ * Caption - Printable metadata rendered as plottable text in the margin of a
  * drawing.
  *
  * Most viewers never show the `<metadata>` block, so a Caption prints selected
@@ -7,7 +7,12 @@
  * Drawing.withCaption(); it is placed in the margin strip at a corner of the
  * drawing, and when the margin is too small, Drawing expands the viewBox so
  * the caption never covers the artwork.
+ *
+ * The caption is drawn with a bundled SVG stroke font (see the Typography
+ * module), so it renders as pen-stroke paths a pen plotter can draw, not as
+ * an SVG `<text>` element.
  */
+import { SvgFont } from "../typography/svg_font.ts";
 
 /**
  * CaptionPosition - The corner of the drawing where the caption is placed.
@@ -20,18 +25,18 @@ export enum CaptionPosition {
 }
 
 /**
- * Caption - How printable metadata is rendered as SVG text: a template with
- * `{placeholders}`, a corner position, and font styling.
+ * Caption - How printable metadata is rendered as plottable text: a template
+ * with `{placeholders}`, a corner position, and a stroke font.
  *
  * Construct with CaptionBuilder. Placeholders are replaced with the metadata
  * values (e.g. `{title}`, `{author}`, `{date}`) and each generator setting
  * under its own key (e.g. `{seed}`); placeholders without a value are
- * dropped. Serialized by Drawing on build().
+ * dropped. Serialized by Drawing on build() as pen-stroke paths.
  */
 export class Caption {
   private _template: string;
   private _position: CaptionPosition;
-  private _fontFamily: string;
+  private _font: SvgFont;
   private _fontSize: number;
   private _color: string;
 
@@ -41,20 +46,20 @@ export class Caption {
    *
    * @param template Template string with `{placeholder}` slots
    * @param position Corner of the drawing to place the caption in
-   * @param fontFamily CSS font family of the caption text
-   * @param fontSize Font size of the caption text in user units
-   * @param color Fill color of the caption text (any CSS color string)
+   * @param font SVG stroke font the caption is drawn with (bundled or custom .svg)
+   * @param fontSize Cap height of the caption text in user units
+   * @param color Stroke color of the caption text (any CSS color string)
    */
   constructor(
     template: string,
     position: CaptionPosition,
-    fontFamily: string,
+    font: SvgFont,
     fontSize: number,
     color: string,
   ) {
     this._template = template;
     this._position = position;
-    this._fontFamily = fontFamily;
+    this._font = font;
     this._fontSize = fontSize;
     this._color = color;
   }
@@ -67,10 +72,11 @@ export class Caption {
     return this._position;
   }
 
-  get fontFamily(): string {
-    return this._fontFamily;
+  get font(): SvgFont {
+    return this._font;
   }
 
+  /** Cap height of the caption text in user units. */
   get fontSize(): number {
     return this._fontSize;
   }
@@ -80,11 +86,12 @@ export class Caption {
   }
 
   /**
-   * Height of the caption strip in user units: the font size plus leading.
+   * Height of the caption strip in user units: the full vertical extent of
+   * the font (cap top to descender bottom) at the caption's font size.
    * Drawing uses this to make room for the caption in the margin.
    */
   get lineHeight(): number {
-    return this._fontSize * 1.25;
+    return this._fontSize * this._font.lineHeightRatio;
   }
 
   /**
@@ -118,12 +125,12 @@ export class Caption {
  * attributes set.
  *
  * Defaults: template `"{title} — {author} — {seed}"`, position bottom-right,
- * font family sans-serif, font size 10, color #000.
+ * font futural, font size 10, color #000.
  */
 export class CaptionBuilder {
   private _template = "{title} — {author} — {seed}";
   private _position = CaptionPosition.BottomRight;
-  private _fontFamily = "sans-serif";
+  private _font: SvgFont = SvgFont.named("EMSTech");
   private _fontSize = 10;
   private _color = "#000";
 
@@ -147,16 +154,18 @@ export class CaptionBuilder {
   }
 
   /**
-   * Set the font family of the caption text.
-   * @param value Any CSS font family, default sans-serif
+   * Set the stroke font the caption is drawn with: a bundled font from
+   * SvgFont.named("EMSTech") for a bundled font (see SvgFont.bundledNames()),
+   * or your own .svg font from SvgFont.fromFile()/fromData().
+   * @param value The font, default the bundled futural
    */
-  fontFamily(value: string): CaptionBuilder {
-    this._fontFamily = value;
+  font(value: SvgFont): CaptionBuilder {
+    this._font = value;
     return this;
   }
 
   /**
-   * Set the font size of the caption text in user units.
+   * Set the cap height of the caption text in user units.
    * @param value Font size, default 10
    */
   fontSize(value: number): CaptionBuilder {
@@ -165,7 +174,7 @@ export class CaptionBuilder {
   }
 
   /**
-   * Set the fill color of the caption text.
+   * Set the stroke color of the caption text.
    * @param value Any CSS color string, default #000
    */
   color(value: string): CaptionBuilder {
@@ -180,7 +189,7 @@ export class CaptionBuilder {
     return new Caption(
       this._template,
       this._position,
-      this._fontFamily,
+      this._font,
       this._fontSize,
       this._color,
     );

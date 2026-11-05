@@ -4,10 +4,11 @@ This document defines the domain-specific terminology used throughout the Vormen
 library.
 
 Caption
-: Printable metadata rendered as SVG text in the margin of a drawing. Set on
-  a Drawing with `withCaption(caption)`, built with `CaptionBuilder`. The
-  caption template resolves `{placeholders}` against the drawing's Metadata
-  (e.g. `{title}`, `{author}`) and each generator setting (e.g. `{seed}`).
+: Printable metadata rendered as plottable text (pen-stroke paths from a
+  bundled stroke font) in the margin of a drawing. Set on a Drawing with
+  `withCaption(caption)`, built with `CaptionBuilder`. The caption template
+  resolves `{placeholders}` against the drawing's Metadata (e.g. `{title}`,
+  `{author}`) and each generator setting (e.g. `{seed}`).
 
 Cell
 : A single cell in a grid, providing position and dimension information.
@@ -69,8 +70,30 @@ etc.) are all standard sizes, defined in one map in the Drawing module and
 selected with `withStandardSize`. Use "standard size", not "paper size", when a
 size may be non-physical.
 
+Stroke font
+: A single-line vector font whose glyphs are pen strokes (move, draw, lift),
+  so text rendered with it is plottable on a pen plotter. Vormen loads SVG 1.1
+  fonts (SvgFont) — the format Inkscape and Hershey Text use — with per-glyph
+  `horiz-adv-x` and optional `<hkern>` kerning pairs. The bundled fonts are
+  real `.svg` files in `src/typography/fonts/` (listed by
+  `SvgFont.bundledNames()`), and users can load their own `.svg` files with
+  `SvgFont.fromFile()`/`fromData()`. See also Text.
+
+Text
+: A plottable text element: a single-line string rendered as pen-stroke paths
+  with a stroke font, the Vormen-wide equivalent of svg.js `text()`. Built
+  with `TextBuilder`, added to an svg.js container with
+  `text.addTo(container)`. Position follows SVG text semantics: `x` is the
+  left edge, `y` is the baseline, `size` is the cap height. Rendered as one
+  stroked, unfilled `<path>` per glyph inside a `<g>`; pen-up travel is an `M`
+  move or a separate element.
+
 Typography
-: Text rendering and font management.
+: Plottable text rendering with SVG stroke fonts. Contains the Text and
+  TextBuilder classes and the SvgFont class. The bundled fonts are the `.svg`
+  files in `src/typography/fonts/`; the library reads them at runtime (lazily,
+  on first use) relative to the module, which requires read permission under
+  Deno. Nothing is embedded in the code.
 
 Vormen
 : Main execution module for running drawings. Contains the Vormen

@@ -26,15 +26,18 @@ const draw = (rawSettings: SettingsData) => {
     .keywords(["generative", "metadata"])
     .settings(settings.asRecord())
     .build();
+
+  const caption = new CaptionBuilder()
+    .template("{title} — {author} — seed: {seed}")
+    .build();
+
   const drawing = new Drawing()
     .withSize(400, 300)
     .withMargin(settings.margin)
     .withBackgroundColor("#eee")
     .withMetadata(metadata)
-    .withCaption(
-      new CaptionBuilder().template("{title} — {author} — seed: {seed}")
-        .build(),
-    );
+    .withCaption(caption);
+
   const canvas = drawing.build();
   canvas.rect(100, 100).id("the-rect").fill("purple");
   return drawing.svg();

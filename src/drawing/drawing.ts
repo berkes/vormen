@@ -311,33 +311,8 @@ export class Drawing {
       ? caption.render(this._metadata ? this._metadata.captionValues() : {})
       : "";
 
-    // When the caption needs room, expand the viewBox on its side so the
-    // caption strip never covers the artwork
-    const viewBoxX = 0;
-    let viewBoxY = 0;
-    const viewBoxWidth = this._width;
-    let viewBoxHeight = this._height;
-    if (caption && captionText !== "") {
-      const needed = caption.lineHeight;
-      const atTop = caption.position === CaptionPosition.TopLeft ||
-        caption.position === CaptionPosition.TopRight;
-      if (atTop) {
-        if (this._margin.top < needed) {
-          const extra = needed - this._margin.top;
-          viewBoxY -= extra;
-          viewBoxHeight += extra;
-        }
-      } else {
-        if (this._margin.bottom < needed) {
-          viewBoxHeight += needed - this._margin.bottom;
-        }
-      }
-    }
-
-    // Size to drawing dimensions
-    const draw = this._svg.size(viewBoxWidth, viewBoxHeight);
-    // Set viewBox to the drawing dimensions
-    draw.viewbox(viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight);
+    const draw = this._svg.size(this.width, this.height);
+    draw.viewbox(0, 0, this.width, this.height);
 
     // Serialize the metadata as title, desc and metadata elements
     if (this._metadata) {
@@ -353,10 +328,10 @@ export class Drawing {
     }
 
     // Draw a background
-    const bgRect = draw.rect(viewBoxWidth, viewBoxHeight);
+    const bgRect = draw.rect(this._width, this._height);
     bgRect.fill(this._backgroundColor);
     bgRect.id("background");
-    bgRect.move(viewBoxX, viewBoxY);
+    bgRect.move(0, 0);
     bgRect.back(); // Send to back
 
     // Create and return the margin group
@@ -382,12 +357,13 @@ export class Drawing {
         .size(caption.fontSize)
         .color(caption.color);
       const probe = builder.build();
+      // Align with left or right margin
       const x = atRight
-        ? viewBoxX + viewBoxWidth - inset - probe.width
-        : viewBoxX + inset;
+        ? this._width - inset - probe.width - margin.right
+        : inset + margin.left;
       const y = atTop
-        ? viewBoxY + inset + probe.ascent
-        : viewBoxY + viewBoxHeight - inset - probe.descent;
+        ? inset + probe.ascent
+        : this.height - inset - probe.descent;
       builder.x(x).y(y).build().addTo(draw).id("metadata_caption");
     }
 

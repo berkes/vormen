@@ -78,15 +78,7 @@ Deno.test("render stores settings overrides in the embedded metadata", async () 
   }
 });
 
-Deno.test("render prints the caption and expands the viewBox when there is no margin", async (t) => {
-  const svg = await render();
-
-  // The 20 unit caption strip is added below the 300 high drawing, and the
-  // artwork itself is untouched.
-  await t.assertSnapshot(svg);
-});
-
-Deno.test("render keeps the viewBox when the margin fits the caption", async (t) => {
+Deno.test("render moves caption to align with margin", async (t) => {
   const svg = await render(["--setting.margin=20"]);
 
   await t.assertSnapshot(svg);

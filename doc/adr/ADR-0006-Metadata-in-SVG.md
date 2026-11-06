@@ -62,13 +62,11 @@ recommends and as Inkscape interoperates:
    extensible: adding keys later (commit hash, package version) does not break
    older files.
 
-The printable caption is real SVG `<text>` in the margin (not a metadata
-feature), placed at a configurable corner (default bottom-right) with
-configurable template, font family/size and color. When the margin on that side
-is too small for the caption, the viewBox is expanded by the missing amount, so
-the caption never covers the artwork. The caption template resolves
-`{placeholders}` against the metadata fields and each generator setting; empty
-placeholders are dropped.
+The printable caption is real SVG in the margin (not a metadata feature), placed
+at a configurable corner (default bottom-right) with configurable template, font
+and color. It uses SVG fonts. The caption template resolves `{placeholders}`
+against the metadata fields and each generator setting; empty placeholders are
+dropped.
 
 API: `Metadata` + `MetadataBuilder` and `Caption` + `CaptionBuilder`, attached
 to a drawing with `withMetadata(metadata)` and `withCaption(caption)`; both are

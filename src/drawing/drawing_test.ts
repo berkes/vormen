@@ -8,7 +8,7 @@ import {
 import { Circle, registerWindow } from "@svgdotjs/svg.js";
 import { createSVGWindow } from "svgdom";
 import { Drawing, Margin, StandardSize } from "./drawing.ts";
-import { CaptionBuilder, CaptionPosition } from "../metadata/caption.ts";
+import { CaptionBuilder } from "../metadata/caption.ts";
 import { MetadataBuilder } from "../metadata/metadata.ts";
 import { SvgFont } from "../typography/svg_font.ts";
 
@@ -316,7 +316,7 @@ Deno.test("build() adds no metadata elements when no metadata is set", () => {
   assert(!out.includes("metadata_caption"), out);
 });
 
-Deno.test("build() renders the caption in the margin when the margin has room", async (t) => {
+Deno.test("build() renders the caption in the margin", async (t) => {
   const drawing = new Drawing(svgElement())
     .withSize(300, 400)
     .withMargin(20)
@@ -325,51 +325,6 @@ Deno.test("build() renders the caption in the margin when the margin has room", 
   drawing.build();
 
   // lineHeight 20 (EMSTech ratio 2 at fontSize 10) fits in the 20 margin: no expansion.
-  await t.assertSnapshot(drawing.svg());
-});
-
-Deno.test("build() expands the viewBox when the drawing has no margin for the caption", async (t) => {
-  const drawing = new Drawing(svgElement())
-    .withSize(300, 400)
-    .withMetadata(testMetadata())
-    .withCaption(new CaptionBuilder().build());
-  const group = drawing.build();
-  group.rect(10, 20).move(5, 5);
-
-  // lineHeight 20 is added below the artwork: viewBox grows to 420.
-  await t.assertSnapshot(drawing.svg());
-});
-
-Deno.test("build() expands the viewBox at the top for a top caption", async (t) => {
-  const drawing = new Drawing(svgElement())
-    .withSize(300, 400)
-    .withMetadata(testMetadata())
-    .withCaption(
-      new CaptionBuilder()
-        .position(CaptionPosition.TopLeft)
-        .fontSize(20)
-        .font(SvgFont.named("HersheySans1"))
-        .color("#ff0000")
-        .template("{title} by {author}")
-        .build(),
-    );
-  drawing.build();
-
-  // lineHeight 40 (fontSize 20, ratio 2) is added above the artwork.
-  await t.assertSnapshot(drawing.svg());
-});
-
-Deno.test("build() does not expand the viewBox when the margin already fits the caption", async (t) => {
-  const drawing = new Drawing(svgElement())
-    .withSize(300, 400)
-    .withMargin(new Margin(10, 30, 10, 30))
-    .withMetadata(testMetadata())
-    .withCaption(
-      new CaptionBuilder().position(CaptionPosition.TopRight).fontSize(20)
-        .build(),
-    );
-  drawing.build();
-
   await t.assertSnapshot(drawing.svg());
 });
 

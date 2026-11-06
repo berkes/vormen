@@ -21,7 +21,7 @@ import {
 
 const defaultSettings = {
   seed: "font-specimen",
-  size: 36,
+  size: 16,
 };
 
 function draw(rawSettings: SettingsData): string {

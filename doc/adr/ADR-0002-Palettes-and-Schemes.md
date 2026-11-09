@@ -2,7 +2,7 @@
 
 |           |                       |
 | --------- | --------------------- |
-| Status    | proposed              |
+| Status    | accepted              |
 | Date      | 2026-09-24            |
 | Deciders  | @berkes, Vormen agent |
 | Consulted | @berkes               |

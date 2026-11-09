@@ -1,0 +1,9 @@
+GIMP Palette
+Name: forest
+Columns: 5
+# Canopy to moss
+16 42 32	Pine
+34 74 50	Fern
+74 110 64	Moss
+146 166 96	Sprout
+222 232 180	Birch

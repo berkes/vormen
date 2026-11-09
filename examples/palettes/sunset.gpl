@@ -1,0 +1,9 @@
+GIMP Palette
+Name: sunset
+Columns: 5
+# Warm gradient from dusk to horizon
+46 12 60	Dusk
+122 34 94	Plum
+206 76 90	Ember
+247 148 88	Apricot
+255 214 140	Gold

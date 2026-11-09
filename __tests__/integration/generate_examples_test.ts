@@ -7,6 +7,7 @@ const expectedSvgs = [
   "doc/examples/noodle-love/svg/01.svg",
   "doc/examples/metadata/svg/01.svg",
   "doc/examples/metadata/svg/02.svg",
+  "doc/examples/palettes/svg/01.svg",
 ];
 
 Deno.test("generate:examples produces deterministic SVGs", async () => {

@@ -1,0 +1,9 @@
+GIMP Palette
+Name: ocean
+Columns: 5
+# Deep water to shore foam
+6 34 58	Abyss
+13 71 106	Trench
+24 116 145	Reef
+64 168 184	Lagoon
+176 224 230	Foam

@@ -113,6 +113,7 @@ and the SVGs it generates.
 - [Font Specimen Example](doc/examples/fonts/README.md)
 - [Noodle Love Example](doc/examples/noodle-love/README.md)
 - [Metadata & Caption Example](doc/examples/metadata/README.md)
+- [Palettes Example](doc/examples/palettes/README.md)
 
 All example SVGs are generated and committed, and can be regenerated with a
 single command:

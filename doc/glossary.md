@@ -14,7 +14,9 @@ Cell
 : A single cell in a grid, providing position and dimension information.
 
 Color
-: Color manipulation and palettes.
+: Color manipulation and color sources. Colors from a Palette are exposed as
+  `#RRGGBB` strings; see Palette and Scheme. Full color manipulation utilities
+  (HSL/RGB/OKLCH conversions, `lighten(10)`, ...) are future work.
 
 Drawing
 : The basis of SVG creation. Contains the Drawing class for building SVG
@@ -46,11 +48,27 @@ Path
 (angular paths with straight lines) and RoundedPathBuilder (paths with
 rounded corners) classes.
 
+Palette
+: An ordered set of colors, optionally with per-color names, stored as a
+  `.gpl` (GIMP Palette) file in the user-managed `./palettes/` directory of the
+  drawing project. A palette is a re-usable artifact and carries no semantics.
+  It is identified by its `Name:` header, or by the file basename for
+  old-format files without a `Name:` line. Contains the Palette class and the
+  loadPalette function; the `.gpl` parser is an internal implementation
+  detail. See also Scheme.
+
 Primitives
 : Geometric primitives for vector mathematics. Contains Vector.
 
 RasterImage
 : Image manipulation and display.
+
+Scheme
+: A palette plus a mapping of user-chosen role names (`bg`, `main`, `accent`,
+  ...) to colors of that palette, by color name or by index. Created in
+  drawing code with `new Scheme(palette, roles)`, used there via
+  `scheme.get("bg")`, never stored. Colors are `#RRGGBB` strings. See also
+  Palette.
 
 Settings
 : Configuration management for drawings. Contains the Settings class

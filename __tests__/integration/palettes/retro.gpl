@@ -1,0 +1,6 @@
+GIMP Palette
+# Old format: no Name: line, the palette name comes from the file basename
+255 87 51	Ink
+255 195 0	Amber
+247 247 191	Cream
+79 129 189	Dusk

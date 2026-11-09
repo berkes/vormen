@@ -52,6 +52,11 @@ export { RoundedPathBuilder } from "./path/rounded_path_builder.ts";
 // Grid domain
 export { Cell, Grid } from "./grid/grid.ts";
 
+// Palette domain
+export { Palette, type PaletteColor } from "./palette/palette.ts";
+export { Scheme } from "./palette/scheme.ts";
+export { loadPalette } from "./palette/library.ts";
+
 // Vormen domain (main entry point)
 export { Vormen } from "./vormen/vormen.ts";
 export type { VormenSettings } from "./vormen/vormen.ts";

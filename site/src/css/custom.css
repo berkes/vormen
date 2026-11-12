@@ -1,0 +1,21 @@
+/**
+ * Custom styles for the Vormen docs site.
+ * Most styling comes from Infima (Docusaurus default); tweaks go here.
+ */
+
+:root {
+  --ifm-color-primary: #5b4b8a;
+  --ifm-color-primary-dark: #51427c;
+  --ifm-color-primary-darker: #4c3e76;
+  --ifm-color-primary-darkest: #3f3262;
+  --ifm-color-primary-light: #655698;
+  --ifm-color-primary-lighter: #6a5c9d;
+  --ifm-color-primary-lightest: #7d70ad;
+  --ifm-code-font-size: 95%;
+}
+
+/* Example SVGs can be full-page A4 artwork: never let them overflow. */
+.markdown img {
+  max-width: 100%;
+  height: auto;
+}

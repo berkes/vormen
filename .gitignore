@@ -16,3 +16,8 @@ coverage/
 !tmp/.gitkeep
 
 saves/*
+
+# Docusaurus docs site (site/): build output and cache
+site/build/
+site/.docusaurus/
+# site/node_modules/ is already covered by the node_modules/ rule above

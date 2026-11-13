@@ -3,5 +3,5 @@
   "compilerOptions": {
     "baseUrl": "."
   },
-  "include": ["src/", "docusaurus.config.ts", "sidebars.ts"]
+  "include": ["src/", "plugins/", "docusaurus.config.ts", "sidebars.ts"]
 }

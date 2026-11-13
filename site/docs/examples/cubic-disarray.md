@@ -4,6 +4,7 @@ title: Cubic Disarray
 ---
 
 import CodeBlock from "@theme/CodeBlock";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import ExampleSource from "!!raw-loader!../../../examples/cubic-disarray.ts";
 
 Cubic Disarray, after Georg Nees: a grid of white squares whose rotation grows
@@ -16,6 +17,9 @@ scatter. Both SVGs below use the same seed and only differ in the
 ![Cubic Disarray with rotationStrength 2](/examples/cubic-disarray/svg/01.svg)
 
 ![Cubic Disarray with rotationStrength 5](/examples/cubic-disarray/svg/02.svg)
+
+**Download:** <a href={useBaseUrl("/downloads/cubic-disarray.ts")} download>cubic-disarray.ts</a>
+Run it as described under [Download and run an example](/examples).
 
 ## Source
 

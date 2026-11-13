@@ -1,13 +1,13 @@
 import { assert, assertEquals } from "@std/assert";
 
 const expectedSvgs = [
-  "doc/examples/cubic-disarray/svg/01.svg",
-  "doc/examples/cubic-disarray/svg/02.svg",
-  "doc/examples/fonts/svg/01.svg",
-  "doc/examples/noodle-love/svg/01.svg",
-  "doc/examples/metadata/svg/01.svg",
-  "doc/examples/metadata/svg/02.svg",
-  "doc/examples/palettes/svg/01.svg",
+  "site/static/examples/cubic-disarray/svg/01.svg",
+  "site/static/examples/cubic-disarray/svg/02.svg",
+  "site/static/examples/fonts/svg/01.svg",
+  "site/static/examples/noodle-love/svg/01.svg",
+  "site/static/examples/metadata/svg/01.svg",
+  "site/static/examples/metadata/svg/02.svg",
+  "site/static/examples/palettes/svg/01.svg",
 ];
 
 Deno.test("generate:examples produces deterministic SVGs", async () => {

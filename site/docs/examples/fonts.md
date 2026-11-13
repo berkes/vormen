@@ -4,6 +4,7 @@ title: Font Specimen
 ---
 
 import CodeBlock from "@theme/CodeBlock";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import ExampleSource from "!!raw-loader!../../../examples/fonts.ts";
 
 A specimen sheet: the sample line "Vormen 0123" rendered in every bundled SVG
@@ -22,6 +23,9 @@ your own SVG font (e.g. from
 pass it to `TextBuilder.font()`.
 
 ![Font specimen](/examples/fonts/svg/01.svg)
+
+**Download:** <a href={useBaseUrl("/downloads/fonts.ts")} download>fonts.ts</a>
+Run it as described under [Download and run an example](/examples).
 
 ## Source
 

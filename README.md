@@ -3,6 +3,62 @@
 _Vormen_ is a bag of tools, modules and scripts for creating generative art in
 SVG using Javascript
 
+A drawing is a program: a `draw` function that takes settings and returns an SVG
+string, handed to the runner as the last line. This is the code that generates
+the image below ([examples/cubic-disarray.ts](examples/cubic-disarray.ts)):
+
+```Javascript
+import {
+  Drawing,
+  Grid,
+  Noise,
+  Settings,
+  StandardSize,
+  Vormen,
+} from "@berkes/vormen";
+
+const defaults = {
+  rotationStrength: 35,
+};
+
+const draw = (rawSettings) => {
+  const settings = Settings.parse(defaults, rawSettings);
+  // Create a drawing with a4 size, equal margins on all sides and a white background.
+  const drawing = new Drawing().withStandardSize(StandardSize.A4).withMargin(20)
+    .withBackground(
+      "white",
+    );
+  // From this drawing, we extract the area that we can draw on.
+  const canvas = drawing.build();
+
+  // Another utility is a grid. This allows us to put stuff in a grid.
+  // Here we creat a 8x9 grid, each cell is padded 4 units and cells are square.
+  const grid = new Grid().rows(9).columns(8).padding(4).squareCells();
+
+  // Another utility is a seedable noise generator. Simplex noise.
+  const noise = new Noise("seeeed");
+
+  // The grit in action: loop over all cells
+  grid.cells().forEach((cell) => {
+    // And finally we use the svg.js API to create some rectangles
+    let square = canvas
+      .rect(cell.innerWidth, cell.innerHeight) // Use the grid to find the sizes of the squares
+      .fill("none")
+      .stroke({ width: 1, color: "black" })
+      .move(cell.x, cell.y) // Use the grid to position the square
+      .rotate(
+        // Use the noise to randomly rotate this square
+        // Apply a setting that controls how much the cells will be rotated
+        noise.get(cell.x, cell.y) * (cell.row * settings.rotationStrength),
+      );
+  });
+
+  return drawing.svg();
+};
+
+Vormen(draw, defaults);
+```
+
 ![readme-example](doc/readme-example.svg)
 
 > [!WARNING]

@@ -43,3 +43,10 @@ printed in the margin as pen-stroke paths (see the [Typography
 module](/modules/typography)), so it survives on a pen plotter; its template
 resolves `{placeholders}` against the metadata fields and each generator setting
 (e.g. `{seed}`), and placeholders without a value are dropped.
+
+## Example output
+
+See the [Metadata & Caption example](/examples/metadata) — the caption in the
+bottom margin and the embedded RDF/XML metadata:
+
+![Seeded circles with caption](/examples/metadata/svg/01.svg)

@@ -47,3 +47,7 @@ progress, some requirements exist that will be removed).
 
 See the [module reference](/modules/vormen) for a full list of modules and
 their usage.
+
+Rendered output of the second snippet above:
+
+![Red square](/img/red-square.svg)

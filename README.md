@@ -27,9 +27,9 @@ The full documentation lives on the docs site:
 - [Development](https://berkes.github.io/vormen/development) and
   [Releasing](https://berkes.github.io/vormen/releasing)
 
-The example drawings live in [`examples/`](examples/), each with a page under
-[`doc/examples/`](doc/examples/) (these move into the docs site, see
-[#30](https://github.com/berkes/vormen/issues/30)).
+The example drawings live in [`examples/`](examples/), each with its own page
+(code + rendered SVG) on the
+[docs site](https://berkes.github.io/vormen/examples).
 
 ## Development
 

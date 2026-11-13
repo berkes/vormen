@@ -22,3 +22,5 @@ or may not work anymore.
 
 Start with the [Quickstart](/quickstart), browse the [Examples](/examples), or
 read the [module reference](/modules/vormen).
+
+![Cubic Disarray, generated with Vormen](/img/readme-example.svg)

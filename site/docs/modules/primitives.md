@@ -28,3 +28,10 @@ const result = b.pointAtDistanceTowards(a, L);
 const back = a.to(b).normalized.scale(L).negate();
 const result = b.add(back);
 ```
+
+## Example output
+
+A seeded grid of circles placed with points and vectors in the
+[Metadata & Caption example](/examples/metadata):
+
+![Seeded circles](/examples/metadata/svg/02.svg)

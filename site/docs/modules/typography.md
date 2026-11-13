@@ -61,10 +61,16 @@ const text = new TextBuilder().content("Engraved").font(myFont).size(20)
   .build();
 ```
 
-See the [Font Specimen example](https://github.com/berkes/vormen/tree/main/doc/examples/fonts/README.md)
-for every bundled font rendered with the Text element (moving into this site,
-see #30).
+See the [Font Specimen example](/examples/fonts) for every bundled font
+rendered with the Text element.
 
 The metadata caption uses this module: `CaptionBuilder.font()` picks the
 stroke font, and `Drawing.build()` renders the caption with a Text element (see
 [Metadata](/modules/metadata)).
+
+## Example output
+
+Every bundled stroke font on one specimen sheet, from the
+[Font Specimen example](/examples/fonts):
+
+![Font specimen](/examples/fonts/svg/01.svg)

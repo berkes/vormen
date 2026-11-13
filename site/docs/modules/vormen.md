@@ -25,3 +25,10 @@ record inside its draw function, e.g. with
 
 In future, we should be able to use `node drawing.js`, `npx`, `node run`, `yarn`
 or any runtime that can execute a javascript (or typescript) file.
+
+## Example output
+
+Rendered by the [Cubic Disarray example](/examples/cubic-disarray) via
+`deno run drawing.ts render`:
+
+![Cubic Disarray](/examples/cubic-disarray/svg/02.svg)

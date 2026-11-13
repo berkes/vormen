@@ -1,4 +1,10 @@
-# Metadata & Caption
+---
+sidebar_position: 3
+title: Metadata & Caption
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import ExampleSource from "!!raw-loader!../../../examples/metadata.ts";
 
 A seeded grid of circles on an A4 page. The drawing embeds metadata in the SVG:
 a standard `<title>`/`<desc>` and a `<metadata>` block with RDF/XML (Dublin Core
@@ -13,7 +19,12 @@ The seed is a setting: the two SVGs below only differ in the `seed` setting
 (`seeded-circles` and `other-seed`), and each embeds the seed it was rendered
 with, both in the `vormen:generator` metadata and in the caption.
 
-![Seeded Circles with seed seeded-circles](./svg/01.svg)
-![Seeded Circles with seed other-seed](./svg/02.svg)
+![Seeded Circles with seed seeded-circles](/examples/metadata/svg/01.svg)
 
-Source: [examples/metadata.ts](../../../examples/metadata.ts)
+![Seeded Circles with seed other-seed](/examples/metadata/svg/02.svg)
+
+## Source
+
+<CodeBlock language="ts" title="examples/metadata.ts">
+  {ExampleSource}
+</CodeBlock>

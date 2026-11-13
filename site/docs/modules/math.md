@@ -18,3 +18,9 @@ Random and Noise are seeded, so we have reproducible results.
 We will add many of the utilities from `p5.js`, but slightly stricter
 implemented to allow for better type checking and better documentation.
 :::
+
+## Example output
+
+Noise-driven tiles in the [Noodle Love example](/examples/noodle-love):
+
+![Noodle Love](/examples/noodle-love/svg/01.svg)

@@ -18,3 +18,7 @@ The [glossary](https://github.com/berkes/vormen/blob/main/doc/glossary.md)
 defines the domain terms used across the project; consult it before introducing
 new names. Architectural decisions are recorded as
 [ADRs](https://github.com/berkes/vormen/tree/main/doc/adr).
+
+## Workflow
+
+![Development workflow](/img/dev-flow.svg)

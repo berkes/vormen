@@ -23,3 +23,10 @@ re-drawn with the other by re-using the points, e.g.
 All builder methods (`withClosed()`, `push()`, `withRounding()` and
 `withRoundingConstrained()`) return a new builder and leave the builder they
 were called on unchanged.
+
+## Example output
+
+The heart in the [Noodle Love example](/examples/noodle-love), drawn with path
+builders:
+
+![Noodle Love](/examples/noodle-love/svg/01.svg)

@@ -22,14 +22,16 @@ npm run serve    # serve the build locally
 
 ## Example SVGs
 
-Every `docusaurus build` / `docusaurus start` first regenerates
-`site/static/examples/**/*.svg` from `examples/*.ts`: the local plugin
-`plugins/generate-examples.ts` (registered in `docusaurus.config.ts`) runs
-`scripts/generate-example-svgs.sh` in its `contentLoaded` hook. `npm run
-generate` runs the same step by hand. The generated SVGs are committed; CI
+Every `docusaurus build` / `docusaurus start` first regenerates the example
+assets: the local plugin `plugins/generate-examples.ts` (registered in
+`docusaurus.config.ts`) runs `scripts/generate-example-assets.sh` in its
+`contentLoaded` hook — a thin wrapper that renders the SVGs into
+`site/static/examples/**` and copies the example sources into
+`site/static/downloads/` (served as download links on the example pages). `npm
+run generate` runs the same step by hand. The rendered SVGs are committed; CI
 fails when they differ from freshly generated ones, so the site can never ship
-stale artwork. After the Deno → Node migration (#28) only
-`scripts/generate-example-svgs.sh` changes.
+stale artwork. `site/static/downloads/` is gitignored build output. After the
+Deno → Node migration (#28) only `scripts/generate-example-assets.sh` changes.
 
 ## Deploy
 

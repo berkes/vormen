@@ -4,6 +4,7 @@ title: Metadata & Caption
 ---
 
 import CodeBlock from "@theme/CodeBlock";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import ExampleSource from "!!raw-loader!../../../examples/metadata.ts";
 
 A seeded grid of circles on an A4 page. The drawing embeds metadata in the SVG:
@@ -22,6 +23,9 @@ with, both in the `vormen:generator` metadata and in the caption.
 ![Seeded Circles with seed seeded-circles](/examples/metadata/svg/01.svg)
 
 ![Seeded Circles with seed other-seed](/examples/metadata/svg/02.svg)
+
+**Download:** <a href={useBaseUrl("/downloads/metadata.ts")} download>metadata.ts</a>
+Run it as described under [Download and run an example](/examples).
 
 ## Source
 

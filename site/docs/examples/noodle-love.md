@@ -4,6 +4,7 @@ title: Noodle Love
 ---
 
 import CodeBlock from "@theme/CodeBlock";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import ExampleSource from "!!raw-loader!../../../examples/noodle_love.ts";
 
 A grid of round and cross tiles, each placed in a cell and rotated by a random
@@ -12,6 +13,9 @@ square cells, the seedable `Random` generator, and reusing external SVG assets
 with `readSvg` and defs.
 
 ![Noodle Love](/examples/noodle-love/svg/01.svg)
+
+**Download:** <a href={useBaseUrl("/downloads/noodle_love.ts")} download>noodle_love.ts</a>
+Run it as described under [Download and run an example](/examples).
 
 ## Source
 

@@ -20,4 +20,6 @@ saves/*
 # Docusaurus docs site (site/): build output and cache
 site/build/
 site/.docusaurus/
+# Example sources copied here at build time to serve as downloads
+site/static/downloads/
 # site/node_modules/ is already covered by the node_modules/ rule above

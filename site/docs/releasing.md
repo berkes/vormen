@@ -10,3 +10,7 @@ commit and its tag. Only pushing a tag that starts with `v` (for example
 
 Publishing runs in `.github/workflows/ci.yml`: tests on every push and PR, then
 on a `v*` tag a publish job releases the packages to JSR and npm.
+
+## Pipeline
+
+![Release pipeline](/img/release-flow.svg)

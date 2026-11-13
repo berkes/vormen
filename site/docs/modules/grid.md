@@ -12,3 +12,9 @@ like being able to loop over all the cells, get X and Y coordinates of a cell,
 add paddings between cells and so on. `grid.intersections()` returns all points
 where the grid lines cross, including the outer edges, sorted in ascending order
 by y and then by x.
+
+## Example output
+
+The grid of the [Cubic Disarray example](/examples/cubic-disarray):
+
+![Cubic Disarray](/examples/cubic-disarray/svg/01.svg)

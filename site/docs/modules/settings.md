@@ -33,3 +33,11 @@ Settings is optional: `DrawFn` and `Vormen` do not depend on it. Drawings
 receive their settings as a `SettingsData` record
 (`Record<string, string | number | boolean>`) and can parse them with
 `Settings.parse()`, their own implementation, or use them directly.
+
+## Example output
+
+Each rendered SVG embeds the settings it was drawn with — see the caption and
+metadata of the [Metadata & Caption example](/examples/metadata) (the `seed`
+setting):
+
+![Seeded circles with seed other-seed](/examples/metadata/svg/02.svg)

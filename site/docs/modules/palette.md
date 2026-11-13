@@ -43,3 +43,9 @@ async function draw(rawSettings: SettingsData): Promise<string> {
 
 Vormen(draw, defaults);
 ```
+
+## Example output
+
+The [Palettes example](/examples/palettes) renders one square per palette:
+
+![Palettes](/examples/palettes/svg/01.svg)

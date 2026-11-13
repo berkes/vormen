@@ -2,7 +2,7 @@
   "label": "Modules",
   "position": 7,
   "link": {
-    "type": "generated-index",
-    "description": "Reference of all Vormen modules. Work in progress: incomplete and probably out of date."
+    "type": "doc",
+    "id": "modules/index"
   }
 }

@@ -11,11 +11,11 @@
 ## Context and Problem Statement
 
 The README serves as landing page, tutorial and API reference at once: it mixes
-the quickstart, a ~300-line "Modules" reference (marked WIP), two separate
-"## Examples" sections, and release notes (#26, #27). There is no real
-documentation site; `doc/` holds ADRs, the glossary and manually maintained
-example pages. Module docs, example pages and the glossary need a home that can
-grow without bloating the README, and example SVGs should render on the site.
+the quickstart, a ~300-line "Modules" reference (marked WIP), two separate "##
+Examples" sections, and release notes (#26, #27). There is no real documentation
+site; `doc/` holds ADRs, the glossary and manually maintained example pages.
+Module docs, example pages and the glossary need a home that can grow without
+bloating the README, and example SVGs should render on the site.
 
 Candidates evaluated in #26: Docusaurus, Lume, VitePress, `deno doc --html`.
 
@@ -37,10 +37,11 @@ Use **Docusaurus** (classic preset, docs-only, docs served at the site root).
 - Content lives in `site/docs/`: the README sections were split into pages
   (intro, quickstart, pick-and-choose, examples, development, releasing, and one
   page per module under `site/docs/modules/`)
-- Deployed to **GitHub Pages** at `https://berkes.github.io/vormen/`
-  (project site, `baseUrl: /vormen/`, no custom domain for now) via
+- Deployed to **GitHub Pages** at `https://berkes.github.io/vormen/` (project
+  site, `baseUrl: /vormen/`, no custom domain for now) via
   `.github/workflows/docs.yml` using `actions/upload-pages-artifact` +
-  `actions/deploy-pages`; Pages source is "GitHub Actions" (`build_type=workflow`)
+  `actions/deploy-pages`; Pages source is "GitHub Actions"
+  (`build_type=workflow`)
 - The README is collapsed to the visual intro plus links to the docs site
 
 ## Consequences
@@ -49,8 +50,8 @@ Use **Docusaurus** (classic preset, docs-only, docs served at the site root).
   and is linked from the site; ADRs stay in `doc/adr/`
 - Example pages move into the docusaurus tree (code + rendered SVG per page) in
   #30, and example SVG generation becomes part of the site build in #31
-- The docs workflow (`docs.yml`) is separate from the library CI (`ci.yml`);
-  it only runs on changes to `site/`, `doc/` or itself
+- The docs workflow (`docs.yml`) is separate from the library CI (`ci.yml`); it
+  only runs on changes to `site/`, `doc/` or itself
 - Docs snippets still use Deno commands until #28 migrates the toolchain
 - Versioned docs (Docusaurus `versions`) are available later, tied to `v*` tags
   and GitHub Releases

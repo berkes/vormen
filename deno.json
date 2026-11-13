@@ -39,7 +39,7 @@
     }
   },
   "fmt": {
-    "exclude": ["doc/glossary.md", "doc/examples/**/*.svg"]
+    "exclude": ["doc/glossary.md"]
   },
   "exclude": ["target/", "dist/", "saves/", "tmp/", "site/"]
 }

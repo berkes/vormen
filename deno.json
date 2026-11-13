@@ -41,5 +41,5 @@
   "fmt": {
     "exclude": ["doc/glossary.md", "doc/examples/**/*.svg"]
   },
-  "exclude": ["target/", "dist/", "saves/", "tmp/"]
+  "exclude": ["target/", "dist/", "saves/", "tmp/", "site/"]
 }

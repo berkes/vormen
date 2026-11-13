@@ -1,0 +1,52 @@
+name: Docs
+
+# Builds the Docusaurus site in site/ and deploys it to GitHub Pages.
+# Pages must be configured with source "GitHub Actions" (Settings -> Pages).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "doc/**"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build docs site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      # Example SVG generation as part of the build lands here with #31.
+      - name: Install site dependencies
+        run: npm install --prefix site
+      - name: Build site
+        run: npm run build --prefix site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/build
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,20 @@
+---
+sidebar_position: 5
+title: Development
+---
+
+The project uses Deno for development, with `just` as the common entry point for
+tasks. Install both with `just install` (or install `just` with your package
+manager and Deno from [deno.com](https://deno.com)). Run all checks with
+`just check-all`, or `just --list` to see all available tasks.
+
+Regenerate the example SVGs with:
+
+```bash
+just generate-examples
+```
+
+The [glossary](https://github.com/berkes/vormen/blob/main/doc/glossary.md)
+defines the domain terms used across the project; consult it before introducing
+new names. Architectural decisions are recorded as
+[ADRs](https://github.com/berkes/vormen/tree/main/doc/adr).

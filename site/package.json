@@ -7,7 +7,6 @@
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "generate": "bash scripts/generate-example-svgs.sh",
-    "prebuild": "npm run generate",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "clear": "docusaurus clear",

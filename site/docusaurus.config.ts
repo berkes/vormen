@@ -26,6 +26,12 @@ const config: Config = {
     locales: ["en"],
   },
 
+  plugins: [
+    // Regenerates site/static/examples/**/*.svg on every build/start
+    // (delegates to scripts/generate-example-svgs.sh, see #31/#28).
+    "./plugins/generate-examples.ts",
+  ],
+
   presets: [
     [
       "classic",

@@ -16,17 +16,19 @@ npm start        # dev server with hot reload
 
 ```bash
 cd site
-npm run build    # regenerates the example SVGs (prebuild), then builds; output in site/build/
+npm run build    # builds; output in site/build/
 npm run serve    # serve the build locally
 ```
 
 ## Example SVGs
 
-`npm run generate` (also runs automatically before every `npm run build`)
-regenerates `site/static/examples/**/*.svg` from `examples/*.ts` via
-`scripts/generate-example-svgs.sh`. The generated SVGs are committed; CI fails
-when they differ from freshly generated ones, so the site can never ship stale
-artwork. After the Deno → Node migration (#28) only
+Every `docusaurus build` / `docusaurus start` first regenerates
+`site/static/examples/**/*.svg` from `examples/*.ts`: the local plugin
+`plugins/generate-examples.ts` (registered in `docusaurus.config.ts`) runs
+`scripts/generate-example-svgs.sh` in its `contentLoaded` hook. `npm run
+generate` runs the same step by hand. The generated SVGs are committed; CI
+fails when they differ from freshly generated ones, so the site can never ship
+stale artwork. After the Deno → Node migration (#28) only
 `scripts/generate-example-svgs.sh` changes.
 
 ## Deploy

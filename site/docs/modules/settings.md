@@ -34,10 +34,21 @@ receive their settings as a `SettingsData` record
 (`Record<string, string | number | boolean>`) and can parse them with
 `Settings.parse()`, their own implementation, or use them directly.
 
-## Example output
+## Example
 
-Each rendered SVG embeds the settings it was drawn with — see the caption and
-metadata of the [Metadata & Caption example](/examples/metadata) (the `seed`
-setting):
+Dedicated example: [Settings cookbook page](/cookbook/settings)
+(download + source there). Rendered output:
 
-![Seeded circles with seed other-seed](/examples/metadata/svg/02.svg)
+```vorm name="modules-settings-demo"
+import { Drawing, Settings, type SettingsData, Vormen } from "@berkes/vormen";
+
+function draw(rawSettings: SettingsData): string {
+  const settings = Settings.parse({ strokeWidth: 2 }, rawSettings);
+  const drawing = new Drawing().withSize(120, 120).withBackgroundColor("#fff");
+  drawing.build().rect(60, 60).fill("none")
+    .stroke({ color: "#c0392b", width: settings.strokeWidth }).move(30, 30);
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

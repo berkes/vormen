@@ -44,8 +44,27 @@ async function draw(rawSettings: SettingsData): Promise<string> {
 Vormen(draw, defaults);
 ```
 
-## Example output
+## Example
 
-The [Palettes example](/examples/palettes) renders one square per palette:
+Dedicated example: [Palette cookbook page](/cookbook/palette)
+(download + source there). Rendered output:
 
-![Palettes](/examples/palettes/svg/01.svg)
+```vorm name="modules-palette-demo"
+import { Drawing, Palette, Scheme, Vormen } from "@berkes/vormen";
+
+function draw(): string {
+  const palette = new Palette("demo", [
+    { color: "#2E0C3C", name: "Dusk" },
+    { color: "#CE4C5A", name: "Ember" },
+    { color: "#FFD68C", name: "Gold" },
+  ]);
+  const scheme = new Scheme(palette, { bg: "Dusk", main: "Ember", accent: "Gold" });
+  const drawing = new Drawing().withSize(120, 120).withBackgroundColor(scheme.get("bg"));
+  const canvas = drawing.build();
+  canvas.rect(60, 60).fill(scheme.get("main")).move(20, 30);
+  canvas.circle(15).fill(scheme.get("accent")).cx(95).cy(95);
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

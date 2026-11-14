@@ -13,8 +13,26 @@ add paddings between cells and so on. `grid.intersections()` returns all points
 where the grid lines cross, including the outer edges, sorted in ascending order
 by y and then by x.
 
-## Example output
+## Example
 
-The grid of the [Cubic Disarray example](/examples/cubic-disarray):
+Dedicated example: [Grid cookbook page](/cookbook/grid)
+(download + source there). Rendered output:
 
-![Cubic Disarray](/examples/cubic-disarray/svg/01.svg)
+```vorm name="modules-grid-demo"
+import { Drawing, Grid, Vormen } from "@berkes/vormen";
+
+function draw(): string {
+  const drawing = new Drawing().withSize(120, 120).withBackgroundColor("#fff");
+  const canvas = drawing.build();
+  new Grid().withSize(120, 120).withCols(3).withRows(3).withPadding(4)
+    .cells()
+    .forEach((cell) =>
+      canvas.circle(Math.min(cell.width, cell.height) / 2 - 1)
+        .fill("none").stroke({ color: "#2c3e50", width: 1 })
+        .cx(cell.centerX).cy(cell.centerY)
+    );
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

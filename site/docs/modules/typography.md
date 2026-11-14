@@ -68,9 +68,21 @@ The metadata caption uses this module: `CaptionBuilder.font()` picks the
 stroke font, and `Drawing.build()` renders the caption with a Text element (see
 [Metadata](/modules/metadata)).
 
-## Example output
+## Example
 
-Every bundled stroke font on one specimen sheet, from the
-[Font Specimen example](/examples/fonts):
+Dedicated example: [Typography cookbook page](/cookbook/typography)
+(download + source there). Rendered output:
 
-![Font specimen](/examples/fonts/svg/01.svg)
+```vorm name="modules-typography-demo"
+import { Drawing, SvgFont, TextBuilder, Vormen } from "@berkes/vormen";
+
+function draw(): string {
+  const drawing = new Drawing().withSize(160, 80).withBackgroundColor("#fff");
+  const canvas = drawing.build();
+  new TextBuilder().content("Aa 12").font(SvgFont.named("EMSTech")).size(24)
+    .x(15).y(55).color("#222").strokeWidth(1).build().addTo(canvas);
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

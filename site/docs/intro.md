@@ -20,7 +20,7 @@ This is very early, alpha code. The examples below may not be implemented yet,
 or may not work anymore.
 :::
 
-Start with the [Quickstart](/quickstart), browse the [Examples](/examples), or
+Start with the [Quickstart](/quickstart), browse the [Gallery](/examples), or
 read the [module reference](/modules/vormen).
 
 ![Cubic Disarray, generated with Vormen](/img/readme-example.svg)

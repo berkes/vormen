@@ -16,30 +16,32 @@ npm start        # dev server with hot reload
 
 ```bash
 cd site
-npm run build    # builds; output in site/build/
+npm run build    # static output in site/build/
 npm run serve    # serve the build locally
 ```
 
-## Example SVGs
+## The `vorm` code blocks
 
-Every `docusaurus build` / `docusaurus start` first regenerates the example
-assets: the local plugin `plugins/generate-examples.ts` (registered in
-`docusaurus.config.ts`) runs `scripts/generate-example-assets.sh` in its
-`contentLoaded` hook — a thin wrapper that renders the SVGs into
-`site/static/examples/**` and copies the example sources into
-`site/static/downloads/` (served as download links on the example pages). `npm
-run generate` runs the same step by hand. The rendered SVGs are committed; CI
-fails when they differ from freshly generated ones, so the site can never ship
-stale artwork. `site/static/downloads/` is gitignored build output. After the
-Deno → Node migration (#28) only `scripts/generate-example-assets.sh` changes.
+Example code lives **inline in the docs pages** in ```` ```vorm ```` fenced
+blocks. At build time the remark plugin `plugins/remark-vormen.ts` (registered
+under `docs.remarkPlugins` in `docusaurus.config.ts`):
+
+1. runs each block through Vormen (`deno run <tmpfile> render -o -`, with the
+   repo root as cwd so the workspace import map applies),
+2. rewrites the block to a normal ```` ```ts ```` block for syntax highlighting,
+3. inserts the rendered SVG below it as a `<figure><img>` data URI,
+4. writes the block's source to `site/static/downloads/<name>.ts` (gitignored),
+   so pages can offer it as a download link. Use meta to control it:
+   ```` ```vorm name="cookbook-grid" settings={"strokeWidth": 8} ````.
+
+So building the examples happens **only as part of this site's build** — there
+are no separate example files or generation scripts. After the Deno → Node
+migration (#28) only `runVormenSnippetWithDeno` in the plugin changes.
 
 ## Deploy
 
 Deployment is automatic: `.github/workflows/docs.yml` builds the site on pushes
-to `main` that touch `site/` (or `doc/`) and deploys it to GitHub Pages using
-`actions/upload-pages-artifact` + `actions/deploy-pages`. The Pages source for
-the repository must be set to **GitHub Actions** (Settings → Pages).
-
-Example pages under `docs/examples/` show each example's source code (imported
-live from `../examples/*.ts`) and its rendered SVGs from `static/examples/`
-(regenerated on every build, see #31).
+to `main` (and PRs) that touch `site/`, `doc/`, `src/` etc. and deploys to
+GitHub Pages using `actions/upload-pages-artifact` + `actions/deploy-pages`.
+The Pages source for the repository must be set to **GitHub Actions**
+(Settings → Pages).

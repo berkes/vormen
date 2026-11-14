@@ -24,9 +24,25 @@ All builder methods (`withClosed()`, `push()`, `withRounding()` and
 `withRoundingConstrained()`) return a new builder and leave the builder they
 were called on unchanged.
 
-## Example output
+## Example
 
-The heart in the [Noodle Love example](/examples/noodle-love), drawn with path
-builders:
+Dedicated example: [Path cookbook page](/cookbook/path)
+(download + source there). Rendered output:
 
-![Noodle Love](/examples/noodle-love/svg/01.svg)
+```vorm name="modules-path-demo"
+import { Drawing, PathBuilder, Point, RoundedPathBuilder, Vormen } from "@berkes/vormen";
+
+function draw(): string {
+  const drawing = new Drawing().withSize(240, 120).withBackgroundColor("#fff");
+  const canvas = drawing.build();
+  const pts = [new Point(15, 90), new Point(45, 30), new Point(75, 80), new Point(105, 25)];
+  canvas.path(new PathBuilder(pts).withClosed(true).build())
+    .fill("none").stroke({ color: "#333", width: 2 });
+  const shifted = pts.map((p) => new Point(p.x + 120, p.y));
+  canvas.path(new RoundedPathBuilder(shifted).withRounding(10).withClosed(true).build())
+    .fill("rgba(91,75,138,0.15)").stroke({ color: "#5b4b8a", width: 2 });
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

@@ -44,9 +44,22 @@ module](/modules/typography)), so it survives on a pen plotter; its template
 resolves `{placeholders}` against the metadata fields and each generator setting
 (e.g. `{seed}`), and placeholders without a value are dropped.
 
-## Example output
+## Example
 
-See the [Metadata & Caption example](/examples/metadata) — the caption in the
-bottom margin and the embedded RDF/XML metadata:
+Dedicated example: [Metadata cookbook page](/cookbook/metadata)
+(download + source there). Rendered output:
 
-![Seeded circles with caption](/examples/metadata/svg/01.svg)
+```vorm name="modules-metadata-demo"
+import { Drawing, MetadataBuilder, Vormen } from "@berkes/vormen";
+
+function draw(): string {
+  const metadata = new MetadataBuilder()
+    .title("Demo").author("Vormen").build();
+  const drawing = new Drawing().withSize(120, 120)
+    .withBackgroundColor("#fff").withMetadata(metadata);
+  drawing.build().rect(50, 50).fill("#5b4b8a").move(35, 35);
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

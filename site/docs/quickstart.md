@@ -76,7 +76,7 @@ deno run drawing.ts render --outfile drawing.svg
 ```
 
 ![readme-example](/img/readme-example.svg) (This is generated with
-[examples/cubic-disarray.ts](https://github.com/berkes/vormen/blob/main/examples/cubic-disarray.ts))
+[Cubic Disarray gallery page](/examples/cubic-disarray))
 
 Or output to stdout.
 

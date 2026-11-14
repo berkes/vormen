@@ -3,10 +3,9 @@ name: Docs
 # Builds the Docusaurus site in site/ and deploys it to GitHub Pages.
 # Pages must be configured with source "GitHub Actions" (Settings -> Pages).
 #
-# The example SVGs (site/static/examples/) are regenerated as part of the build
-# (npm run generate, also wired as prebuild of npm run build), so the deployed
-# site never shows stale artwork. The "stale SVGs" step fails the run when the
-# committed SVGs differ from freshly generated ones.
+# ```vorm blocks in site/docs are rendered to SVG at build time by the remark
+# plugin (site/plugins/remark-vormen.ts), which shells out to deno — hence
+# setup-deno below. Rendered SVGs are inlined as data URIs; nothing to commit.
 
 on:
   push:
@@ -14,7 +13,6 @@ on:
     paths:
       - "site/**"
       - "doc/**"
-      - "examples/**"
       - "src/**"
       - "deno.json"
       - "justfile"
@@ -23,7 +21,6 @@ on:
     paths:
       - "site/**"
       - "doc/**"
-      - "examples/**"
       - "src/**"
       - "deno.json"
       - "justfile"
@@ -53,11 +50,7 @@ jobs:
           node-version: 24
       - name: Install site dependencies
         run: npm ci --prefix site
-      - name: Regenerate example SVGs
-        run: npm run generate --prefix site
-      - name: Fail if committed example SVGs are stale
-        run: git diff --exit-code -- site/static/examples
-      - name: Build site
+      - name: Build site (renders all vorm blocks)
         run: npm run build --prefix site
       - uses: actions/upload-pages-artifact@v3
         with:

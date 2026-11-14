@@ -40,4 +40,17 @@ locked drawing log a warning to the console: they return a new, unlocked
 Dedicated example: [Drawing cookbook page](/cookbook/drawing)
 (download + source there). Rendered output:
 
-![Cookbook: Drawing](/examples/cookbook-drawing/svg/01.svg)
+```vorm name="modules-drawing-demo"
+import { Drawing, StandardSize, Vormen } from "@berkes/vormen";
+
+function draw(): string {
+  const drawing = new Drawing()
+    .withStandardSize(StandardSize.A5)
+    .withMargin(15)
+    .withBackgroundColor("#f5f0e6");
+  drawing.build().circle(40).fill("#c0392b").cx(100).cy(100);
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

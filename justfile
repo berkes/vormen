@@ -36,10 +36,6 @@ check-all:
     just fmt
     just test
 
-# Regenerate the example SVGs.
-generate-examples:
-    deno task generate:examples
-
 # Bump the version: `just version major|minor|patch`.
 # Requires a clean workspace on main. Commits and tags the bump, does not push.
 version PART:

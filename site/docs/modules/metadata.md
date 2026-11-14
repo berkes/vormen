@@ -49,4 +49,17 @@ resolves `{placeholders}` against the metadata fields and each generator setting
 Dedicated example: [Metadata cookbook page](/cookbook/metadata)
 (download + source there). Rendered output:
 
-![Cookbook: Metadata](/examples/cookbook-metadata/svg/01.svg)
+```vorm name="modules-metadata-demo"
+import { Drawing, MetadataBuilder, Vormen } from "@berkes/vormen";
+
+function draw(): string {
+  const metadata = new MetadataBuilder()
+    .title("Demo").author("Vormen").build();
+  const drawing = new Drawing().withSize(120, 120)
+    .withBackgroundColor("#fff").withMetadata(metadata);
+  drawing.build().rect(50, 50).fill("#5b4b8a").move(35, 35);
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

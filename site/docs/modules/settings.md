@@ -39,4 +39,16 @@ receive their settings as a `SettingsData` record
 Dedicated example: [Settings cookbook page](/cookbook/settings)
 (download + source there). Rendered output:
 
-![Cookbook: Settings](/examples/cookbook-settings/svg/02.svg)
+```vorm name="modules-settings-demo"
+import { Drawing, Settings, type SettingsData, Vormen } from "@berkes/vormen";
+
+function draw(rawSettings: SettingsData): string {
+  const settings = Settings.parse({ strokeWidth: 2 }, rawSettings);
+  const drawing = new Drawing().withSize(120, 120).withBackgroundColor("#fff");
+  drawing.build().rect(60, 60).fill("none")
+    .stroke({ color: "#c0392b", width: settings.strokeWidth }).move(30, 30);
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

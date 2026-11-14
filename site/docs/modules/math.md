@@ -24,4 +24,21 @@ implemented to allow for better type checking and better documentation.
 Dedicated example: [Math cookbook page](/cookbook/math)
 (download + source there). Rendered output:
 
-![Cookbook: Math](/examples/cookbook-math/svg/01.svg)
+```vorm name="modules-math-demo"
+import { constrain, Drawing, Noise, Settings, type SettingsData, Vormen } from "@berkes/vormen";
+
+function draw(rawSettings: SettingsData): string {
+  const settings = Settings.parse({ seed: "demo", dots: 12 }, rawSettings);
+  const drawing = new Drawing().withSize(120, 120).withBackgroundColor("#fff");
+  const canvas = drawing.build();
+  const noise = new Noise(settings.seed);
+  for (let i = 0; i < settings.dots; i++) {
+    const x = (i + 1) * 10;
+    const r = constrain(noise.get(i, 0), 0, 1) * 8 + 2;
+    canvas.circle(r).fill("#34495e").cx(x).cy(60);
+  }
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

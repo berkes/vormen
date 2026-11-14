@@ -31,4 +31,14 @@ or any runtime that can execute a javascript (or typescript) file.
 Dedicated example: [Vormen runner cookbook page](/cookbook/runner)
 (download + source there). Rendered output:
 
-![Cookbook: Vormen runner](/examples/cookbook-runner/svg/01.svg)
+```vorm name="modules-vormen-demo"
+import { Drawing, Vormen } from "@berkes/vormen";
+
+function draw(): string {
+  const drawing = new Drawing().withSize(120, 120).withBackgroundColor("#fff");
+  drawing.build().rect(60, 60).fill("#5b4b8a").move(30, 30);
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

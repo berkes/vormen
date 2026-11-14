@@ -1,6 +1,7 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import remarkVormen from "./plugins/remark-vormen";
 
 // GitHub Pages project site for berkes/vormen: https://berkes.github.io/vormen/
 // No custom domain for now. Pages is deployed from the "GitHub Actions" source,
@@ -26,12 +27,6 @@ const config: Config = {
     locales: ["en"],
   },
 
-  plugins: [
-    // Regenerates site/static/examples/**/*.svg on every build/start
-    // (delegates to scripts/generate-example-svgs.sh, see #31/#28).
-    "./plugins/generate-examples.ts",
-  ],
-
   presets: [
     [
       "classic",
@@ -41,6 +36,9 @@ const config: Config = {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
           editUrl: "https://github.com/berkes/vormen/edit/main/site/",
+          // ```vorm blocks are rendered to SVG and rewritten to ```ts at build
+          // time (see plugins/remark-vormen.ts)
+          remarkPlugins: [remarkVormen],
         },
         blog: false,
         theme: {

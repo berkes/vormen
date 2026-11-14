@@ -3,10 +3,9 @@
   "version": "0.8.0",
   "description": "Vormen is a bag of tools, modules and scripts for creating generative art in SVG using Javascript",
   "exports": "./src/vormen.ts",
-  "workspace": ["./examples", "./packages/create-vormen"],
+  "workspace": ["./packages/create-vormen"],
   "tasks": {
-    "test": "deno test --permission-set",
-    "generate:examples": "deno run --allow-run --allow-read --allow-write=site/static --allow-env=VORMEN_EXAMPLES_OUT examples/generate.ts"
+    "test": "deno test --permission-set"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@^1.0.19",

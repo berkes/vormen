@@ -34,4 +34,19 @@ const result = b.add(back);
 Dedicated example: [Primitives cookbook page](/cookbook/primitives)
 (download + source there). Rendered output:
 
-![Cookbook: Primitives](/examples/cookbook-primitives/svg/01.svg)
+```vorm name="modules-primitives-demo"
+import { Drawing, Point, Vormen } from "@berkes/vormen";
+
+function draw(): string {
+  const drawing = new Drawing().withSize(120, 120).withBackgroundColor("#fff");
+  const canvas = drawing.build();
+  const a = new Point(20, 100);
+  const b = new Point(100, 20);
+  canvas.line(a.x, a.y, b.x, b.y).stroke({ color: "#333", width: 2 });
+  const c = b.pointAtDistanceTowards(a, 30);
+  canvas.circle(6).fill("#c0392b").cx(c.x).cy(c.y);
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

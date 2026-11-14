@@ -4,18 +4,51 @@ title: "Typography: Text and SvgFont"
 ---
 
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import CodeBlock from "@theme/CodeBlock";
-import ExampleSource from "!!raw-loader!../../../examples/cookbook-typography.ts";
 
 `TextBuilder` renders a string as pen-stroke paths using a bundled SVG stroke font (`SvgFont.named("EMSTech")`) — the output contains no SVG text element, so a pen plotter can draw it. Try `--setting.text=Hello`. Reading the bundled font needs `--allow-read`.
 
 **Download:** <a href={useBaseUrl("/downloads/cookbook-typography.ts")} download>cookbook-typography.ts</a> — run it
 as described under [Download and run an example](/examples).
 
-![Cookbook: Typography: Text and SvgFont](/examples/cookbook-typography/svg/01.svg)
+```vorm name="cookbook-typography"
+/**
+ * Cookbook: Typography — Text and SvgFont.
+ *
+ * Text renders as pen-stroke paths (no SVG <text>), using a bundled SVG stroke
+ * font. The text setting can be overridden: --setting.text=Hello
+ */
+import {
+  Drawing,
+  Settings,
+  type SettingsData,
+  SvgFont,
+  TextBuilder,
+  Vormen,
+} from "@berkes/vormen";
 
-## Source
+const defaultSettings = {
+  text: "Plotter 123",
+  size: 28,
+};
 
-<CodeBlock language="ts" title="examples/cookbook-typography.ts">
-  {ExampleSource}
-</CodeBlock>
+function draw(rawSettings: SettingsData): string {
+  const settings = Settings.parse(defaultSettings, rawSettings);
+  const drawing = new Drawing()
+    .withSize(360, 160)
+    .withBackgroundColor("#ffffff");
+  const canvas = drawing.build();
+  new TextBuilder()
+    .content(settings.text)
+    .font(SvgFont.named("EMSTech"))
+    .size(settings.size)
+    .x(20)
+    .y(110)
+    .color("#222222")
+    .strokeWidth(1)
+    .build()
+    .addTo(canvas);
+  return drawing.svg();
+}
+
+Vormen(draw, defaultSettings);
+```

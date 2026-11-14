@@ -73,4 +73,16 @@ stroke font, and `Drawing.build()` renders the caption with a Text element (see
 Dedicated example: [Typography cookbook page](/cookbook/typography)
 (download + source there). Rendered output:
 
-![Cookbook: Typography](/examples/cookbook-typography/svg/01.svg)
+```vorm name="modules-typography-demo"
+import { Drawing, SvgFont, TextBuilder, Vormen } from "@berkes/vormen";
+
+function draw(): string {
+  const drawing = new Drawing().withSize(160, 80).withBackgroundColor("#fff");
+  const canvas = drawing.build();
+  new TextBuilder().content("Aa 12").font(SvgFont.named("EMSTech")).size(24)
+    .x(15).y(55).color("#222").strokeWidth(1).build().addTo(canvas);
+  return drawing.svg();
+}
+
+Vormen(draw, {});
+```

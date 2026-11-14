@@ -1,0 +1,42 @@
+{
+  "$comment": "Single registry for all examples. Adding an example = one source file in examples/ plus one entry here. `deno task generate:examples` (examples/generate.ts) renders every output and publishes sources as docs-site downloads; the integration test fails if an examples/*.ts is missing here or a page is missing. `name` is the slug used for site/static/examples/<name>/ and site/docs pages; `source` is the file in examples/; `page` is the docs page relative to examples/; `outputs[].settings` are --setting.<key>=<value> overrides; `assets` are extra files/dirs in examples/ copied next to the source in site/static/downloads/.",
+  "examples": [
+    {
+      "name": "cubic-disarray",
+      "source": "cubic-disarray.ts",
+      "page": "../site/docs/examples/cubic-disarray.md",
+      "outputs": [
+        { "file": "svg/01.svg" },
+        { "file": "svg/02.svg", "settings": { "rotationStrength": 5 } }
+      ]
+    },
+    {
+      "name": "fonts",
+      "source": "fonts.ts",
+      "page": "../site/docs/examples/fonts.md",
+      "outputs": [{ "file": "svg/01.svg" }]
+    },
+    {
+      "name": "noodle-love",
+      "source": "noodle_love.ts",
+      "page": "../site/docs/examples/noodle-love.md",
+      "outputs": [{ "file": "svg/01.svg" }]
+    },
+    {
+      "name": "metadata",
+      "source": "metadata.ts",
+      "page": "../site/docs/examples/metadata.md",
+      "outputs": [
+        { "file": "svg/01.svg" },
+        { "file": "svg/02.svg", "settings": { "seed": "other-seed" } }
+      ]
+    },
+    {
+      "name": "palettes",
+      "source": "palettes.ts",
+      "page": "../site/docs/examples/palettes.md",
+      "assets": ["palettes"],
+      "outputs": [{ "file": "svg/01.svg" }]
+    }
+  ]
+}

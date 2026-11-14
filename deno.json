@@ -6,7 +6,7 @@
   "workspace": ["./examples", "./packages/create-vormen"],
   "tasks": {
     "test": "deno test --permission-set",
-    "generate:examples": "./examples/update-example-svgs.sh"
+    "generate:examples": "deno run --allow-run --allow-read --allow-write=site/static --allow-env=VORMEN_EXAMPLES_OUT examples/generate.ts"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@^1.0.19",

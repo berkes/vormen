@@ -13,8 +13,9 @@ add paddings between cells and so on. `grid.intersections()` returns all points
 where the grid lines cross, including the outer edges, sorted in ascending order
 by y and then by x.
 
-## Example output
+## Example
 
-The grid of the [Cubic Disarray example](/examples/cubic-disarray):
+Dedicated example: [Grid cookbook page](/cookbook/grid)
+(download + source there). Rendered output:
 
-![Cubic Disarray](/examples/cubic-disarray/svg/01.svg)
+![Cookbook: Grid](/examples/cookbook-grid/svg/01.svg)

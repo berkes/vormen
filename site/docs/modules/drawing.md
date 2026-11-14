@@ -35,8 +35,9 @@ Calling `build()` locks the drawing it is called on. Builder methods called on a
 locked drawing log a warning to the console: they return a new, unlocked
 `Drawing`, but cannot change what the earlier `build()` produced.
 
-## Example output
+## Example
 
-The [Cubic Disarray example](/examples/cubic-disarray) built with `Drawing`:
+Dedicated example: [Drawing cookbook page](/cookbook/drawing)
+(download + source there). Rendered output:
 
-![Cubic Disarray](/img/readme-example.svg)
+![Cookbook: Drawing](/examples/cookbook-drawing/svg/01.svg)

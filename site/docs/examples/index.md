@@ -1,10 +1,11 @@
 ---
-title: Examples
+title: Gallery
 ---
 
 The [`examples/` directory](https://github.com/berkes/vormen/tree/main/examples)
-contains runnable example drawings. Each example below has its own page showing
-the source code and the rendered SVG output(s).
+is a gallery of visually appealing pieces. Each piece has its own page showing
+the source code and the rendered SVG output(s). For one-concept-per-module
+examples, see the [Cookbook](/cookbook).
 
 ## Download and run an example
 

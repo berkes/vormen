@@ -19,8 +19,9 @@ We will add many of the utilities from `p5.js`, but slightly stricter
 implemented to allow for better type checking and better documentation.
 :::
 
-## Example output
+## Example
 
-Noise-driven tiles in the [Noodle Love example](/examples/noodle-love):
+Dedicated example: [Math cookbook page](/cookbook/math)
+(download + source there). Rendered output:
 
-![Noodle Love](/examples/noodle-love/svg/01.svg)
+![Cookbook: Math](/examples/cookbook-math/svg/01.svg)

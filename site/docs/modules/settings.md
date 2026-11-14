@@ -34,10 +34,9 @@ receive their settings as a `SettingsData` record
 (`Record<string, string | number | boolean>`) and can parse them with
 `Settings.parse()`, their own implementation, or use them directly.
 
-## Example output
+## Example
 
-Each rendered SVG embeds the settings it was drawn with — see the caption and
-metadata of the [Metadata & Caption example](/examples/metadata) (the `seed`
-setting):
+Dedicated example: [Settings cookbook page](/cookbook/settings)
+(download + source there). Rendered output:
 
-![Seeded circles with seed other-seed](/examples/metadata/svg/02.svg)
+![Cookbook: Settings](/examples/cookbook-settings/svg/02.svg)

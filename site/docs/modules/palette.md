@@ -44,8 +44,9 @@ async function draw(rawSettings: SettingsData): Promise<string> {
 Vormen(draw, defaults);
 ```
 
-## Example output
+## Example
 
-The [Palettes example](/examples/palettes) renders one square per palette:
+Dedicated example: [Palette cookbook page](/cookbook/palette)
+(download + source there). Rendered output:
 
-![Palettes](/examples/palettes/svg/01.svg)
+![Cookbook: Palette](/examples/cookbook-palette/svg/01.svg)

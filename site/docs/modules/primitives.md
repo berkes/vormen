@@ -29,9 +29,9 @@ const back = a.to(b).normalized.scale(L).negate();
 const result = b.add(back);
 ```
 
-## Example output
+## Example
 
-A seeded grid of circles placed with points and vectors in the
-[Metadata & Caption example](/examples/metadata):
+Dedicated example: [Primitives cookbook page](/cookbook/primitives)
+(download + source there). Rendered output:
 
-![Seeded circles](/examples/metadata/svg/02.svg)
+![Cookbook: Primitives](/examples/cookbook-primitives/svg/01.svg)

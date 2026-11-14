@@ -68,9 +68,9 @@ The metadata caption uses this module: `CaptionBuilder.font()` picks the
 stroke font, and `Drawing.build()` renders the caption with a Text element (see
 [Metadata](/modules/metadata)).
 
-## Example output
+## Example
 
-Every bundled stroke font on one specimen sheet, from the
-[Font Specimen example](/examples/fonts):
+Dedicated example: [Typography cookbook page](/cookbook/typography)
+(download + source there). Rendered output:
 
-![Font specimen](/examples/fonts/svg/01.svg)
+![Cookbook: Typography](/examples/cookbook-typography/svg/01.svg)

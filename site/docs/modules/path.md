@@ -24,9 +24,9 @@ All builder methods (`withClosed()`, `push()`, `withRounding()` and
 `withRoundingConstrained()`) return a new builder and leave the builder they
 were called on unchanged.
 
-## Example output
+## Example
 
-The heart in the [Noodle Love example](/examples/noodle-love), drawn with path
-builders:
+Dedicated example: [Path cookbook page](/cookbook/path)
+(download + source there). Rendered output:
 
-![Noodle Love](/examples/noodle-love/svg/01.svg)
+![Cookbook: Path](/examples/cookbook-path/svg/01.svg)

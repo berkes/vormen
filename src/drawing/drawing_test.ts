@@ -5,6 +5,7 @@ import {
   assertNotStrictEquals,
   assertStringIncludes,
 } from "@std/assert";
+import { parse } from "@std/xml";
 import { Circle, registerWindow } from "@svgdotjs/svg.js";
 import { createSVGWindow } from "svgdom";
 import { Drawing, Margin, StandardSize } from "./drawing.ts";
@@ -254,8 +255,17 @@ Deno.test("svg() renders the full SVG", () => {
   const drawing = new Drawing(svgElement()).withSize(300, 400);
   const _group = drawing.build();
 
-  assertStringIncludes(drawing.svg(), "<svg ");
-  assertStringIncludes(drawing.svg(), "</svg>");
+  const doc = parse(drawing.svg());
+  assertEquals(doc.root.name.local, "svg");
+});
+
+Deno.test("svg() uses the outer sizes", () => {
+  const drawing = new Drawing(svgElement()).withSize(300, 400).withMargin(10);
+  const _group = drawing.build();
+
+  const doc = parse(drawing.svg());
+  assertEquals(doc.root.attributes["width"], "300");
+  assertEquals(doc.root.attributes["height"], "400");
 });
 
 Deno.test("element is created if not passed in", () => {

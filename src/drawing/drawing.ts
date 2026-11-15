@@ -311,8 +311,8 @@ export class Drawing {
       ? caption.render(this._metadata ? this._metadata.captionValues() : {})
       : "";
 
-    const draw = this._svg.size(this.width, this.height);
-    draw.viewbox(0, 0, this.width, this.height);
+    const draw = this._svg.size(this.outerWidth, this.outerHeight);
+    draw.viewbox(0, 0, this.outerWidth, this.outerHeight);
 
     // Serialize the metadata as title, desc and metadata elements
     if (this._metadata) {
@@ -328,7 +328,7 @@ export class Drawing {
     }
 
     // Draw a background
-    const bgRect = draw.rect(this._width, this._height);
+    const bgRect = draw.rect(this.outerWidth, this.outerHeight);
     bgRect.fill(this._backgroundColor);
     bgRect.id("background");
     bgRect.move(0, 0);

@@ -1,7 +1,16 @@
+<img src="doc/logo.svg" height="300" width="300" alt="logo">
+
 # Vormen
 
 _Vormen_ is a bag of tools, modules and scripts for creating generative art in
 SVG using Javascript
+
+[![TEST](https://github.com/berkes/vormen/actions/workflows/ci.yml/badge.svg)](https://github.com/berkes/vormen/actions/workflows/ci.yml)
+[![Docs](https://github.com/berkes/vormen/actions/workflows/docs.yml/badge.svg)](https://berkes.github.com/vormen/)
+[![NPM Version](https://img.shields.io/npm/v/%40berkes%2Fvormen)](https://www.npmjs.com/package/@berkes/vormen)
+[![MistralAI](https://img.shields.io/badge/mistralai-%23FA520F.svg?logo=mistralai&logoColor=white)](https://mistral.ai/)
+
+---
 
 A drawing is a program: a `draw` function that takes settings and returns an SVG
 string, handed to the runner as the last line. This is the code that generates

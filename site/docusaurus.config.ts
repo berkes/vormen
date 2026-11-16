@@ -11,7 +11,7 @@ const config: Config = {
   tagline:
     "A bag of tools, modules and scripts for creating generative art in SVG using JavaScript",
   url: "https://berkes.github.io",
-  baseUrl: "/vormen/",
+  baseUrl: process.env.NODE_ENV === "development" ? "/" : "/vormen/",
   organizationName: "berkes",
   projectName: "vormen",
 
@@ -62,6 +62,15 @@ const config: Config = {
           position: "right",
         },
       ],
+      logo: {
+        alt: 'Site Logo',
+        src: 'img/logo.svg',
+        srcDark: 'img/logo.svg',
+        href: '/',
+        target: '_self',
+        width: 32,
+        height: 32,
+      },
     },
     footer: {
       style: "dark",

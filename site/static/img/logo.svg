@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 256 256"
+   version="1.1"
+   id="svg54"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1">Vormen</title>
+  <desc
+     id="desc1">Logo for Vormen: a V of two broad diagonal planes, left in red, right split into ochre and blue, black structural lines, over a construction drawing of bezier handles, anchors and a light grid.</desc>
+  <defs
+     id="defs1">
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker58"
+       style="overflow:visible"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <g
+         transform="scale(0.6)"
+         id="g58">
+        <path
+           d="m 0,-40 v 0"
+           id="path56" />
+        <path
+           d="M 0,0 8,5 V -5 Z"
+           style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+           id="path57" />
+        <path
+           d="M 0,-8 V 40"
+           style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:square"
+           id="path58" />
+      </g>
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="DistanceEnd"
+       style="overflow:visible"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <g
+         transform="scale(0.6)"
+         id="g16">
+        <path
+           d="m 0,-40 v 0"
+           id="path14" />
+        <path
+           d="M 0,0 -8,5 V -5 Z"
+           style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+           id="path15" />
+        <path
+           d="M 0,-8 V 40"
+           style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:square"
+           id="path16" />
+      </g>
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="DistanceStart"
+       style="overflow:visible"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <g
+         transform="scale(0.6)"
+         id="g13">
+        <path
+           d="m 0,-40 v 0"
+           id="path11" />
+        <path
+           d="M 0,0 8,5 V -5 Z"
+           style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+           id="path12" />
+        <path
+           d="M 0,-8 V 40"
+           style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:square"
+           id="path13" />
+      </g>
+    </marker>
+    <clipPath
+       id="cc-6-2">
+      <rect
+         x="0"
+         y="0"
+         width="240"
+         height="240"
+         id="rect1-7-0" />
+    </clipPath>
+    <clipPath
+       id="bc-3-8">
+      <polygon
+         points="146.83,240 93.17,240 213.17,0 240,0 240,53.67 "
+         id="polygon1-5-9" />
+    </clipPath>
+  </defs>
+  <metadata
+     id="metadata64">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Vormen</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     transform="translate(-522)">
+    <g
+       id="construction"
+       transform="matrix(2.1298817,0,0,2.1298817,2.5390169e-6,-16.343772)">
+      <g
+         id="g64">
+        <path
+           d="m 58,22 c 14,38 36,68 50,84 q 12,12 24,0 c 14,-16 36,-46 50,-84"
+           fill="none"
+           stroke="#7E786D"
+           stroke-width="2.2"
+           stroke-linecap="round"
+           id="path23"
+           style="stroke:#1c1a18;stroke-opacity:1" />
+        <g
+           stroke="#7e786d"
+           stroke-width="1.1"
+           id="g29"
+           transform="translate(0,-2)">
+          <line
+             x1="58"
+             y1="24"
+             x2="72"
+             y2="62"
+             id="line24"
+             style="stroke:#1c1a18;stroke-opacity:1" />
+          <line
+             x1="108"
+             y1="108"
+             x2="94"
+             y2="92"
+             id="line25"
+             style="stroke:#1c1a18;stroke-opacity:1" />
+          <line
+             x1="108"
+             y1="108"
+             x2="120"
+             y2="120"
+             id="line26"
+             style="stroke:#1c1a18;stroke-opacity:1" />
+          <line
+             x1="132"
+             y1="108"
+             x2="120"
+             y2="120"
+             id="line27"
+             style="stroke:#1c1a18;stroke-opacity:1" />
+          <line
+             x1="132"
+             y1="108"
+             x2="146"
+             y2="92"
+             id="line28"
+             style="stroke:#1c1a18;stroke-opacity:1" />
+          <line
+             x1="182"
+             y1="24"
+             x2="168"
+             y2="62"
+             id="line29"
+             style="stroke:#1c1a18;stroke-opacity:1" />
+        </g>
+        <circle
+           cx="72"
+           cy="60"
+           r="2.3"
+           fill="#7E786D"
+           id="circle29"
+           style="fill:#f1eee5;fill-opacity:1;stroke:#1c1a18;stroke-opacity:1" />
+        <circle
+           cx="94"
+           cy="90"
+           r="2.3"
+           fill="#7E786D"
+           id="circle30"
+           style="fill:#f1eee5;fill-opacity:1;stroke:#1c1a18;stroke-opacity:1" />
+        <circle
+           cx="120"
+           cy="118"
+           r="2.3"
+           fill="#7E786D"
+           id="circle31"
+           style="fill:#f1eee5;fill-opacity:1;stroke:#1c1a18;stroke-opacity:1" />
+        <circle
+           cx="146"
+           cy="90"
+           r="2.3"
+           fill="#7E786D"
+           id="circle32"
+           style="fill:#f1eee5;fill-opacity:1;stroke:#1c1a18;stroke-opacity:1" />
+        <circle
+           cx="168"
+           cy="60"
+           r="2.3"
+           fill="#7E786D"
+           id="circle33"
+           style="fill:#f1eee5;fill-opacity:1;stroke:#1c1a18;stroke-opacity:1" />
+        <rect
+           x="55.700001"
+           y="19.700001"
+           width="4.5999999"
+           height="4.5999999"
+           fill="#7E786D"
+           id="rect33"
+           style="fill:#f1eee5;fill-opacity:1;stroke:#1c1a18;stroke-opacity:1" />
+        <rect
+           x="105.7"
+           y="103.7"
+           width="4.5999999"
+           height="4.5999999"
+           fill="#7E786D"
+           id="rect34"
+           style="fill:#f1eee5;fill-opacity:1;stroke:#1c1a18;stroke-opacity:1" />
+        <rect
+           x="129.7"
+           y="103.7"
+           width="4.5999999"
+           height="4.5999999"
+           fill="#7E786D"
+           id="rect35"
+           style="fill:#f1eee5;fill-opacity:1;stroke:#1c1a18;stroke-opacity:1" />
+        <rect
+           x="179.7"
+           y="19.700001"
+           width="4.5999999"
+           height="4.5999999"
+           fill="#7E786D"
+           id="rect36"
+           style="fill:#f1eee5;fill-opacity:1;stroke:#1c1a18;stroke-opacity:1" />
+      </g>
+      <g
+         id="g63">
+        <line
+           x1="38.542858"
+           y1="130.70065"
+           x2="85.93084"
+           y2="107.01769"
+           id="line41"
+           style="fill:#7e786d;fill-opacity:1;stroke:#1c1a18;stroke-width:2.2;stroke-dasharray:none;stroke-opacity:1"
+           transform="translate(-1.1920929e-6,8.0624922)" />
+        <line
+           x1="36.567444"
+           y1="131.69388"
+           x2="28.676802"
+           y2="135.64471"
+           id="line44"
+           style="fill:#7e786d;fill-opacity:1;stroke:#1c1a18;stroke-width:2.2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker58)"
+           transform="translate(-1.1920929e-6,8.0624922)" />
+        <line
+           x1="87.906265"
+           y1="106.02447"
+           x2="95.796906"
+           y2="102.07362"
+           id="line45"
+           style="fill:#7e786d;fill-opacity:1;stroke:#1c1a18;stroke-width:2.2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker58)"
+           transform="translate(-1.1920929e-6,8.0624922)" />
+      </g>
+      <g
+         id="g62">
+        <line
+           x1="7"
+           y1="12"
+           x2="17"
+           y2="12"
+           id="line46"
+           style="stroke:#1c1a18;stroke-width:2.2;stroke-dasharray:none;stroke-opacity:1"
+           transform="translate(-1.1920929e-6,8.0624922)" />
+        <line
+           x1="12"
+           y1="7"
+           x2="12"
+           y2="17"
+           id="line47"
+           style="stroke:#1c1a18;stroke-width:2.2;stroke-dasharray:none;stroke-opacity:1"
+           transform="translate(-1.1920929e-6,8.0624922)" />
+      </g>
+      <g
+         id="g61">
+        <line
+           x1="223"
+           y1="12"
+           x2="233"
+           y2="12"
+           id="line48"
+           style="stroke:#1c1a18;stroke-width:2.2;stroke-dasharray:none;stroke-opacity:1"
+           transform="translate(-1.1920929e-6,8.0624922)" />
+        <line
+           x1="228"
+           y1="7"
+           x2="228"
+           y2="17"
+           id="line49"
+           style="stroke:#1c1a18;stroke-width:2.2;stroke-dasharray:none;stroke-opacity:1"
+           transform="translate(-1.1920929e-6,8.0624922)" />
+      </g>
+      <g
+         id="g60">
+        <line
+           x1="7"
+           y1="228"
+           x2="17"
+           y2="228"
+           id="line50"
+           style="stroke:#1c1a18;stroke-width:2.2;stroke-dasharray:none;stroke-opacity:1"
+           transform="translate(-1.1920929e-6,8.0624922)" />
+        <line
+           x1="12"
+           y1="223"
+           x2="12"
+           y2="233"
+           id="line51"
+           style="stroke:#1c1a18;stroke-width:2.2;stroke-dasharray:none;stroke-opacity:1"
+           transform="translate(-1.1920929e-6,8.0624922)" />
+      </g>
+      <g
+         id="g59">
+        <line
+           x1="223"
+           y1="228"
+           x2="233"
+           y2="228"
+           id="line52"
+           style="stroke:#1c1a18;stroke-width:2.2;stroke-dasharray:none;stroke-opacity:1"
+           transform="translate(-1.1920929e-6,8.0624922)" />
+        <line
+           x1="228"
+           y1="223"
+           x2="228"
+           y2="233"
+           id="line53"
+           style="stroke:#1c1a18;stroke-width:2.2;stroke-dasharray:none;stroke-opacity:1"
+           transform="translate(-1.1920929e-6,8.0624922)" />
+      </g>
+      <path
+         style="fill:none;stroke:#1c1a18;stroke-width:2.2;stroke-linecap:square;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#DistanceStart);marker-end:url(#DistanceEnd)"
+         id="path54"
+         d="m -196.33211,176.13117 a 55.585194,54.828934 0 0 1 -49.54947,29.98112"
+         transform="rotate(-90)" />
+    </g>
+  </g>
+  <g
+     id="layer2"
+     transform="translate(-522)">
+    <rect
+       x="522.11316"
+       y="-0.053191938"
+       width="255.5858"
+       height="255.5858"
+       fill="#f1eee5"
+       id="rect4"
+       style="stroke-width:1.06494" />
+    <g
+       id="form-7"
+       transform="matrix(1.0649409,0,0,1.0649409,522.00845,0.05151697)">
+      <polygon
+         fill="#d9a441"
+         points="213.17,0 240,0 240,53.67 207.47,118.73 164.53,97.27 "
+         id="polygon36-8" />
+      <polygon
+         fill="#3e5c76"
+         points="207.47,118.73 146.83,240 93.17,240 164.53,97.27 "
+         id="polygon37-4" />
+      <polygon
+         fill="#a63a2b"
+         points="0,0 26.83,0 146.83,240 93.17,240 0,53.67 "
+         id="polygon38-5" />
+      <g
+         stroke="#1c1a18"
+         stroke-width="10"
+         stroke-linecap="butt"
+         id="g40-0">
+        <line
+           x1="-14.97"
+           y1="-83.599998"
+           x2="163.92"
+           y2="274.17001"
+           clip-path="url(#cc-6-2)"
+           id="line38-3" />
+        <line
+           x1="254.97"
+           y1="-83.599998"
+           x2="76.080002"
+           y2="274.17001"
+           clip-path="url(#cc-6-2)"
+           id="line39-6" />
+        <line
+           x1="155.59"
+           y1="92.790001"
+           x2="216.41"
+           y2="123.21"
+           clip-path="url(#bc-3-8)"
+           id="line40-1" />
+      </g>
+    </g>
+  </g>
+</svg>

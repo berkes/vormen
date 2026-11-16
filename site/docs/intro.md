@@ -4,7 +4,7 @@ sidebar_position: 1
 title: Introduction
 ---
 
-<img src="/img/logo_large.svg" alt="Vormen logo" width="300" />
+<img src="./img/logo_large.svg" alt="Vormen logo" width="300" />
 
 _Vormen_ is a bag of tools, modules and scripts for creating generative art in
 SVG using Javascript.

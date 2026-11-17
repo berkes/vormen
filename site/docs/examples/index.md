@@ -2,10 +2,11 @@
 title: Gallery
 ---
 
-The [`examples/` directory](https://github.com/berkes/vormen/tree/main/examples)
-is a gallery of visually appealing pieces. Each piece has its own page showing
-the source code and the rendered SVG output(s). For one-concept-per-module
-examples, see the [Cookbook](/cookbook).
+The gallery is a collection of visually appealing pieces made with Vormen —
+browse it for inspiration. Each piece has its own page showing the source code
+inline (in a `vorm` block, rendered to the SVG you see) and a download link for
+the source file. For one-concept-per-module recipes, see the
+[Cookbook](/cookbook).
 
 ## Download and run an example
 

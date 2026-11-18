@@ -55,7 +55,7 @@ const config: Config = {
         { to: "/quickstart", label: "Quickstart", position: "left" },
         { to: "/examples", label: "Gallery", position: "left" },
         { to: "/cookbook", label: "Cookbook", position: "left" },
-        { to: "/modules/vormen", label: "Modules", position: "left" },
+        { to: "/modules", label: "API", position: "left" },
         {
           href: "https://github.com/berkes/vormen",
           label: "GitHub",
@@ -81,6 +81,7 @@ const config: Config = {
             { label: "Quickstart", to: "/quickstart" },
             { label: "Gallery", to: "/examples" },
             { label: "Cookbook", to: "/cookbook" },
+            { label: "API reference", to: "/modules" },
             { label: "Development", to: "/development" },
             { label: "Releasing", to: "/releasing" },
           ],
